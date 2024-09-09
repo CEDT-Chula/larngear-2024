@@ -13,7 +13,7 @@ export class Stage1Scene extends Phaser.Scene {
     assetLoader.preloadTowers();
 
     const stage1Tiles = [
-      { key: "tile", path: "src/assets/tiles/placeholder_green.png" },
+      { key: "tile", path: "src/assets/tiles/grass.png" },
     ];
     assetLoader.preloadTiles(stage1Tiles);
   }

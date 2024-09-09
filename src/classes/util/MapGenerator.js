@@ -1,5 +1,4 @@
 export class MapGenerator {
-  
   // ! background tile must use the name 'tile' in for this code to work
 
   constructor(scene, tileSize, scaleFactor) {
@@ -34,11 +33,15 @@ export class MapGenerator {
       return;
     }
 
+    let randomTowerIndex = Math.floor(Math.random() * 5);
+    let randomTower =
+      "tower" + (randomTowerIndex === 0 ? "" : randomTowerIndex);
+
     this.scene.add
       .sprite(
         x * this.tileSize + this.tileSize / 2,
         y * this.tileSize + this.tileSize / 2,
-        "tower"
+        randomTower
       )
       .setScale(this.scaleFactor);
     tile.occupied = true;
