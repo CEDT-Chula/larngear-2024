@@ -2,16 +2,22 @@
 const Score = require('../models/score');
 
 exports.getScores = async (req, res)=> {
-    const { team } = req.query;
-  
+    // const { team } = req.query;
+  console.log('get work');
     try {
 
-      const filter = team ? { team } : {};
+      // const filter = team ? { team } : {};
 
-      const scores = await Score.find(filter)
+      const scores = await Score.find()
+      
         .sort({ score: -1, updatedAt: 1 }); 
-  
-      res.status(200).json(scores);
+        console.log('Using collection:', Score.collection.collectionName);
+  console.log('scores:', scores);
+      res.status(200).json({
+        success:true,
+            count:scores.length,
+            data:scores
+      });
     } catch (error) {
       res.status(500).json({ message: 'Server error', error });
     }
@@ -43,7 +49,10 @@ exports.addScore = async (req, res)=> {
         updatedAt: currentTime
       });
       await newScore.save();
-      res.status(201).json(newScore);
+      res.status(201).json({
+        success: true,
+        data: newScore
+      });
     }
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });

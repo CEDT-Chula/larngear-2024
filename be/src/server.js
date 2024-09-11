@@ -2,7 +2,8 @@ const express = require('express');
 const scoreRouter = require('./routes/score');
 // const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
-require('dotenv').config();
+require('dotenv').config({ path: './src/config/config.env' });
+
 
 
 console.log('MONGO_URI:', process.env.MONGO_URI); 
@@ -22,6 +23,8 @@ app.use(express.json());
 app.use('/api/scores', scoreRouter);
 
 const PORT = process.env.PORT || 5000;
+
+console.log('PORT:', process.env.PORT);
 const server = app.listen(
   PORT,
   () => console.log('running on port', PORT)
