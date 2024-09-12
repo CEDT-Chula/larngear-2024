@@ -19,4 +19,13 @@ export class AssetLoader {
       this.scene.load.image(tile.key, tile.path);
     });
   }
+
+  preloadActor(actorAssets) {
+    actorAssets.forEach((enemy) => {
+      this.scene.load.spritesheet(enemy.key, enemy.path, {
+        frameWidth: enemy.frameWidth,
+        frameHeight: enemy.frameHeight,
+      });
+    });
+  }
 }
