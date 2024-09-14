@@ -18,6 +18,24 @@ export class Stage1Scene extends Phaser.Scene {
     assetLoader.preloadTiles(stage1Tiles);
 
     assetLoader.preloadCoins();
+
+    this.loadFont();
+  }
+
+  loadFont() {
+    WebFont.load({
+      custom: {
+        families: ['PressStart2P'],  // Replace with your font name
+        urls: ['src/index.css']   // The CSS file for your custom font
+      },
+      active: () => {
+        this.fontLoaded = true; // Mark the font as loaded
+        this.createText(); // Call function to create the text
+      },
+      inactive: () => {
+        console.error('Font failed to load');
+      }
+    });
   }
 
   create() {
@@ -29,9 +47,12 @@ export class Stage1Scene extends Phaser.Scene {
       .setOrigin(0, 0) // Set origin to the top-left corner
       .setScale(0.15); // Adjust scale as needed
 
-
+    if (this.fontLoaded) {
+        this.createText();
+      }
     // TODO : add pathing to grid
-
+    
     // TODO : add map decorations
   }
+
 }

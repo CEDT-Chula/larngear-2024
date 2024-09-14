@@ -14,11 +14,13 @@ export class MapGenerator {
       .setOrigin(0, 0)
       .setScale(0.5); // Adjust scale as needed
 
+      document.fonts.ready.then(() => {
+        this.moneyText = this.scene.add.text(68, 24, `${this.currency}`, {
+          font: '20px "PressStart2P"',
+          fill: '#ffd700', // Gold color
+        }).setDepth(1); // Ensure the text is on top of other game elements
+      });
     // Create the money display text
-    this.moneyText = this.scene.add.text(68, 24, `${this.currency}`, {
-      font: '20px PressStart2P',
-      fill: '#ffd700', // Gold color
-    }).setDepth(1); // Ensure the text is on top of other game elements
 
     this.lastClickTime = 0;
     this.clickThreshold = 300; // Time threshold in milliseconds for double-click
