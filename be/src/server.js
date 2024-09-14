@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const scoreRouter = require('./routes/score');
 // const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
@@ -18,6 +19,7 @@ connectDB();
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 // FOR LIMIT USER
 // app.use(limiter);
 app.use('/api/scores', scoreRouter);
