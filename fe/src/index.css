@@ -23,3 +23,8 @@
 body {
   background-color: var(--background-color);
 }
+
+@font-face {
+  font-family: 'PressStart2P';
+  src: url('src/assets/fonts/PressStart2P-Regular.ttf') format('truetype');
+}

@@ -19,4 +19,8 @@ export class AssetLoader {
       this.scene.load.image(tile.key, tile.path);
     });
   }
+
+  preloadCoins() {
+    this.scene.load.image("coin", "src/assets/coin.png")
+  }
 }
