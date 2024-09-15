@@ -1,11 +1,11 @@
 class Tower {
-    constructor(range, attack, reloadTime, TargetCount, limitLvl) {
+    constructor(range, attack, reloadTime, TargetCount, maxLvl) {
         this.range = range;
         this.attack = attack;
         this.reloadTime = reloadTime;
         this.TargetCount = TargetCount;
         this.currentLvl = 1;
-        this.limitLvl = limitLvl;
+        this.maxLvl = maxLvl;
         this.skill = null;
         this.passive = null;
     }
@@ -33,7 +33,7 @@ class Tower {
     getCurrentLvl() {
         return this.currentLvl();
     }
-    GetLimitlvl() {
-        return this.limitLvl();
+    GetmaxLvl() {
+        return this.maxLvl();
     }
 }

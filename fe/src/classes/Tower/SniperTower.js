@@ -4,9 +4,11 @@ class SniperTower extends BaseTower {
         this.setPassive(SniperPassive);
     }
     usePassive() {
+        //permanent passive with condition?
         if (this.passive) {
             super.usePasive();
-            this.range += 20;
+            this.attack += 5;
+            this.reloadTime -=0.5;
         }
     }
 }

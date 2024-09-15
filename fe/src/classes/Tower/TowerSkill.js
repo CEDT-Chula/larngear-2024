@@ -1,9 +1,19 @@
 class TowerSkill {
     constructor(cooldown) {
-        this.cooldown = cooldown;  // เวลา cooldown ก่อนที่จะใช้ skill ได้อีก
+        this.cooldown = cooldown;
+        this.lastUsed = 0;
     }
 
     useSkill() {
-        console.log("Using skill with cooldown of", this.cooldown, "seconds.");
+
+    }
+    isSkillready() {
+        const currentTime = Date.now();
+        if (currentTime - this.lastUsed >= this.cooldown * 1000) {
+            this.lastUsed = currentTime;
+            return true;
+        } else {
+            return false;
+        }
     }
 }
