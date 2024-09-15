@@ -14,8 +14,8 @@ const LeaderBoard = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center gap-5 mt-[80px]">
-      <h1 className="nes-text is-primary text-center my-5">Leaderboard</h1>
+    <div className="nes-container is-rounded is-dark mt-[80px]">
+      <h1 className="nes-container is-rounded is-dark is-centered ">Leaderboard</h1>
       <ul>
         {scores.map((score) => (
           <li key={score.name}>

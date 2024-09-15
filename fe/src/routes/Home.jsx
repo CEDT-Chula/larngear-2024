@@ -7,10 +7,11 @@ const Home = () => {
   const handleStartClick = () => {
     navigate("/DemoGame");
   };
-  const [isOnePlayer, setIsOnePlayer] = useState(true); 
 
-  const togglePlayerMode = () => {
-    setIsOnePlayer(!isOnePlayer);
+  const [playerMode, setPlayerMode] = useState("one"); // "one" for 1 Player, "two" for 2 Player
+
+  const handleModeChange = (event) => {
+    setPlayerMode(event.target.value);
   };
 
   return (
@@ -30,22 +31,30 @@ const Home = () => {
       </div>
 
       <div className="flex flex-col items-center gap-5 mt-[80px]">
-        <button
-          type="button"
-          className={`px-6 py-2 nes-btn ${isOnePlayer ? "is-primary" : ""}`}
-          onClick={togglePlayerMode}
-        >
-          1 Player
-        </button>
-        <button
-          type="button"
-          className={`px-6 py-2 nes-btn ${!isOnePlayer ? "is-primary" : ""}`}
-          onClick={togglePlayerMode}
-        >
-          2 Player
-        </button>
-      </div>
+        <label>
+          <input
+            type="radio"
+            className="nes-radio"
+            name="playerMode"
+            value="one"
+            checked={playerMode === "one"}
+            onChange={handleModeChange}
+          />
+          <span>1 Player</span>
+        </label>
 
+        <label>
+          <input
+            type="radio"
+            className="nes-radio"
+            name="playerMode"
+            value="two"
+            checked={playerMode === "two"}
+            onChange={handleModeChange}
+          />
+          <span>2 Player</span>
+        </label>
+      </div>
 
       <div className="flex flex-col items-center gap-5 mt-[80px]">
         <button
