@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { MapGenerator } from "../util/MapGenerator";
 import { AssetLoader } from "../util/AssetLoader";
+import { ParticleEmitter } from "../util/ParticleEmitter";
 
 export class Stage1Scene extends Phaser.Scene {
   constructor() {
@@ -41,6 +42,7 @@ export class Stage1Scene extends Phaser.Scene {
   create() {
     const mapGen = new MapGenerator(this, 64, 4);
     const grid = mapGen.generate(20, 15); // Adjust grid size
+    const emitter = new ParticleEmitter(this, "tower4")
 
     // Add coin image to the left side of the screen
     this.coinImage = this.add.sprite(10, 14, 'coin') // Adjust coordinates as needed
@@ -53,6 +55,12 @@ export class Stage1Scene extends Phaser.Scene {
     // TODO : add pathing to grid
     
     // TODO : add map decorations
+
+    this.input.on('pointerdown', pointer => {
+
+      emitter.play(12, pointer.x, pointer.y);
+
+  });
   }
 
 }
