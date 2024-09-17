@@ -6,9 +6,6 @@ const Home = () => {
   const handleStartClick = () => {
     navigate("/Game");
   };
-  const handleDemoClick = () => {
-    navigate("/DemoGame");
-  }
 
   return (
     <div className="mt-[80px]">
@@ -23,13 +20,6 @@ const Home = () => {
           onClick={handleStartClick}
         >
           Start
-        </button>
-        <button
-          type="button"
-          className="px-10 py-2 nes-btn"
-          onClick={handleDemoClick}
-        >
-          Demo
         </button>
         <img src="src/assets/subaru-duck-pixel.gif" alt="subaru duck dancing" />
       </div>
