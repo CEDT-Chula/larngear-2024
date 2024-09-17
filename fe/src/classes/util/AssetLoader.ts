@@ -1,7 +1,14 @@
+import Phaser from "phaser";
+
+export class AssetImport {
+  key!: string;
+  path!: string;
+}
+
 export class AssetLoader {
   scene: any;
   
-  constructor(scene) {
+  constructor(scene: Phaser.Scene) {
     this.scene = scene; // Pass the scene to the loader
   }
 
@@ -16,7 +23,7 @@ export class AssetLoader {
   }
 
   // Preload specific assets for tiles (this will vary per stage)
-  preloadTiles(tileAssets) {
+  preloadTiles(tileAssets: AssetImport[]) {
     tileAssets.forEach((tile) => {
       this.scene.load.image(tile.key, tile.path);
     });

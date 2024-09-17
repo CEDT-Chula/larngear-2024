@@ -1,13 +1,14 @@
+import Phaser from "phaser";
 import { TowerController } from "./TowerController";
 
 export class MapGenerator {
   // ! background tile must use the name 'tile' in for this code to work
-  scene: any;
-  tileSize: any;
-  scaleFactor: any;
+  scene: Phaser.Scene;
+  tileSize: number;
+  scaleFactor: number;
   towerController: TowerController;
 
-  constructor(scene, tileSize, scaleFactor) {
+  constructor(scene: Phaser.Scene, tileSize: number, scaleFactor: number) {
     this.scene = scene;
     this.tileSize = tileSize;
     this.scaleFactor = scaleFactor;
@@ -15,7 +16,7 @@ export class MapGenerator {
   }
 
   // use to generate background tiles
-  generate(gridWidth, gridHeight) {
+  generate(gridWidth: number, gridHeight: number) {
     let grid: any = [];
     for (let y = 0; y < gridHeight; y++) {
       grid[y] = [];
@@ -26,14 +27,14 @@ export class MapGenerator {
           .setInteractive()
           .setScale(this.scaleFactor);
 
-        tile.on("pointerdown", (pointer) => this.handleTileInteraction(x, y, tile, pointer));
+        tile.on("pointerdown", (pointer: any) => this.handleTileInteraction(x, y, tile, pointer));
         grid[y][x] = tile;
       }
     }
     return grid;
   }
 
-  handleTileInteraction(x, y, tile, pointer) {
+  handleTileInteraction(x: number, y: number, tile: any, pointer: any) {
     const currentTime = pointer.downTime;
     const timeSinceLastClick = currentTime - this.towerController.lastClickTime;
 

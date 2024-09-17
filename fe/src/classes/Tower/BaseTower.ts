@@ -1,6 +1,14 @@
 import { TowerSkill } from "./TowerSkill";
 import { TowerPassive } from "./TowerPassive";
 
+export class LevelData {
+    range!: number;
+    attack!: number;
+    reloadTime!: number;
+    targetCount!: number;
+    sprite!: string;
+}
+
 // Base class for all towers
 export class BaseTower {
     range: number;
@@ -9,24 +17,24 @@ export class BaseTower {
     maxLevel: number;
     skill: TowerSkill;
     passive: TowerPassive;
-    levelData: void;
+    levelData: LevelData[];
     reloadTime: number;
     targetCount: number;
 
-    constructor(range, attack, reloadTime, targetCount, maxLvl) {
+    constructor(range: number, attack: number, reloadTime: number, targetCount: number, maxLvl: number) {
         this.range = range;
         this.attack = attack;
-        this.getReloadTime = reloadTime;
-        this.getTargetCount = targetCount;
+        this.reloadTime = reloadTime;
+        this.targetCount = targetCount;
         this.currentLevel = 1;
         this.maxLevel = maxLvl;
-        this.skill = new TowerSkill(null);
+        this.skill = new TowerSkill(0);
         this.passive = new TowerPassive();
         this.levelData = this.initializeLevelData();  // Set level data
     }
 
     // Abstract method to be overridden in derived classes
-    initializeLevelData() {
+    initializeLevelData(): LevelData[] {
         throw new Error("initializeLevelData must be implemented in derived classes.");
     }
 
@@ -52,7 +60,7 @@ export class BaseTower {
     }
 
     // Upgrade with another tower
-    upgradeTower(anotherTower) {
+    upgradeTower(anotherTower: BaseTower) {
         if (anotherTower instanceof BaseTower && this.currentLevel < this.maxLevel) {
             this.levelup();
             console.log(`Your tower is successfully upgraded to level ${this.getCurrentLvl}`);

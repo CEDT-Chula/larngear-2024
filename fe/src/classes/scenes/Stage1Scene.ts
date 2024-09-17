@@ -5,8 +5,8 @@ import { ParticleEmitter } from "../util/ParticleEmitter";
 
 export class Stage1Scene extends Phaser.Scene {
 
-  coinImage: Phaser.GameObjects.Sprite;
-  fontLoaded: any;
+  coinImage!: Phaser.GameObjects.Sprite;
+  fontLoaded: boolean = false;
 
   constructor() {
     super({ key: 'Stage1Scene' });
@@ -60,7 +60,7 @@ export class Stage1Scene extends Phaser.Scene {
 
     // TODO : add map decorations
 
-    this.input.on('pointerdown', pointer => {
+    this.input.on('pointerdown', (pointer: any) => {
 
       emitter.play(12, pointer.x, pointer.y);
 

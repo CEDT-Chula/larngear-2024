@@ -10,7 +10,7 @@ export class TowerController {
   lastClickTime: number;
   clickThreshold: number;
 
-  constructor(scene) {
+  constructor(scene: Phaser.Scene) {
     this.scene = scene;
     this.currency = 500; // Initialize player currency (for example)
     this.towerPrices = 100;
@@ -36,7 +36,7 @@ export class TowerController {
     this.clickThreshold = 300; // Time threshold in milliseconds for double-click
   }
 
-  placeTower(x, y, tile, tileSize, scaleFactor) {
+  placeTower(x: number, y: number, tile: any, tileSize: number, scaleFactor: number) {
     if (this.currency < this.towerPrices) {
       console.log("Not enough currency to place a tower.");
       return;
@@ -63,7 +63,7 @@ export class TowerController {
     console.log(`Tower placed at (${x}, ${y})`);
   }
 
-  sellTower(x, y, tile, tileSize) {
+  sellTower(x: number, y: number, tile: any, tileSize: number) {
     if (!tile.occupied) {
       console.log("No tower to sell at this tile.");
       return;
@@ -75,7 +75,7 @@ export class TowerController {
     this.updateMoneyDisplay(); // Update the money display
 
     // Remove the tower sprite from the scene
-    this.scene.children.getAll().forEach((child) => {
+    this.scene.children.getAll().forEach((child: any) => {
       if (
         child.x === x * tileSize + tileSize / 2 &&
         child.y === y * tileSize + tileSize / 2

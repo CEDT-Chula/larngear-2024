@@ -1,4 +1,4 @@
-import { BaseTower } from "./BaseTower";
+import { BaseTower, LevelData } from "./BaseTower";
 import { TowerSkill } from "./TowerSkill";
 
 export class MissileTower extends BaseTower {
@@ -8,13 +8,28 @@ export class MissileTower extends BaseTower {
         this.setSkill(missileSkill);
     }
     
-    initializeLevelData() {
+    initializeLevelData(): LevelData[] {
         return [
-            { range: 20, attack: 15, reloadTime: 2, targetCount: 1 },
-            { range: 25, attack: 20, reloadTime: 1.8, targetCount: 1 },
-            { range: 30, attack: 25, reloadTime: 1.6, targetCount: 1 },
-            { range: 35, attack: 30, reloadTime: 1.4, targetCount: 1 },
-            { range: 40, attack: 35, reloadTime: 1.2, targetCount: 1 }
+            {
+                range: 20, attack: 15, reloadTime: 2, targetCount: 1,
+                sprite: ""
+            },
+            {
+                range: 25, attack: 20, reloadTime: 1.8, targetCount: 1,
+                sprite: ""
+            },
+            {
+                range: 30, attack: 25, reloadTime: 1.6, targetCount: 1,
+                sprite: ""
+            },
+            {
+                range: 35, attack: 30, reloadTime: 1.4, targetCount: 1,
+                sprite: ""
+            },
+            {
+                range: 40, attack: 35, reloadTime: 1.2, targetCount: 1,
+                sprite: ""
+            }
         ];
     }
 

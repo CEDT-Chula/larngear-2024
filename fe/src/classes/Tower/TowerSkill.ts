@@ -2,7 +2,7 @@ export class TowerSkill {
     cooldown: number;
     lastUsed: number;
     
-    constructor(cooldown) {
+    constructor(cooldown: number) {
         this.cooldown = cooldown;
         this.lastUsed = 0;
     }
