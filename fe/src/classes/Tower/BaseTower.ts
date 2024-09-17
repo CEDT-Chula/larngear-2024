@@ -1,12 +1,12 @@
 import { TowerSkill } from "./TowerSkill";
 import { TowerPassive } from "./TowerPassive";
 
-export class LevelData {
-    range!: number;
-    attack!: number;
-    reloadTime!: number;
-    targetCount!: number;
-    sprite!: string;
+export interface LevelData {
+    range: number;
+    attack: number;
+    reloadTime: number; // how fast it can shoot
+    targetCount: number; // how many target it can shoot at once
+    sprite: string;
 }
 
 // Base class for all towers
