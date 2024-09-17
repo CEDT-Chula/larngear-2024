@@ -1,3 +1,4 @@
+import React from "react";
 import Stage1 from "../components/Stage1";
 
 const Game = () => {

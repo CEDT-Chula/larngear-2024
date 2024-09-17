@@ -1,4 +1,7 @@
-class TowerSkill {
+export class TowerSkill {
+    cooldown: number;
+    lastUsed: number;
+    
     constructor(cooldown) {
         this.cooldown = cooldown;
         this.lastUsed = 0;
@@ -7,7 +10,8 @@ class TowerSkill {
     useSkill() {
 
     }
-    isSkillready() {
+    
+    isReady() {
         const currentTime = Date.now();
         if (currentTime - this.lastUsed >= this.cooldown * 1000) {
             this.lastUsed = currentTime;

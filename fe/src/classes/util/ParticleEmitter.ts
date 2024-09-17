@@ -1,4 +1,6 @@
 export class ParticleEmitter {
+    scene: any;
+    emitter: any;
 
     constructor(scene, particleImage) {
 

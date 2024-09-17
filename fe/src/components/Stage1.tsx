@@ -1,10 +1,10 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import Phaser from "phaser";
 import { Stage1Scene } from "../classes/scenes/Stage1Scene";
 
-const Stage1 = () => {
+const Stage1: React.FC = () => {
   useEffect(() => {
-    const config = {
+    const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
       width: 1280, // Fixed width
       height: 960, // Fixed height
@@ -16,7 +16,7 @@ const Stage1 = () => {
       physics: {
         default: "arcade",
         arcade: {
-          gravity: { y: 0 },
+          gravity: { x: 0, y: 0 },
           debug: false,
         },
       },

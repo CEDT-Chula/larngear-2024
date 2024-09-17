@@ -1,4 +1,6 @@
 export class AssetLoader {
+  scene: any;
+  
   constructor(scene) {
     this.scene = scene; // Pass the scene to the loader
   }

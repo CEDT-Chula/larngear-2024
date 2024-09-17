@@ -4,6 +4,10 @@ import { AssetLoader } from "../util/AssetLoader";
 import { ParticleEmitter } from "../util/ParticleEmitter";
 
 export class Stage1Scene extends Phaser.Scene {
+
+  coinImage: Phaser.GameObjects.Sprite;
+  fontLoaded: any;
+
   constructor() {
     super({ key: 'Stage1Scene' });
   }
@@ -31,7 +35,7 @@ export class Stage1Scene extends Phaser.Scene {
       },
       active: () => {
         this.fontLoaded = true; // Mark the font as loaded
-        this.createText(); // Call function to create the text
+        // this.createText(); // Call function to create the text
       },
       inactive: () => {
         console.error('Font failed to load');
@@ -50,17 +54,17 @@ export class Stage1Scene extends Phaser.Scene {
       .setScale(0.15); // Adjust scale as needed
 
     if (this.fontLoaded) {
-        this.createText();
-      }
+      // this.createText();
+    }
     // TODO : add pathing to grid
-    
+
     // TODO : add map decorations
 
     this.input.on('pointerdown', pointer => {
 
       emitter.play(12, pointer.x, pointer.y);
 
-  });
+    });
   }
 
 }
