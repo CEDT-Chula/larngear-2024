@@ -1,18 +1,22 @@
 import Phaser from "phaser";
 import { TowerController } from "./TowerController";
+import { BaseEnemy } from "../enemies/BaseEnemy";
 
 export class MapGenerator {
   // ! background tile must use the name 'tile' in for this code to work
+  // ! path tile must use the name 'path' in for this code to work
   scene: Phaser.Scene;
   tileSize: number;
   scaleFactor: number;
   towerController: TowerController;
+  path: Phaser.Curves.Line[];
 
   constructor(scene: Phaser.Scene, tileSize: number, scaleFactor: number) {
     this.scene = scene;
     this.tileSize = tileSize;
     this.scaleFactor = scaleFactor;
     this.towerController = new TowerController(scene);
+    this.path = [];
   }
 
   // use to generate background tiles
@@ -63,43 +67,65 @@ export class MapGenerator {
   }
 
   // Define the path for the enemy to walk
-  definePath(): Phaser.Curves.Line[] {
-    const points: Phaser.Math.Vector2[] = [
-        new Phaser.Math.Vector2(0, 0),
-        new Phaser.Math.Vector2(5 * this.tileSize, 0),
-        new Phaser.Math.Vector2(5 * this.tileSize, 5 * this.tileSize),
-        new Phaser.Math.Vector2(0, 5 * this.tileSize),
-        new Phaser.Math.Vector2(0, 10 * this.tileSize),
-    ];
-
+  definePath(grid: any, points: Phaser.Math.Vector2[]): Phaser.Curves.Line[] {
     console.log("Path points:", points); // Debug log for path points
+
+    // Helper function to replace tiles with path tiles
+    const placePathTile = (x: number, y: number) => {
+      if (grid[y] && grid[y][x]) {
+        grid[y][x].destroy(); // Remove the background tile
+        grid[y][x] = this.scene.add
+          .sprite(x * this.tileSize, y * this.tileSize, "path") // Add the path tile
+          .setOrigin(0)
+          .setScale(this.scaleFactor);
+        grid[y][x].occupied = true; // Mark this tile as occupied
+      }
+    };
+
+    // Replace background tiles with path tiles based on the defined points
+    for (let i = 0; i < points.length - 1; i++) {
+      const startPoint = points[i];
+      const endPoint = points[i + 1];
+
+      // Calculate the distance between the points
+      const distance = Phaser.Math.Distance.Between(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+      const stepCount = Math.ceil(distance / this.tileSize);
+
+      // Interpolate between the start and end points
+      for (let step = 0; step <= stepCount; step++) {
+        const t = step / stepCount;
+        const x = Phaser.Math.Interpolation.Linear([startPoint.x, endPoint.x], t);
+        const y = Phaser.Math.Interpolation.Linear([startPoint.y, endPoint.y], t);
+
+        const tileX = Math.floor(x / this.tileSize);
+        const tileY = Math.floor(y / this.tileSize);
+
+        placePathTile(tileX, tileY);
+      }
+    }
 
     const lines: Phaser.Curves.Line[] = [];
     for (let i = 0; i < points.length - 1; i++) {
-        lines.push(new Phaser.Curves.Line(points[i], points[i + 1]));
+      lines.push(new Phaser.Curves.Line(points[i], points[i + 1]));
     }
 
+    this.path = lines;
+
     return lines;
-}
+  }
 
   // Create an enemy and set its initial position
-  createEnemy(): Phaser.GameObjects.Sprite {
-    const enemy = this.scene.add
-      .sprite(1, 1, "tower")
-      .setOrigin(0)
-      .setScale(this.scaleFactor);
-    this.moveEnemy(enemy, this.definePath());
+  createEnemy(enemy: BaseEnemy): Phaser.GameObjects.Sprite {
     return enemy;
   }
 
   // Move the enemy along the defined path
   moveEnemy(
-    enemy: Phaser.GameObjects.Sprite,
-    path: Phaser.Curves.Line[]
+    enemy: BaseEnemy,
   ) {
-    const speed = 500; // Define a constant speed (units per second)
+    const speed = enemy.speed; // Define a constant speed (units per second)
 
-    const tweens = path.map((line, index) => {
+    const tweens = this.path.map((line, index) => {
       const startPoint = line.getStartPoint();
       const endPoint = line.getEndPoint();
       const distance = Phaser.Math.Distance.Between(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
@@ -114,13 +140,19 @@ export class MapGenerator {
         delay: 0,
         onComplete: () => {
           console.log(`Enemy moved to (${endPoint.x}, ${endPoint.y})`); // Debug log for movement
-          if (index < path.length - 1) {
+
+          if (index >= this.path.length - 1) {
+            enemy.arrived(); // reach the end of the road
+          }
+
+          if (index < this.path.length - 1) {
             this.scene.tweens.add(tweens[index + 1]);
           }
         }
       };
     });
 
-  // Start the first tween
-  this.scene.tweens.add(tweens[0]);
-}}
+    // Start the first tween
+    this.scene.tweens.add(tweens[0]);
+  }
+}

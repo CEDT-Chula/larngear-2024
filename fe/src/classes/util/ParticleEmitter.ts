@@ -12,7 +12,7 @@ export class ParticleEmitter {
             scale: { start: 1, end: 0 },
             gravityY: 10,
             emitting: false
-        });
+        }).setDepth(200);
     }
 
     play(amount: number, x: number, y: number) {

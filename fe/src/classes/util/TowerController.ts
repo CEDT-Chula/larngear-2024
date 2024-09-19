@@ -4,23 +4,19 @@ export class TowerController {
   currency: number;
   towerPrices: number;
   sellingPrices: number[];
-  coinImage: Phaser.GameObjects.Sprite;
   scene: any;
   moneyText: any;
   lastClickTime: number;
   clickThreshold: number;
+
+  towerPool:string[];
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
     this.currency = 500; // Initialize player currency (for example)
     this.towerPrices = 100;
     this.sellingPrices = [80, 160, 240, 320, 400]; // Selling prices for towers Lv1 to Lv5
-
-    // Add the coin image
-    this.coinImage = this.scene.add
-      .sprite(16, 16, "coin") // Ensure 'coin' is loaded in preload
-      .setOrigin(0, 0)
-      .setScale(0.5); // Adjust scale as needed
+    this.towerPool = ["browser"];
 
     document.fonts.ready.then(() => {
       this.moneyText = this.scene.add
@@ -46,9 +42,9 @@ export class TowerController {
     this.currency -= this.towerPrices;
     this.updateMoneyDisplay(); // Update the money display
 
-    let randomTowerIndex = Math.floor(Math.random() * 5);
+    let randomTowerIndex = Math.floor(Math.random() * this.towerPool.length);
     let randomTower =
-      "tower" + (randomTowerIndex === 0 ? "" : randomTowerIndex);
+      this.towerPool[randomTowerIndex] + "_lv1";
 
     this.scene.add
       .sprite(

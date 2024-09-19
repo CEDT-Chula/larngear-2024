@@ -10,7 +10,7 @@ export interface LevelData {
 }
 
 // Base class for all towers
-export class BaseTower {
+export class BaseTower extends Phaser.GameObjects.Sprite {
     range: number;
     attack: number;
     currentLevel: number;
@@ -21,7 +21,8 @@ export class BaseTower {
     reloadTime: number;
     targetCount: number;
 
-    constructor(range: number, attack: number, reloadTime: number, targetCount: number, maxLvl: number) {
+    constructor(scene: Phaser.Scene, range: number, attack: number, reloadTime: number, targetCount: number, maxLvl: number) {
+        super(scene, 0, 0, "")
         this.range = range;
         this.attack = attack;
         this.reloadTime = reloadTime;
@@ -31,6 +32,7 @@ export class BaseTower {
         this.skill = new TowerSkill(0);
         this.passive = new TowerPassive();
         this.levelData = this.initializeLevelData();  // Set level data
+        this.setTexture(this.levelData[0].sprite);
     }
 
     // Abstract method to be overridden in derived classes
