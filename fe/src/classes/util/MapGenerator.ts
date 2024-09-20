@@ -120,39 +120,45 @@ export class MapGenerator {
   }
 
   // Move the enemy along the defined path
-  moveEnemy(
-    enemy: BaseEnemy,
-  ) {
-    const speed = enemy.speed; // Define a constant speed (units per second)
-
+  moveEnemy(enemy: BaseEnemy) {
+    const baseSpeed = enemy.speed; // Define a constant base speed (units per second)
+  
+    // Stop any existing tweens for this enemy
+    if (enemy.currentTween) {
+        enemy.currentTween.stop();
+    }
+  
     const tweens = this.path.map((line, index) => {
-      const startPoint = line.getStartPoint();
-      const endPoint = line.getEndPoint();
-      const distance = Phaser.Math.Distance.Between(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
-      const duration = (distance / speed) * 1000; // Convert to milliseconds
+        const startPoint = line.getStartPoint();
+        const endPoint = line.getEndPoint();
+        const distance = Phaser.Math.Distance.Between(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+        
+        // Adjust speed according to the current time scale
+        const adjustedSpeed = baseSpeed * this.scene.time.timeScale; 
+  
+        const duration = (distance / adjustedSpeed) * 1000; // Convert to milliseconds
 
-      return {
-        targets: enemy,
-        x: endPoint.x,
-        y: endPoint.y,
-        duration: duration,
-        ease: "Linear",
-        delay: 0,
-        onComplete: () => {
-          console.log(`Enemy moved to (${endPoint.x}, ${endPoint.y})`); // Debug log for movement
+        return {
+            targets: enemy,
+            x: endPoint.x,
+            y: endPoint.y,
+            duration: duration,
+            onComplete: () => {
+                if (index >= this.path.length - 1) {
+                    enemy.arrived(); // Reach the end of the road
+                }
 
-          if (index >= this.path.length - 1) {
-            enemy.arrived(); // reach the end of the road
-          }
-
-          if (index < this.path.length - 1) {
-            this.scene.tweens.add(tweens[index + 1]);
-          }
-        }
-      };
+                if (index < this.path.length - 1) {
+                    enemy.currentTween = this.scene.tweens.add(tweens[index + 1]);
+                }
+            }
+        };
     });
 
-    // Start the first tween
-    this.scene.tweens.add(tweens[0]);
-  }
+    // Start the first tween and update currentTween
+    enemy.currentTween = this.scene.tweens.add(tweens[0]);
+}
+
+
+  
 }

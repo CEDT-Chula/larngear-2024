@@ -6,6 +6,7 @@ export interface LevelData {
     attack: number;
     reloadTime: number; // how fast it can shoot
     targetCount: number; // how many target it can shoot at once
+    
     sprite: string;
 }
 
