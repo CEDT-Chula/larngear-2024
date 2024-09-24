@@ -104,45 +104,56 @@ export class Stage1Scene extends Phaser.Scene {
 
   toggleSpeed() {
     this.speed = this.speed === 1 ? 2 : 1;
-    this.time.timeScale = this.speed; // Adjust the global time scale
+    this.time.timeScale = this.speed; 
     this.speedText.setText(`x${this.speed}`);
-    this.updateEnemySpeeds(); // Update enemies' speeds
+    this.updateEnemySpeeds(); 
   }
   
-
   updateEnemySpeeds() {
     this.enemies.forEach((enemy) => {
       if (enemy.currentTween) {
-        // Calculate how far the enemy has moved already
-        const currentX = enemy.x;
-        const currentY = enemy.y;
-        const nextX = enemy.currentTween.data[0].x;
-        const nextY = enemy.currentTween.data[0].y;
+        const nextTarget = this.mapGen.getNextTarget(enemy);
   
-        // Calculate the remaining distance to the next point
-        const remainingDistance = Phaser.Math.Distance.Between(currentX, currentY, nextX, nextY);
+        if (nextTarget) {
+          const currentX = enemy.x;
+          const currentY = enemy.y;
+          const nextX = nextTarget.x;
+          const nextY = nextTarget.y;
   
-        // Calculate the new duration based on the remaining distance and the new speed
-        const newDuration = (remainingDistance / (enemy.speed * this.speed)) * 1000; // Adjust by speed
+          const remainingDistance = Phaser.Math.Distance.Between(currentX, currentY, nextX, nextY);
+          const newDuration = (remainingDistance / (enemy.speed * this.speed)) * 1000;
   
-        // Stop the current tween at the enemy's current position
-        enemy.currentTween.stop();
+          enemy.currentTween.pause(); 
   
-        // Create a new tween to continue moving the enemy to the next point with the updated speed
-        enemy.currentTween = this.tweens.add({
-          targets: enemy,
-          x: nextX,
-          y: nextY,
-          duration: newDuration, // Adjusted duration based on speed
-          ease: 'Linear',
-          onComplete: () => {
-            // Move to the next point after completing this tween
-            this.mapGen.moveEnemy(enemy); // Use this.mapGen to call moveEnemy
-          },
-        });
+ 
+          enemy.currentTween = this.tweens.add({
+            targets: enemy,
+            x: nextX,
+            y: nextY,
+            duration: newDuration,
+            ease: 'Linear',
+            onComplete: () => {
+              enemy.currentPointIndex++; 
+              if (enemy.currentPointIndex < this.mapGen.path.length) {
+                this.updateEnemySpeeds();
+              } else {
+                enemy.arrived(); 
+              }
+            },
+          });
+        } else {
+          console.warn("No valid target found for enemy:", enemy);
+        }
       }
     });
   }
+  
+  
+  
+  
+  
+  
+
   
 
   updateTimer() {

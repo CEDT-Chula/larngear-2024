@@ -88,14 +88,25 @@ export class MapGenerator {
       const endPoint = points[i + 1];
 
       // Calculate the distance between the points
-      const distance = Phaser.Math.Distance.Between(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+      const distance = Phaser.Math.Distance.Between(
+        startPoint.x,
+        startPoint.y,
+        endPoint.x,
+        endPoint.y
+      );
       const stepCount = Math.ceil(distance / this.tileSize);
 
       // Interpolate between the start and end points
       for (let step = 0; step <= stepCount; step++) {
         const t = step / stepCount;
-        const x = Phaser.Math.Interpolation.Linear([startPoint.x, endPoint.x], t);
-        const y = Phaser.Math.Interpolation.Linear([startPoint.y, endPoint.y], t);
+        const x = Phaser.Math.Interpolation.Linear(
+          [startPoint.x, endPoint.x],
+          t
+        );
+        const y = Phaser.Math.Interpolation.Linear(
+          [startPoint.y, endPoint.y],
+          t
+        );
 
         const tileX = Math.floor(x / this.tileSize);
         const tileY = Math.floor(y / this.tileSize);
@@ -121,44 +132,51 @@ export class MapGenerator {
 
   // Move the enemy along the defined path
   moveEnemy(enemy: BaseEnemy) {
-    const baseSpeed = enemy.speed; // Define a constant base speed (units per second)
-  
-    // Stop any existing tweens for this enemy
+    const baseSpeed = enemy.speed;
     if (enemy.currentTween) {
-        enemy.currentTween.stop();
+      enemy.currentTween.stop();
     }
-  
+
     const tweens = this.path.map((line, index) => {
-        const startPoint = line.getStartPoint();
-        const endPoint = line.getEndPoint();
-        const distance = Phaser.Math.Distance.Between(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
-        
-        // Adjust speed according to the current time scale
-        const adjustedSpeed = baseSpeed * this.scene.time.timeScale; 
-  
-        const duration = (distance / adjustedSpeed) * 1000; // Convert to milliseconds
+      const startPoint = line.getStartPoint();
+      const endPoint = line.getEndPoint();
+      const distance = Phaser.Math.Distance.Between(
+        startPoint.x,
+        startPoint.y,
+        endPoint.x,
+        endPoint.y
+      );
 
-        return {
-            targets: enemy,
-            x: endPoint.x,
-            y: endPoint.y,
-            duration: duration,
-            onComplete: () => {
-                if (index >= this.path.length - 1) {
-                    enemy.arrived(); // Reach the end of the road
-                }
+      const adjustedSpeed = baseSpeed * this.scene.time.timeScale;
 
-                if (index < this.path.length - 1) {
-                    enemy.currentTween = this.scene.tweens.add(tweens[index + 1]);
-                }
-            }
-        };
+      const duration = (distance / adjustedSpeed) * 1000; // Convert to milliseconds
+
+      return {
+        targets: enemy,
+        x: endPoint.x,
+        y: endPoint.y,
+        duration: duration,
+        onComplete: () => {
+          if (index >= this.path.length - 1) {
+            enemy.arrived(); // Reached the end of the road
+          }
+
+          if (index < this.path.length - 1) {
+            enemy.currentTween = this.scene.tweens.add(tweens[index + 1]);
+          }
+        },
+      };
     });
 
-    // Start the first tween and update currentTween
     enemy.currentTween = this.scene.tweens.add(tweens[0]);
-}
+  }
 
-
-  
+  getNextTarget(enemy: BaseEnemy): { x: number; y: number } | null {
+    const path = this.path[enemy.currentPointIndex];
+    if (path) {
+      const endPoint = path.getEndPoint();
+      return { x: endPoint.x, y: endPoint.y };
+    }
+    return null;
+  }
 }

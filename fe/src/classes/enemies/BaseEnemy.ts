@@ -5,6 +5,7 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
   attack: number;
   sprite: string;
   currentTween?: Phaser.Tweens.Tween;
+  currentPointIndex: number; 
 
   constructor(
     scene: Phaser.Scene,
@@ -20,17 +21,14 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
     this.attack = attack;
     this.sprite = sprite;
     this.setTexture(sprite);
-
+    
     this.setOrigin(0);
     this.setScale(4);
-
+    
     this.scene.add.existing(this);
+    this.currentTween = undefined;
+    this.currentPointIndex = 0; // Initialize the index
   }
-
-  // update(time: number, delta: number) {
-  //   const adjustedSpeed = this.speed * this.scene.time.timeScale;
-  //   this.x += (adjustedSpeed * delta) / 1000;
-  // }
 
   takeDamage(dmg: number) {
     this.currentHealth -= dmg;
@@ -41,12 +39,7 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
     }
   }
 
-  
-
-  // call when enemy reach the end of the road
   arrived() {
-    // TODO: decrease Player's base hp by attack
-
     console.log(this.sprite, " reached the end!");
     this.destroy(true);
   }
