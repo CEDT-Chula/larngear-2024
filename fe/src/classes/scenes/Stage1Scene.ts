@@ -3,6 +3,7 @@ import { MapGenerator } from "../util/MapGenerator";
 import { AssetLoader } from "../util/AssetLoader";
 import { ParticleEmitter } from "../util/ParticleEmitter";
 import { IceCreamEnemy } from "../enemies/IceCreamEnemy";
+import { WaveController } from "../util/WaveController";
 
 export class Stage1Scene extends Phaser.Scene {
 
@@ -49,7 +50,8 @@ export class Stage1Scene extends Phaser.Scene {
 
   create() {
     const mapGen = new MapGenerator(this, 64, 4);
-    const grid = mapGen.generate(20, 15);
+    const grid = mapGen.generate(20, 17);
+    const wave = new WaveController(30, mapGen);
     const emitter = new ParticleEmitter(this, "tower4")
 
     // Add coin image to the left side of the screen
@@ -59,19 +61,30 @@ export class Stage1Scene extends Phaser.Scene {
       .setDepth(100);
 
     const points: Phaser.Math.Vector2[] = [
-      new Phaser.Math.Vector2(0, 0),
-      new Phaser.Math.Vector2(5 * mapGen.tileSize, 0),
-      new Phaser.Math.Vector2(5 * mapGen.tileSize, 5 * mapGen.tileSize),
-      new Phaser.Math.Vector2(0, 5 * mapGen.tileSize),
-      new Phaser.Math.Vector2(0, 10 * mapGen.tileSize),
+      new Phaser.Math.Vector2(2, 3), // Starting Point
+      new Phaser.Math.Vector2(2, 7),
+      new Phaser.Math.Vector2(17, 7),
+      new Phaser.Math.Vector2(17, 3),
+      new Phaser.Math.Vector2(11, 3),
+      new Phaser.Math.Vector2(11, 14),
+      new Phaser.Math.Vector2(17, 14),
+      new Phaser.Math.Vector2(17, 10),
+      new Phaser.Math.Vector2(2, 10),
+      new Phaser.Math.Vector2(2, 14),
+      new Phaser.Math.Vector2(8, 14),
+      new Phaser.Math.Vector2(8, 3),
+      new Phaser.Math.Vector2(6, 3),
     ];
 
     const definePath = mapGen.definePath(grid, points);
     console.log("Defined Path:", definePath);
-    const enemy = new IceCreamEnemy(this);
-    const createEnemies = mapGen.createEnemy(enemy);
-    console.log("Created Enemy:", createEnemies);
-    mapGen.moveEnemy(enemy);
+    const enemies = [
+      new IceCreamEnemy(this),
+      new IceCreamEnemy(this),
+      new IceCreamEnemy(this),
+    ];
+
+    wave.releaseWave(enemies, 200);
 
     // TODO : add map decorations
 
@@ -82,4 +95,7 @@ export class Stage1Scene extends Phaser.Scene {
     });
   }
 
+  update() {
+
+  }
 }

@@ -82,10 +82,23 @@ export class MapGenerator {
       }
     };
 
+    const lines: Phaser.Curves.Line[] = [];
+
+    // Convert the points by multiplying them with this.tileSize inside the function
+    const scaledPoints = points.map(point => 
+      new Phaser.Math.Vector2(point.x * this.tileSize, point.y * this.tileSize)
+    );
+    
+    // Handle starting point tile
+    const startPoint = scaledPoints[0];
+    placePathTile(Math.floor(startPoint.x / this.tileSize), Math.floor(startPoint.y / this.tileSize));
+
+    lines.push(new Phaser.Curves.Line(scaledPoints[0], scaledPoints[0]))
+
     // Replace background tiles with path tiles based on the defined points
-    for (let i = 0; i < points.length - 1; i++) {
-      const startPoint = points[i];
-      const endPoint = points[i + 1];
+    for (let i = 0; i < scaledPoints.length - 1; i++) {
+      const startPoint = scaledPoints[i];
+      const endPoint = scaledPoints[i + 1];
 
       // Calculate the distance between the points
       const distance = Phaser.Math.Distance.Between(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
@@ -104,15 +117,15 @@ export class MapGenerator {
       }
     }
 
-    const lines: Phaser.Curves.Line[] = [];
-    for (let i = 0; i < points.length - 1; i++) {
-      lines.push(new Phaser.Curves.Line(points[i], points[i + 1]));
+    for (let i = 0; i < scaledPoints.length - 1; i++) {
+      lines.push(new Phaser.Curves.Line(scaledPoints[i], scaledPoints[i + 1]));
     }
 
     this.path = lines;
 
     return lines;
   }
+
 
   // Create an enemy and set its initial position
   createEnemy(enemy: BaseEnemy): Phaser.GameObjects.Sprite {

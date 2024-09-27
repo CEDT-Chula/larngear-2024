@@ -7,7 +7,7 @@ const Stage1: React.FC = () => {
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
       width: 1280, // Fixed width
-      height: 960, // Fixed height
+      height: 1088, // Fixed height
       pixelArt: true,
       scale: {
         mode: Phaser.Scale.FIT,
