@@ -29,30 +29,29 @@ export class Stage1Scene extends Phaser.Scene {
 
     assetLoader.preloadEnemies();
 
-    this.loadFont();
+    // this.loadFont();
   }
 
-  loadFont() {
-    WebFont.load({
-      custom: {
-        families: ['PressStart2P'],  // Replace with your font name
-        urls: ['src/index.css']   // The CSS file for your custom font
-      },
-      active: () => {
-        this.fontLoaded = true; // Mark the font as loaded
-        // this.createText(); // Call function to create the text
-      },
-      inactive: () => {
-        console.error('Font failed to load');
-      }
-    });
-  }
+  // loadFont() {
+  //   WebFont.load({
+  //     custom: {
+  //       families: ['PressStart2P'],  // Replace with your font name
+  //       urls: ['src/index.css']   // The CSS file for your custom font
+  //     },
+  //     active: () => {
+  //       this.fontLoaded = true; // Mark the font as loaded
+  //       // this.createText(); // Call function to create the text
+  //     },
+  //     inactive: () => {
+  //       console.error('Font failed to load');
+  //     }
+  //   });
+  // }
 
   create() {
     const mapGen = new MapGenerator(this, 64, 4);
     const wave = new WaveController(this, 30, mapGen);
     const grid = mapGen.generate(20, 17);
-    const tweenManager = this.sys.pa
     const emitter = new ParticleEmitter(this, "tower4")
 
     // Add coin image to the left side of the screen
@@ -100,12 +99,10 @@ export class Stage1Scene extends Phaser.Scene {
 
   handleVisibilityChange() {
     if (document.hidden) {
-      // Tab is not visible, pause the game
-      console.log("Tab is hidden, pausing game...");
+      // console.log("Tab is hidden, pausing game...");
       this.scene.pause();
     } else {
-      // Tab is visible again, resume the game
-      console.log("Tab is visible, resuming game...");
+      // console.log("Tab is visible, resuming game...");
       this.scene.resume();
     }
   }

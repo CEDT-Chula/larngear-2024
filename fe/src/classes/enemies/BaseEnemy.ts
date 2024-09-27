@@ -1,3 +1,5 @@
+import { Events } from "phaser";
+
 export class BaseEnemy extends Phaser.GameObjects.Sprite {
     currentHealth: number;
     maxHealth: number;
@@ -18,6 +20,7 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
         this.setScale(4);
 
         this.scene.add.existing(this);
+        Events.EventEmitter.call(this);
     }
 
     takeDamage(dmg: number) {
@@ -30,14 +33,15 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
     }
 
     // call when enemy reach the end of the road
-    arrived() {
+    onArrived() {
         // TODO: decrease Player's base hp by attack
 
         console.log(this.sprite, " reached the end!");
+        this.emit('onArrived');
         this.destroy(true);
     }
 
     onDeath() {
-
+        this.emit('onDeath');
     }
 }

@@ -155,7 +155,7 @@ export class MapGenerator {
 
         // If we’ve reached the last segment, end the movement
         if (currentSegment >= this.path.length) {
-          enemy.arrived(); // Call when the enemy has reached the final destination
+          enemy.onArrived(); // Call when the enemy has reached the final destination
           return;
         }
       } else {

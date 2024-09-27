@@ -9,7 +9,7 @@ export class TowerController {
   lastClickTime: number;
   clickThreshold: number;
 
-  towerPool:string[];
+  towerPool: string[];
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -21,12 +21,12 @@ export class TowerController {
     document.fonts.ready.then(() => {
       this.moneyText = this.scene.add
         .text(68, 24, `${this.currency}`, {
-          font: '20px "PressStart2P"',
+          fontFamily: 'PressStart2P',
+          fontSize: '20px',
           fill: "#ffd700", // Gold color
         })
         .setDepth(1); // Ensure the text is on top of other game elements
     });
-    // Create the money display text
 
     this.lastClickTime = 0;
     this.clickThreshold = 300; // Time threshold in milliseconds for double-click
