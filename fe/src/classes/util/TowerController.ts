@@ -20,9 +20,9 @@ export class TowerController {
 
     document.fonts.ready.then(() => {
       this.moneyText = this.scene.add
-        .text(68, 24, `${this.currency}`, {
+        .text(68, 20, `${this.currency}`, {
           fontFamily: 'PressStart2P',
-          fontSize: '20px',
+          fontSize: '30px',
           fill: "#ffd700", // Gold color
         })
         .setDepth(1); // Ensure the text is on top of other game elements

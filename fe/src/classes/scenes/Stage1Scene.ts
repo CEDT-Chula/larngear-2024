@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import WebFont from 'webfontloader';
 import { MapGenerator } from "../util/MapGenerator";
 import { AssetLoader } from "../util/AssetLoader";
 import { ParticleEmitter } from "../util/ParticleEmitter";
@@ -29,24 +30,24 @@ export class Stage1Scene extends Phaser.Scene {
 
     assetLoader.preloadEnemies();
 
-    // this.loadFont();
+    this.loadFont();
   }
 
-  // loadFont() {
-  //   WebFont.load({
-  //     custom: {
-  //       families: ['PressStart2P'],  // Replace with your font name
-  //       urls: ['src/index.css']   // The CSS file for your custom font
-  //     },
-  //     active: () => {
-  //       this.fontLoaded = true; // Mark the font as loaded
-  //       // this.createText(); // Call function to create the text
-  //     },
-  //     inactive: () => {
-  //       console.error('Font failed to load');
-  //     }
-  //   });
-  // }
+  loadFont() {
+    WebFont.load({
+      custom: {
+        families: ['PressStart2P'],  // Replace with your font name
+        urls: ['src/index.css']   // The CSS file for your custom font
+      },
+      active: () => {
+        this.fontLoaded = true; // Mark the font as loaded
+        // this.createText(); // Call function to create the text
+      },
+      inactive: () => {
+        console.error('Font failed to load');
+      }
+    });
+  }
 
   create() {
     const mapGen = new MapGenerator(this, 64, 4);
@@ -61,19 +62,19 @@ export class Stage1Scene extends Phaser.Scene {
       .setDepth(100);
 
     const points: Phaser.Math.Vector2[] = [
-      new Phaser.Math.Vector2(2, 3), // Starting Point
-      new Phaser.Math.Vector2(2, 7),
-      new Phaser.Math.Vector2(17, 7),
-      new Phaser.Math.Vector2(17, 3),
-      new Phaser.Math.Vector2(11, 3),
-      new Phaser.Math.Vector2(11, 14),
-      new Phaser.Math.Vector2(17, 14),
-      new Phaser.Math.Vector2(17, 10),
-      new Phaser.Math.Vector2(2, 10),
-      new Phaser.Math.Vector2(2, 14),
-      new Phaser.Math.Vector2(8, 14),
-      new Phaser.Math.Vector2(8, 3),
-      new Phaser.Math.Vector2(6, 3),
+      new Phaser.Math.Vector2(2, 4), // Starting Point
+      new Phaser.Math.Vector2(2, 8),
+      new Phaser.Math.Vector2(17, 8),
+      new Phaser.Math.Vector2(17, 4),
+      new Phaser.Math.Vector2(11, 4),
+      new Phaser.Math.Vector2(11, 15),
+      new Phaser.Math.Vector2(17, 15),
+      new Phaser.Math.Vector2(17, 11),
+      new Phaser.Math.Vector2(2, 11),
+      new Phaser.Math.Vector2(2, 15),
+      new Phaser.Math.Vector2(8, 15),
+      new Phaser.Math.Vector2(8, 4),
+      new Phaser.Math.Vector2(6, 4),
     ];
 
     const definePath = mapGen.definePath(grid, points);

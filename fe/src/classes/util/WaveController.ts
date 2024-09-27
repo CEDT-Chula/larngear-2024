@@ -8,13 +8,26 @@ export class WaveController {
     mapGen: MapGenerator;
     activeEnemies: BaseEnemy[];
 
+    waveText: any;
+
     constructor(scene: Phaser.Scene, maxWave: number, mapGen: MapGenerator) {
         this.scene = scene;
         this.currentWave = 1;
         this.maxWave = maxWave;
         this.mapGen = mapGen;
         this.activeEnemies = [];
+
+        document.fonts.ready.then(() => {
+            this.waveText = this.scene.add
+                .text(900, 24, `${'Wave ' + this.currentWave + '/' + this.maxWave}`, {
+                    fontFamily: 'PressStart2P',
+                    fontSize: '30px',
+                })
+                .setDepth(1); // Ensure the text is on top of other game elements
+        });
     }
+
+
 
     releaseWave(enemyList: BaseEnemy[], delay: number) {
         enemyList.forEach((enemy, index) => {
@@ -57,6 +70,8 @@ export class WaveController {
     }
 
     triggerNextWave() {
-        
+
     }
+
+    // TODO : Handle Game Win
 }
