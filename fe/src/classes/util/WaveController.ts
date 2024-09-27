@@ -2,11 +2,13 @@ import { BaseEnemy } from "../enemies/BaseEnemy";
 import { MapGenerator } from "./MapGenerator";
 
 export class WaveController {
+    scene: Phaser.Scene;
     currentWave: number;
     maxWave: number;
     mapGen: MapGenerator;
 
-    constructor(maxWave: number, mapGen: MapGenerator) {
+    constructor(scene:Phaser.Scene, maxWave: number, mapGen: MapGenerator) {
+        this.scene = scene;
         this.currentWave = 1;
         this.maxWave = maxWave;
         this.mapGen = mapGen;

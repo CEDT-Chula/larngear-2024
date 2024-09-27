@@ -50,8 +50,9 @@ export class Stage1Scene extends Phaser.Scene {
 
   create() {
     const mapGen = new MapGenerator(this, 64, 4);
+    const wave = new WaveController(this, 30, mapGen);
     const grid = mapGen.generate(20, 17);
-    const wave = new WaveController(30, mapGen);
+    const tweenManager = this.sys.pa
     const emitter = new ParticleEmitter(this, "tower4")
 
     // Add coin image to the left side of the screen
@@ -93,6 +94,25 @@ export class Stage1Scene extends Phaser.Scene {
       emitter.play(12, pointer.x, pointer.y);
 
     });
+
+    document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
+  }
+
+  handleVisibilityChange() {
+    if (document.hidden) {
+      // Tab is not visible, pause the game
+      console.log("Tab is hidden, pausing game...");
+      this.scene.pause();
+    } else {
+      // Tab is visible again, resume the game
+      console.log("Tab is visible, resuming game...");
+      this.scene.resume();
+    }
+  }
+
+  // Clean up event listener when scene is destroyed
+  shutdown() {
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
   }
 
   update() {
