@@ -5,6 +5,7 @@ export class TowerController {
   towerPrices: number;
   sellingPrices: number[];
   scene: any;
+  coinImage!: Phaser.GameObjects.Sprite;
   moneyText: any;
   lastClickTime: number;
   clickThreshold: number;
@@ -18,15 +19,19 @@ export class TowerController {
     this.sellingPrices = [80, 160, 240, 320, 400]; // Selling prices for towers Lv1 to Lv5
     this.towerPool = ["browser"];
 
-    document.fonts.ready.then(() => {
-      this.moneyText = this.scene.add
-        .text(68, 20, `${this.currency}`, {
-          fontFamily: 'PressStart2P',
-          fontSize: '30px',
-          fill: "#ffd700", // Gold color
-        })
-        .setDepth(1); // Ensure the text is on top of other game elements
-    });
+    // Add coin image to the left side of the screen
+    this.coinImage = this.scene.add.sprite(10, 14, 'coin')
+      .setOrigin(0, 0) // Set origin to the top-left corner
+      .setScale(0.15)
+      .setDepth(1);
+
+    this.moneyText = this.scene.add
+      .text(68, 20, `${this.currency}`, {
+        fontFamily: 'PressStart2P',
+        fontSize: '30px',
+        fill: "#ffd700", // Gold color
+      })
+      .setDepth(1); // Ensure the text is on top of other game elements
 
     this.lastClickTime = 0;
     this.clickThreshold = 300; // Time threshold in milliseconds for double-click

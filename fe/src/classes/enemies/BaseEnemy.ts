@@ -14,12 +14,11 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
         this.speed = speed;
         this.attack = attack;
         this.sprite = sprite;
+        
         this.setTexture(sprite);
-
         this.setOrigin(0);
         this.setScale(4);
 
-        this.scene.add.existing(this);
         Events.EventEmitter.call(this);
     }
 

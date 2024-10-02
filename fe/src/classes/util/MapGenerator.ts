@@ -126,10 +126,10 @@ export class MapGenerator {
     return lines;
   }
 
-
-  // Create an enemy and set its initial position
-  createEnemy(enemy: BaseEnemy): Phaser.GameObjects.Sprite {
-    return enemy;
+  createEnemy(enemy: BaseEnemy) {
+    const startPoint = this.path[0].getStartPoint();
+    enemy.setPosition(startPoint.x, startPoint.y);
+    this.scene.add.existing(enemy);
   }
 
   moveEnemy(enemy: BaseEnemy) {
@@ -139,6 +139,7 @@ export class MapGenerator {
 
     this.scene.events.on('update', (time: number, delta: number) => {
       if (currentSegment >= this.path.length) return;
+
 
       const startPoint = this.path[currentSegment].getStartPoint();
       const endPoint = this.path[currentSegment].getEndPoint();

@@ -7,8 +7,6 @@ import { IceCreamEnemy } from "../enemies/IceCreamEnemy";
 import { WaveController } from "../util/WaveController";
 
 export class Stage1Scene extends Phaser.Scene {
-
-  coinImage!: Phaser.GameObjects.Sprite;
   fontLoaded: boolean = false;
 
   constructor() {
@@ -55,12 +53,6 @@ export class Stage1Scene extends Phaser.Scene {
     const grid = mapGen.generate(20, 17);
     const emitter = new ParticleEmitter(this, "tower4")
 
-    // Add coin image to the left side of the screen
-    this.coinImage = this.add.sprite(10, 14, 'coin')
-      .setOrigin(0, 0) // Set origin to the top-left corner
-      .setScale(0.15)
-      .setDepth(100);
-
     const points: Phaser.Math.Vector2[] = [
       new Phaser.Math.Vector2(2, 4), // Starting Point
       new Phaser.Math.Vector2(2, 8),
@@ -94,23 +86,6 @@ export class Stage1Scene extends Phaser.Scene {
       emitter.play(12, pointer.x, pointer.y);
 
     });
-
-    document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
-  }
-
-  handleVisibilityChange() {
-    if (document.hidden) {
-      // console.log("Tab is hidden, pausing game...");
-      this.scene.pause();
-    } else {
-      // console.log("Tab is visible, resuming game...");
-      this.scene.resume();
-    }
-  }
-
-  // Clean up event listener when scene is destroyed
-  shutdown() {
-    document.removeEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
   }
 
   update() {
