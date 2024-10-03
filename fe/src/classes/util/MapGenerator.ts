@@ -19,7 +19,6 @@ export class MapGenerator {
     this.path = [];
   }
 
-  // use to generate background tiles
   generate(gridWidth: number, gridHeight: number) {
     let grid: any = [];
     for (let y = 0; y < gridHeight; y++) {
@@ -62,36 +61,41 @@ export class MapGenerator {
       }
     }
 
-    // Update last click time
     this.towerController.lastClickTime = currentTime;
   }
 
-  // Define the path for the enemy to walk
   definePath(grid: any, points: Phaser.Math.Vector2[]): Phaser.Curves.Line[] {
-    console.log("Path points:", points); // Debug log for path points
+    console.log("Path points:", points);
 
-    // Helper function to replace tiles with path tiles
     const placePathTile = (x: number, y: number) => {
       if (grid[y] && grid[y][x]) {
-        grid[y][x].destroy(); // Remove the background tile
+        grid[y][x].destroy();
         grid[y][x] = this.scene.add
-          .sprite(x * this.tileSize, y * this.tileSize, "path") // Add the path tile
+          .sprite(x * this.tileSize, y * this.tileSize, "path")
           .setOrigin(0)
           .setScale(this.scaleFactor);
-        grid[y][x].occupied = true; // Mark this tile as occupied
+        grid[y][x].occupied = true;
       }
     };
 
-    // Replace background tiles with path tiles based on the defined points
-    for (let i = 0; i < points.length - 1; i++) {
-      const startPoint = points[i];
-      const endPoint = points[i + 1];
+    const lines: Phaser.Curves.Line[] = [];
 
-      // Calculate the distance between the points
+    const scaledPoints = points.map(point =>
+      new Phaser.Math.Vector2(point.x * this.tileSize, point.y * this.tileSize)
+    );
+
+    const startPoint = scaledPoints[0];
+    placePathTile(Math.floor(startPoint.x / this.tileSize), Math.floor(startPoint.y / this.tileSize));
+
+    lines.push(new Phaser.Curves.Line(scaledPoints[0], scaledPoints[0]))
+
+    for (let i = 0; i < scaledPoints.length - 1; i++) {
+      const startPoint = scaledPoints[i];
+      const endPoint = scaledPoints[i + 1];
+
       const distance = Phaser.Math.Distance.Between(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
       const stepCount = Math.ceil(distance / this.tileSize);
 
-      // Interpolate between the start and end points
       for (let step = 0; step <= stepCount; step++) {
         const t = step / stepCount;
         const x = Phaser.Math.Interpolation.Linear([startPoint.x, endPoint.x], t);
@@ -104,9 +108,8 @@ export class MapGenerator {
       }
     }
 
-    const lines: Phaser.Curves.Line[] = [];
-    for (let i = 0; i < points.length - 1; i++) {
-      lines.push(new Phaser.Curves.Line(points[i], points[i + 1]));
+    for (let i = 0; i < scaledPoints.length - 1; i++) {
+      lines.push(new Phaser.Curves.Line(scaledPoints[i], scaledPoints[i + 1]));
     }
 
     this.path = lines;
@@ -114,45 +117,47 @@ export class MapGenerator {
     return lines;
   }
 
-  // Create an enemy and set its initial position
-  createEnemy(enemy: BaseEnemy): Phaser.GameObjects.Sprite {
-    return enemy;
+  createEnemy(enemy: BaseEnemy) {
+    const startPoint = this.path[0].getStartPoint();
+    enemy.setPosition(startPoint.x, startPoint.y);
+    this.scene.add.existing(enemy);
   }
 
-  // Move the enemy along the defined path
-  moveEnemy(
-    enemy: BaseEnemy,
-  ) {
-    const speed = enemy.speed; // Define a constant speed (units per second)
+  moveEnemy(enemy: BaseEnemy) {
+    const speed = enemy.speed;
+    let currentSegment = 0;
+    let segmentProgress = 0;
 
-    const tweens = this.path.map((line, index) => {
-      const startPoint = line.getStartPoint();
-      const endPoint = line.getEndPoint();
-      const distance = Phaser.Math.Distance.Between(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
-      const duration = (distance / speed) * 1000; // Convert to milliseconds
+    this.scene.events.on('update', (time: number, delta: number) => {
+      if (currentSegment >= this.path.length) return;
 
-      return {
-        targets: enemy,
-        x: endPoint.x,
-        y: endPoint.y,
-        duration: duration,
-        ease: "Linear",
-        delay: 0,
-        onComplete: () => {
-          console.log(`Enemy moved to (${endPoint.x}, ${endPoint.y})`); // Debug log for movement
 
-          if (index >= this.path.length - 1) {
-            enemy.arrived(); // reach the end of the road
-          }
+      const startPoint = this.path[currentSegment].getStartPoint();
+      const endPoint = this.path[currentSegment].getEndPoint();
 
-          if (index < this.path.length - 1) {
-            this.scene.tweens.add(tweens[index + 1]);
-          }
+      const segmentDistance = Phaser.Math.Distance.Between(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+
+      const distanceToMove = (speed * delta) / 1000;
+
+      segmentProgress += distanceToMove;
+
+      if (segmentProgress >= segmentDistance) {
+        segmentProgress = 0;
+        currentSegment++;
+
+        if (currentSegment >= this.path.length) {
+          enemy.onArrived();
+          return;
         }
-      };
-    });
+      } else {
+        // Calculate the interpolation factor (between 0 and 1) based on the segment progress
+        const t = segmentProgress / segmentDistance;
 
-    // Start the first tween
-    this.scene.tweens.add(tweens[0]);
+        // Interpolate the enemy's position between the start and end points of the segment
+        enemy.x = Phaser.Math.Interpolation.Linear([startPoint.x, endPoint.x], t);
+        enemy.y = Phaser.Math.Interpolation.Linear([startPoint.y, endPoint.y], t);
+      }
+    });
   }
+
 }
