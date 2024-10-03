@@ -31,7 +31,6 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
         }
     }
 
-    // call when enemy reach the end of the road
     onArrived() {
         // TODO: decrease Player's base hp by attack
 

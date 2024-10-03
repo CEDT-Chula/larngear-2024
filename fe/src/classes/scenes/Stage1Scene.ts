@@ -34,12 +34,11 @@ export class Stage1Scene extends Phaser.Scene {
   loadFont() {
     WebFont.load({
       custom: {
-        families: ['PressStart2P'],  // Replace with your font name
-        urls: ['src/index.css']   // The CSS file for your custom font
+        families: ['PressStart2P'],
+        urls: ['src/index.css']
       },
       active: () => {
-        this.fontLoaded = true; // Mark the font as loaded
-        // this.createText(); // Call function to create the text
+        this.fontLoaded = true;
       },
       inactive: () => {
         console.error('Font failed to load');

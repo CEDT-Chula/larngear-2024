@@ -9,7 +9,6 @@ export interface LevelData {
     sprite: string;
 }
 
-// Base class for all towers
 export class BaseTower extends Phaser.GameObjects.Sprite {
     range: number;
     attack: number;
@@ -31,11 +30,10 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
         this.maxLevel = maxLvl;
         this.skill = new TowerSkill(0);
         this.passive = new TowerPassive();
-        this.levelData = this.initializeLevelData();  // Set level data
+        this.levelData = this.initializeLevelData();
         this.setTexture(this.levelData[0].sprite);
     }
 
-    // Abstract method to be overridden in derived classes
     initializeLevelData(): LevelData[] {
         throw new Error("initializeLevelData must be implemented in derived classes.");
     }
@@ -54,14 +52,13 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
     levelup() {
         if (this.currentLevel < this.maxLevel) {
             this.currentLevel++;
-            this.applyLevelData();  // Update properties based on level
+            this.applyLevelData();
             console.log(`Tower upgraded to level ${this.currentLevel}.`);
         } else {
             console.log("Tower is already at maximum level.");
         }
     }
 
-    // Upgrade with another tower
     upgradeTower(anotherTower: BaseTower) {
         if (anotherTower instanceof BaseTower && this.currentLevel < this.maxLevel) {
             this.levelup();

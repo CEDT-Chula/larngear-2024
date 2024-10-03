@@ -14,14 +14,14 @@ export class TowerController {
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
-    this.currency = 500; // Initialize player currency (for example)
+    this.currency = 500;
     this.towerPrices = 100;
     this.sellingPrices = [80, 160, 240, 320, 400]; // Selling prices for towers Lv1 to Lv5
     this.towerPool = ["browser"];
 
     // Add coin image to the left side of the screen
     this.coinImage = this.scene.add.sprite(10, 14, 'coin')
-      .setOrigin(0, 0) // Set origin to the top-left corner
+      .setOrigin(0, 0)
       .setScale(0.15)
       .setDepth(1);
 
@@ -31,7 +31,7 @@ export class TowerController {
         fontSize: '30px',
         fill: "#ffd700", // Gold color
       })
-      .setDepth(1); // Ensure the text is on top of other game elements
+      .setDepth(1);
 
     this.lastClickTime = 0;
     this.clickThreshold = 300; // Time threshold in milliseconds for double-click
@@ -60,7 +60,7 @@ export class TowerController {
       .setScale(scaleFactor);
 
     tile.occupied = true;
-    tile.towerLevel = randomTowerIndex + 1; // Track tower level
+    tile.towerLevel = randomTowerIndex + 1;
     console.log(`Tower placed at (${x}, ${y})`);
   }
 
@@ -70,12 +70,10 @@ export class TowerController {
       return;
     }
 
-    // Calculate selling price based on tower level
     let sellingPrice = this.sellingPrices[tile.towerLevel - 1];
     this.currency += sellingPrice;
-    this.updateMoneyDisplay(); // Update the money display
+    this.updateMoneyDisplay();
 
-    // Remove the tower sprite from the scene
     this.scene.children.getAll().forEach((child: any) => {
       if (
         child.x === x * tileSize + tileSize / 2 &&
@@ -86,11 +84,10 @@ export class TowerController {
     });
 
     tile.occupied = false;
-    tile.towerLevel = null; // Clear tower level
+    tile.towerLevel = null;
     console.log(`Tower sold at (${x}, ${y})`);
   }
 
-  // Function to update the displayed currency
   updateMoneyDisplay() {
     this.moneyText.setText(`${this.currency}`);
   }

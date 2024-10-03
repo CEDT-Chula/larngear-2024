@@ -19,7 +19,6 @@ export class MapGenerator {
     this.path = [];
   }
 
-  // use to generate background tiles
   generate(gridWidth: number, gridHeight: number) {
     let grid: any = [];
     for (let y = 0; y < gridHeight; y++) {
@@ -62,49 +61,41 @@ export class MapGenerator {
       }
     }
 
-    // Update last click time
     this.towerController.lastClickTime = currentTime;
   }
 
-  // Define the path for the enemy to walk
   definePath(grid: any, points: Phaser.Math.Vector2[]): Phaser.Curves.Line[] {
-    console.log("Path points:", points); // Debug log for path points
+    console.log("Path points:", points);
 
-    // Helper function to replace tiles with path tiles
     const placePathTile = (x: number, y: number) => {
       if (grid[y] && grid[y][x]) {
-        grid[y][x].destroy(); // Remove the background tile
+        grid[y][x].destroy();
         grid[y][x] = this.scene.add
-          .sprite(x * this.tileSize, y * this.tileSize, "path") // Add the path tile
+          .sprite(x * this.tileSize, y * this.tileSize, "path")
           .setOrigin(0)
           .setScale(this.scaleFactor);
-        grid[y][x].occupied = true; // Mark this tile as occupied
+        grid[y][x].occupied = true;
       }
     };
 
     const lines: Phaser.Curves.Line[] = [];
 
-    // Convert the points by multiplying them with this.tileSize inside the function
     const scaledPoints = points.map(point =>
       new Phaser.Math.Vector2(point.x * this.tileSize, point.y * this.tileSize)
     );
 
-    // Handle starting point tile
     const startPoint = scaledPoints[0];
     placePathTile(Math.floor(startPoint.x / this.tileSize), Math.floor(startPoint.y / this.tileSize));
 
     lines.push(new Phaser.Curves.Line(scaledPoints[0], scaledPoints[0]))
 
-    // Replace background tiles with path tiles based on the defined points
     for (let i = 0; i < scaledPoints.length - 1; i++) {
       const startPoint = scaledPoints[i];
       const endPoint = scaledPoints[i + 1];
 
-      // Calculate the distance between the points
       const distance = Phaser.Math.Distance.Between(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
       const stepCount = Math.ceil(distance / this.tileSize);
 
-      // Interpolate between the start and end points
       for (let step = 0; step <= stepCount; step++) {
         const t = step / stepCount;
         const x = Phaser.Math.Interpolation.Linear([startPoint.x, endPoint.x], t);
@@ -154,9 +145,8 @@ export class MapGenerator {
         segmentProgress = 0;
         currentSegment++;
 
-        // If we’ve reached the last segment, end the movement
         if (currentSegment >= this.path.length) {
-          enemy.onArrived(); // Call when the enemy has reached the final destination
+          enemy.onArrived();
           return;
         }
       } else {

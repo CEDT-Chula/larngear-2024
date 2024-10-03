@@ -2,6 +2,12 @@ import { BaseEnemy } from "../enemies/BaseEnemy";
 import { IceCreamEnemy } from "../enemies/IceCreamEnemy";
 import { MapGenerator } from "./MapGenerator";
 
+export interface Choice {
+    enemy: new (scene: Phaser.Scene) => BaseEnemy;
+    title: string;
+    description: string;
+}
+
 export class WaveController {
     scene: Phaser.Scene;
     currentWave: number;
@@ -23,7 +29,7 @@ export class WaveController {
                 fontFamily: 'PressStart2P',
                 fontSize: '30px',
             })
-            .setDepth(1); // Ensure the text is on top of other game elements
+            .setDepth(1);
 
         this.popupElements = [];
     }
@@ -31,17 +37,14 @@ export class WaveController {
 
 
     releaseWave(enemyList: BaseEnemy[], delay: number) {
-        // this.showEnemySelectionPopup();
-
         enemyList.forEach((enemy, index) => {
             this.mapGen.scene.time.delayedCall(
-                index * delay, // Delay increases by 500 ms for each enemy (adjust as needed)
+                index * delay,
                 () => {
                     this.mapGen.createEnemy(enemy);
                     this.mapGen.moveEnemy(enemy);
                     this.activeEnemies.push(enemy);
 
-                    // Subscribe to enemy defeat or arrival events
                     enemy.on('onDeath', () => this.onEnemyDefeated(enemy));
                     enemy.on('onArrived', () => this.onEnemyArrived(enemy));
                 },
@@ -52,13 +55,11 @@ export class WaveController {
     }
 
     onEnemyDefeated(enemy: BaseEnemy) {
-        // Remove the enemy from the active list
         this.activeEnemies = this.activeEnemies.filter(e => e !== enemy);
         this.checkWaveCleared();
     }
 
     onEnemyArrived(enemy: BaseEnemy) {
-        // Remove the enemy from the active list
         this.activeEnemies = this.activeEnemies.filter(e => e !== enemy);
         this.checkWaveCleared();
     }
@@ -66,8 +67,8 @@ export class WaveController {
     checkWaveCleared() {
         if (this.activeEnemies.length === 0) {
             console.log(`Wave ${this.currentWave} cleared!`);
-            this.currentWave++; // Increment the wave counter
-            // Optionally trigger the next wave here
+            this.currentWave++;
+
             this.triggerNextWave();
         }
     }
@@ -82,14 +83,6 @@ export class WaveController {
             ]
             this.releaseWave(mockBoss, 200);
         } else {
-            // TODO : Select enemy wave type along with debuff / buff
-            // let mockWave: BaseEnemy[] = [
-            //     new IceCreamEnemy(this.scene),
-            //     new IceCreamEnemy(this.scene),
-            //     new IceCreamEnemy(this.scene),
-            //     new IceCreamEnemy(this.scene),
-            // ]
-            // this.releaseWave(mockWave, 200);
             this.showEnemySelectionPopup();
         }
     }
@@ -97,19 +90,13 @@ export class WaveController {
     showEnemySelectionPopup() {
         const popupElements: Phaser.GameObjects.GameObject[] = [];
 
-        // Overlay background
         const popupBg = this.scene.add
             .rectangle(0, 0, this.scene.scale.width, this.scene.scale.height, 0x000000, 0.8)
             .setOrigin(0)
-            .setDepth(9); // Ensure it's behind other elements
-        popupElements.push(popupBg); // Store popup background
+            .setDepth(9);
+        popupElements.push(popupBg);
 
-        const choices = [
-            { enemy: IceCreamEnemy, title: "Icy Threat", description: "Frozen foes, slow but resilient." },
-            { enemy: IceCreamEnemy, title: "Icy Threat", description: "Frozen foes, slow but resilient." },
-            { enemy: IceCreamEnemy, title: "Icy Threat", description: "Frozen foes, slow but resilient." },
-            { enemy: IceCreamEnemy, title: "Icy Threat", description: "Frozen foes, slow but resilient." },
-        ];
+        const choices = this.randomChoice();
 
         choices.forEach((choice, index) => {
             const imageX = 280;
@@ -121,21 +108,21 @@ export class WaveController {
             const enemyImage = this.scene.add.image(imageX, imageY, enemyInstance.sprite)
                 .setScale(6)
                 .setDepth(11);
-            popupElements.push(enemyImage); // Store enemy image
+            popupElements.push(enemyImage);
 
             const titleText = this.scene.add.text(textX, imageY - 20, choice.title, {
                 fontFamily: 'PressStart2P',
                 fontSize: '24px',
                 color: '#FFDD00',
             }).setDepth(11);
-            popupElements.push(titleText); // Store title text
+            popupElements.push(titleText);
 
             const descText = this.scene.add.text(textX, imageY + 10, choice.description, {
                 fontFamily: 'PressStart2P',
                 fontSize: '18px',
                 color: '#FFFFFF',
             }).setDepth(11);
-            popupElements.push(descText); // Store description text
+            popupElements.push(descText);
 
             const button = this.scene.add.rectangle(imageX, imageY, 900, 200, 0xFFFFFF, 0.1)
                 .setOrigin(0.1, 0.5)
@@ -146,25 +133,24 @@ export class WaveController {
                 this.onEnemyTypeSelected(choice.enemy);
             });
 
-            popupElements.push(button); // Store the button
+            popupElements.push(button);
         });
 
-        this.popupElements = popupElements; // Store popup elements in a class property for later cleanup
+        this.popupElements = popupElements;
     }
 
 
     onEnemyTypeSelected(enemyClass: { new(scene: Phaser.Scene, addToScene: boolean): BaseEnemy }) {
-        this.cleanUpPopup(); // Remove popup elements
+        this.cleanUpPopup();
 
         const waveEnemies: BaseEnemy[] = [];
 
-        // Create new instances of the specific enemy class for each enemy in the wave
         for (let i = 0; i < 20; i++) {
-            const newEnemy = new enemyClass(this.scene, true); // Create a new enemy instance
+            const newEnemy = new enemyClass(this.scene, true);
             waveEnemies.push(newEnemy);
         }
 
-        this.releaseWave(waveEnemies, 200); // Release the wave with the new instances
+        this.releaseWave(waveEnemies, 200);
     }
 
 
@@ -173,6 +159,17 @@ export class WaveController {
             this.popupElements.forEach(element => element.destroy());
             this.popupElements = []; // Clear the array
         }
+    }
+
+    randomChoice(): Choice[] {
+
+        
+        return [
+            { enemy: IceCreamEnemy, title: "Icy Threat", description: "Frozen foes, slow but resilient." },
+            { enemy: IceCreamEnemy, title: "Icy Threat", description: "Frozen foes, slow but resilient." },
+            { enemy: IceCreamEnemy, title: "Icy Threat", description: "Frozen foes, slow but resilient." },
+            { enemy: IceCreamEnemy, title: "Icy Threat", description: "Frozen foes, slow but resilient." },
+        ];
     }
 
     // TODO : Handle Game Win
