@@ -22,6 +22,8 @@ export class Stage1Scene extends Phaser.Scene {
     const stage1Tiles = [
       { key: "tile", path: "src/assets/tiles/grass.png" },
       { key: "path", path: "src/assets/tiles/dirt.png" },
+      { key: "enemy_base", path: "src/assets/base/enemy_base.png" },
+      { key: "player_base", path: "src/assets/base/player_base_0.png" },
     ];
     assetLoader.preloadTiles(stage1Tiles);
 

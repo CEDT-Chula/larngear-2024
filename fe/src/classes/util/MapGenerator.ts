@@ -2,6 +2,17 @@ import Phaser from "phaser";
 import { TowerController } from "./TowerController";
 import { BaseEnemy } from "../enemies/BaseEnemy";
 
+export class MapTile extends Phaser.GameObjects.Sprite {
+  occupied: boolean;
+
+  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, scaleFactor: number, origin_x?: number, origin_y?: number) {
+    super(scene, x, y, texture);
+    this.setOrigin(origin_x ?? 0, origin_y).setScale(scaleFactor);
+    this.occupied = false; // Initialize to false by default
+  }
+}
+
+
 export class MapGenerator {
   // ! background tile must use the name 'tile' in for this code to work
   // ! path tile must use the name 'path' in for this code to work
@@ -10,6 +21,7 @@ export class MapGenerator {
   scaleFactor: number;
   towerController: TowerController;
   path: Phaser.Curves.Line[];
+  grid: MapTile[][];
 
   constructor(scene: Phaser.Scene, tileSize: number, scaleFactor: number) {
     this.scene = scene;
@@ -17,45 +29,35 @@ export class MapGenerator {
     this.scaleFactor = scaleFactor;
     this.towerController = new TowerController(scene);
     this.path = [];
+    this.grid = [];
   }
 
   generate(gridWidth: number, gridHeight: number) {
-    let grid: any = [];
     for (let y = 0; y < gridHeight; y++) {
-      grid[y] = [];
+      this.grid[y] = [];
       for (let x = 0; x < gridWidth; x++) {
-        const tile = this.scene.add
-          .sprite(x * this.tileSize, y * this.tileSize, "tile")
-          .setOrigin(0)
-          .setInteractive()
-          .setScale(this.scaleFactor);
+        const tile = new MapTile(this.scene, x * this.tileSize, y * this.tileSize, "tile", this.scaleFactor);
+        tile.setInteractive();
+        this.scene.add.existing(tile);
 
         tile.on("pointerdown", (pointer: any) =>
           this.handleTileInteraction(x, y, tile, pointer)
         );
-        grid[y][x] = tile;
+        this.grid[y][x] = tile;
       }
     }
-    return grid;
+    return this.grid;
   }
 
-  handleTileInteraction(x: number, y: number, tile: any, pointer: any) {
+  handleTileInteraction(x: number, y: number, tile: MapTile, pointer: any) {
     const currentTime = pointer.downTime;
     const timeSinceLastClick = currentTime - this.towerController.lastClickTime;
 
     if (timeSinceLastClick < this.towerController.clickThreshold) {
-      // It's a double-click
       this.towerController.sellTower(x, y, tile, this.tileSize);
     } else {
-      // It's a single-click
       if (!tile.occupied) {
-        this.towerController.placeTower(
-          x,
-          y,
-          tile,
-          this.tileSize,
-          this.scaleFactor
-        );
+        this.towerController.placeTower(x, y, tile, this.tileSize, this.scaleFactor);
       } else {
         console.log("Tile is already occupied.");
       }
@@ -64,16 +66,18 @@ export class MapGenerator {
     this.towerController.lastClickTime = currentTime;
   }
 
-  definePath(grid: any, points: Phaser.Math.Vector2[]): Phaser.Curves.Line[] {
+  definePath(grid: MapTile[][], points: Phaser.Math.Vector2[]): Phaser.Curves.Line[] {
     console.log("Path points:", points);
 
     const placePathTile = (x: number, y: number) => {
       if (grid[y] && grid[y][x]) {
         grid[y][x].destroy();
-        grid[y][x] = this.scene.add
-          .sprite(x * this.tileSize, y * this.tileSize, "path")
-          .setOrigin(0)
-          .setScale(this.scaleFactor);
+
+        const tile = new MapTile(this.scene, x * this.tileSize, y * this.tileSize, "path", this.scaleFactor);
+        tile.setInteractive();
+        this.scene.add.existing(tile);
+
+        grid[y][x] = tile;
         grid[y][x].occupied = true;
       }
     };
@@ -85,7 +89,22 @@ export class MapGenerator {
     );
 
     const startPoint = scaledPoints[0];
+    const endPoint = scaledPoints[scaledPoints.length - 1];
     placePathTile(Math.floor(startPoint.x / this.tileSize), Math.floor(startPoint.y / this.tileSize));
+
+    const placeBase = (x: number, y: number, origin_x: number, origin_y: number, name: string) => {
+      if (grid[y] && grid[y][x]) {
+        const tile = new MapTile(this.scene, x * this.tileSize, y * this.tileSize, name, this.scaleFactor, origin_x, origin_y);
+        tile.setInteractive();
+        this.scene.add.existing(tile);
+        
+        grid[y][x] = tile;
+        grid[y][x].occupied = true;
+      }
+    };
+    // Place Base
+    placeBase(Math.floor(startPoint.x / this.tileSize), Math.floor(startPoint.y / this.tileSize) - 1, 0.32, 0.5, "enemy_base");
+    placeBase(Math.floor(endPoint.x / this.tileSize), Math.floor(endPoint.y / this.tileSize) - 1, 0, 0, "player_base");
 
     lines.push(new Phaser.Curves.Line(scaledPoints[0], scaledPoints[0]))
 
