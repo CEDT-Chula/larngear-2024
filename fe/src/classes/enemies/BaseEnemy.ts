@@ -1,4 +1,5 @@
 import { Events } from "phaser";
+import { GameController } from "../util/GameController";
 
 export class BaseEnemy extends Phaser.GameObjects.Sprite {
     currentHealth: number;
@@ -9,9 +10,9 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
 
     constructor(scene: Phaser.Scene, maxHealth: number, speed: number, attack: number, sprite: string) {
         super(scene, 0, 0, "")
-        this.maxHealth = maxHealth;
+        this.maxHealth = maxHealth * GameController.getInstance().enemyHealth_Multiplier;
         this.currentHealth = this.maxHealth;
-        this.speed = speed;
+        this.speed = speed * GameController.getInstance().enemySpeed_Multiplier;
         this.attack = attack;
         this.sprite = sprite;
         
