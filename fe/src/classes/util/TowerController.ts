@@ -1,7 +1,8 @@
 import Phaser from "phaser";
+import { GameController } from "./GameController";
 
 export class TowerController {
-  currency: number;
+  coin: number;
   towerPrices: number;
   sellingPrices: number[];
   scene: any;
@@ -14,10 +15,10 @@ export class TowerController {
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
-    this.currency = 500;
+    this.coin = GameController.getInstance().coin;
     this.towerPrices = 100;
     this.sellingPrices = [80, 160, 240, 320, 400]; // Selling prices for towers Lv1 to Lv5
-    this.towerPool = ["browser"];
+    this.towerPool = GameController.getInstance().towerPool_Current;
 
     // Add coin image to the left side of the screen
     this.coinImage = this.scene.add.sprite(10, 14, 'coin')
@@ -26,7 +27,7 @@ export class TowerController {
       .setDepth(1);
 
     this.moneyText = this.scene.add
-      .text(68, 20, `${this.currency}`, {
+      .text(68, 20, `${this.coin}`, {
         fontFamily: 'PressStart2P',
         fontSize: '30px',
         fill: "#ffd700", // Gold color
@@ -38,14 +39,13 @@ export class TowerController {
   }
 
   placeTower(x: number, y: number, tile: any, tileSize: number, scaleFactor: number) {
-    if (this.currency < this.towerPrices) {
+    if (this.coin < this.towerPrices) {
       console.log("Not enough currency to place a tower.");
       return;
     }
 
-    // Deduct currency for placing a tower
-    this.currency -= this.towerPrices;
-    this.updateMoneyDisplay(); // Update the money display
+    this.coin -= this.towerPrices;
+    this.updateMoneyDisplay();
 
     let randomTowerIndex = Math.floor(Math.random() * this.towerPool.length);
     let randomTower =
@@ -71,7 +71,7 @@ export class TowerController {
     }
 
     let sellingPrice = this.sellingPrices[tile.towerLevel - 1];
-    this.currency += sellingPrice;
+    this.coin += sellingPrice;
     this.updateMoneyDisplay();
 
     this.scene.children.getAll().forEach((child: any) => {
@@ -89,6 +89,6 @@ export class TowerController {
   }
 
   updateMoneyDisplay() {
-    this.moneyText.setText(`${this.currency}`);
+    this.moneyText.setText(`${this.coin}`);
   }
 }

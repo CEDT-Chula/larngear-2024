@@ -1,12 +1,12 @@
 import { BaseEnemy } from "../enemies/BaseEnemy";
 import { IceCreamEnemy } from "../enemies/IceCreamEnemy";
+import { GameController } from "./GameController";
 import { MapGenerator } from "./MapGenerator";
-
-export interface Choice {
-    enemy: new (scene: Phaser.Scene) => BaseEnemy;
-    title: string;
-    description: string;
-}
+import { BiggerWave } from "./waves/BiggerWave";
+import { DuplicateWave } from "./waves/DuplicateWave";
+import { SlowWave } from "./waves/SlowWave";
+import { SpeedWave } from "./waves/SpeedWave";
+import { WaveEffect } from "./waves/WaveEffect";
 
 export class WaveController {
     scene: Phaser.Scene;
@@ -20,12 +20,12 @@ export class WaveController {
 
     constructor(scene: Phaser.Scene, maxWave: number, mapGen: MapGenerator) {
         this.scene = scene;
-        this.currentWave = 1;
+        this.currentWave = GameController.getInstance().currentWave;
         this.maxWave = maxWave;
         this.mapGen = mapGen;
         this.activeEnemies = [];
         this.waveText = this.scene.add
-            .text(900, 24, `${'Wave ' + this.currentWave + '/' + this.maxWave}`, {
+            .text(1000, 20, `${'Wave ' + this.currentWave + '/' + this.maxWave}`, {
                 fontFamily: 'PressStart2P',
                 fontSize: '30px',
             })
@@ -36,10 +36,10 @@ export class WaveController {
 
 
 
-    releaseWave(enemyList: BaseEnemy[], delay: number) {
+    releaseWave(enemyList: BaseEnemy[]) {
         enemyList.forEach((enemy, index) => {
             this.mapGen.scene.time.delayedCall(
-                index * delay,
+                index * 100,
                 () => {
                     this.mapGen.createEnemy(enemy);
                     this.mapGen.moveEnemy(enemy);
@@ -69,7 +69,11 @@ export class WaveController {
             console.log(`Wave ${this.currentWave} cleared!`);
             this.currentWave++;
 
-            this.triggerNextWave();
+            if (this.currentWave > this.maxWave) {
+                this.GameOver();
+            } else {
+                this.triggerNextWave();
+            }
         }
     }
 
@@ -81,7 +85,7 @@ export class WaveController {
             let mockBoss: BaseEnemy[] = [
                 new IceCreamEnemy(this.scene),
             ]
-            this.releaseWave(mockBoss, 200);
+            this.releaseWave(mockBoss);
         } else {
             this.showEnemySelectionPopup();
         }
@@ -110,19 +114,26 @@ export class WaveController {
                 .setDepth(11);
             popupElements.push(enemyImage);
 
-            const titleText = this.scene.add.text(textX, imageY - 20, choice.title, {
+            const titleText = this.scene.add.text(textX, imageY - 60, choice.title, {
                 fontFamily: 'PressStart2P',
                 fontSize: '24px',
                 color: '#FFDD00',
             }).setDepth(11);
             popupElements.push(titleText);
 
-            const descText = this.scene.add.text(textX, imageY + 10, choice.description, {
+            const debuffText = this.scene.add.text(textX, imageY - 10, choice.debuff, {
                 fontFamily: 'PressStart2P',
                 fontSize: '18px',
-                color: '#FFFFFF',
+                color: '#FF4545',
             }).setDepth(11);
-            popupElements.push(descText);
+            popupElements.push(debuffText);
+
+            const buffText = this.scene.add.text(textX, imageY + 40, choice.buff, {
+                fontFamily: 'PressStart2P',
+                fontSize: '18px',
+                color: '#45FF58',
+            }).setDepth(11);
+            popupElements.push(buffText);
 
             const button = this.scene.add.rectangle(imageX, imageY, 900, 200, 0xFFFFFF, 0.1)
                 .setOrigin(0.1, 0.5)
@@ -130,7 +141,7 @@ export class WaveController {
                 .setInteractive();
 
             button.on('pointerdown', () => {
-                this.onEnemyTypeSelected(choice.enemy);
+                this.onEnemyTypeSelected(choice);
             });
 
             popupElements.push(button);
@@ -140,37 +151,53 @@ export class WaveController {
     }
 
 
-    onEnemyTypeSelected(enemyClass: { new(scene: Phaser.Scene, addToScene: boolean): BaseEnemy }) {
+    onEnemyTypeSelected(choice: WaveEffect) {
         this.cleanUpPopup();
+
+        choice.effect()
 
         const waveEnemies: BaseEnemy[] = [];
 
-        for (let i = 0; i < 20; i++) {
-            const newEnemy = new enemyClass(this.scene, true);
+        for (let i = 0; i < GameController.getInstance().enemyPerWave; i++) {
+            const newEnemy = new choice.enemy(this.scene);
             waveEnemies.push(newEnemy);
         }
 
-        this.releaseWave(waveEnemies, 200);
+        this.releaseWave(waveEnemies);
     }
 
 
     cleanUpPopup() {
         if (this.popupElements) {
             this.popupElements.forEach(element => element.destroy());
-            this.popupElements = []; // Clear the array
+            this.popupElements = [];
         }
     }
 
-    randomChoice(): Choice[] {
-
-        
-        return [
-            { enemy: IceCreamEnemy, title: "Icy Threat", description: "Frozen foes, slow but resilient." },
-            { enemy: IceCreamEnemy, title: "Icy Threat", description: "Frozen foes, slow but resilient." },
-            { enemy: IceCreamEnemy, title: "Icy Threat", description: "Frozen foes, slow but resilient." },
-            { enemy: IceCreamEnemy, title: "Icy Threat", description: "Frozen foes, slow but resilient." },
+    randomChoice(): WaveEffect[] {
+        const allEffects: WaveEffect[] = [
+            new SpeedWave(),
+            new SlowWave(),
+            new BiggerWave(),
+            new DuplicateWave(),
         ];
+
+        const randomEffects: WaveEffect[] = [];
+
+        while (randomEffects.length < 4) {
+            const randomIndex = Math.floor(Math.random() * allEffects.length);
+            const selectedEffect = allEffects[randomIndex];
+
+            if (!randomEffects.includes(selectedEffect)) {
+                randomEffects.push(selectedEffect);
+            }
+        }
+
+        return randomEffects;
     }
 
-    // TODO : Handle Game Win
+    // TODO : Handle Game Win & Lose
+    GameOver() {
+
+    }
 }

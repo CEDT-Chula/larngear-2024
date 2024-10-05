@@ -5,6 +5,7 @@ import { AssetLoader } from "../util/AssetLoader";
 import { ParticleEmitter } from "../util/ParticleEmitter";
 import { IceCreamEnemy } from "../enemies/IceCreamEnemy";
 import { WaveController } from "../util/WaveController";
+import { GameController } from "../util/GameController";
 
 export class Stage1Scene extends Phaser.Scene {
   fontLoaded: boolean = false;
@@ -70,13 +71,14 @@ export class Stage1Scene extends Phaser.Scene {
 
     const definePath = mapGen.definePath(grid, points);
     console.log("Defined Path:", definePath);
-    const enemies = [
-      new IceCreamEnemy(this),
-      new IceCreamEnemy(this),
-      new IceCreamEnemy(this),
-    ];
+    const enemies = [];
 
-    wave.releaseWave(enemies, 200);
+    for (let i = 0; i < GameController.getInstance().enemyPerWave; i++) {
+      const newEnemy = new IceCreamEnemy(this);
+      enemies.push(newEnemy);
+  }
+
+    wave.releaseWave(enemies);
 
     // TODO : add map decorations
 
