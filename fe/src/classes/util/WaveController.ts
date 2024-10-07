@@ -34,8 +34,6 @@ export class WaveController {
         this.popupElements = [];
     }
 
-
-
     releaseWave(enemyList: BaseEnemy[]) {
         enemyList.forEach((enemy, index) => {
             this.mapGen.scene.time.delayedCall(
@@ -143,6 +141,8 @@ export class WaveController {
 
             button.on('pointerdown', () => {
                 this.onEnemyTypeSelected(choice);
+                console.log("wait_confirm_release_wave fired");
+                this.scene.events.emit("wait_confirm_release_wave");
             });
 
             popupElements.push(button);
@@ -155,7 +155,7 @@ export class WaveController {
     onEnemyTypeSelected(choice: WaveEffect) {
         this.cleanUpPopup();
 
-        choice.effect()
+        choice.effect();
 
         const waveEnemies: BaseEnemy[] = [];
 
@@ -163,8 +163,15 @@ export class WaveController {
             const newEnemy = new choice.enemy(this.scene);
             waveEnemies.push(newEnemy);
         }
+        
+        this.confirmReleaseWave(waveEnemies);
+    }
 
-        this.releaseWave(waveEnemies);
+    confirmReleaseWave(waveEnemies: BaseEnemy[]) {
+        this.scene.events.once('confirm_release_wave', () => {
+            console.log("confirm_release_wave triggered");
+            this.releaseWave(waveEnemies);
+        });
     }
 
 

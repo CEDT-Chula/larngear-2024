@@ -23,6 +23,9 @@ export class MapGenerator {
   path: Phaser.Curves.Line[];
   grid: MapTile[][];
 
+  waveConfirmButton!: Phaser.GameObjects.Rectangle;
+  waveConfirmText!: Phaser.GameObjects.Text;
+
   constructor(scene: Phaser.Scene, tileSize: number, scaleFactor: number) {
     this.scene = scene;
     this.tileSize = tileSize;
@@ -106,7 +109,45 @@ export class MapGenerator {
     };
     // Place Base
     placeBase(Math.floor(startPoint.x / this.tileSize), Math.floor(startPoint.y / this.tileSize) - 1, 0.32, 0.5, "enemy_base");
-    placeBase(Math.floor(endPoint.x / this.tileSize), Math.floor(endPoint.y / this.tileSize) - 1, 0, 0, "player_base");
+    const playerBaseX = Math.floor(endPoint.x / this.tileSize);
+    const playerBaseY = Math.floor(endPoint.y / this.tileSize) - 1;
+
+    placeBase(playerBaseX, playerBaseY, 0, 0, "player_base");
+
+    this.waveConfirmButton = this.scene.add.rectangle(
+      playerBaseX * this.tileSize, 
+      playerBaseY * this.tileSize, 
+      this.tileSize * 3, 
+      this.tileSize - 16, 
+      0xffffff, 
+      1
+    ).setOrigin(0.32, -0.16).setInteractive().setDepth(5);
+
+    this.waveConfirmText = this.scene.add.text(
+      playerBaseX * this.tileSize,
+      playerBaseY * this.tileSize,
+      'Next Wave',
+      {
+        fontFamily: 'PressStart2P',
+        fontSize: '18px',
+        color: '#FFFFFF', // White text
+        backgroundColor: '#000000',
+        padding: { left: 5, right: 5, top: 5, bottom: 5 },
+        align: 'center'
+      }
+    ).setOrigin(0.32, -0.64).setDepth(6);
+
+    this.scene.events.on('wait_confirm_release_wave', () => {
+      console.log("wait_confirm_release_wave triggered");
+      this.showWaveConfirmButton();
+  });
+
+    this.waveConfirmButton.on('pointerdown', () => {
+      this.scene.events.emit('confirm_release_wave');
+      this.hideWaveConfirmButton();
+    });
+
+    this.hideWaveConfirmButton();
 
     lines.push(new Phaser.Curves.Line(scaledPoints[0], scaledPoints[0]))
 
@@ -179,6 +220,16 @@ export class MapGenerator {
         enemy.y = Phaser.Math.Interpolation.Linear([startPoint.y, endPoint.y], t);
       }
     });
+  }
+
+  showWaveConfirmButton() {
+    this.waveConfirmButton.setVisible(true).setInteractive();
+    this.waveConfirmText.setVisible(true);
+  }
+  
+  hideWaveConfirmButton() {
+    this.waveConfirmButton.setVisible(false).disableInteractive();
+    this.waveConfirmText.setVisible(false);
   }
 
 }
