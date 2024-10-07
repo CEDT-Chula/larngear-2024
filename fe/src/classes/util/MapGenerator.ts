@@ -32,17 +32,19 @@ export class MapGenerator {
     this.grid = [];
   }
 
-  generate(gridWidth: number, gridHeight: number) {
+  generate(gridWidth: number, gridHeight: number, trimTop: number = 3) {
     for (let y = 0; y < gridHeight; y++) {
       this.grid[y] = [];
       for (let x = 0; x < gridWidth; x++) {
         const tile = new MapTile(this.scene, x * this.tileSize, y * this.tileSize, "tile", this.scaleFactor);
-        tile.setInteractive();
         this.scene.add.existing(tile);
-
-        tile.on("pointerdown", (pointer: any) =>
-          this.handleTileInteraction(x, y, tile, pointer)
-        );
+        
+        if (y >= trimTop) { // Trim the top
+          tile.setInteractive();
+          tile.on("pointerdown", (pointer: any) =>
+            this.handleTileInteraction(x, y, tile, pointer)
+          );
+        }
         this.grid[y][x] = tile;
       }
     }

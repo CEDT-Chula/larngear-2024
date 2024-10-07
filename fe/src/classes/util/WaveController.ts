@@ -97,7 +97,8 @@ export class WaveController {
         const popupBg = this.scene.add
             .rectangle(0, 0, this.scene.scale.width, this.scene.scale.height, 0x000000, 0.8)
             .setOrigin(0)
-            .setDepth(9);
+            .setDepth(9)
+            .setInteractive();
         popupElements.push(popupBg);
 
         const choices = this.randomChoice();

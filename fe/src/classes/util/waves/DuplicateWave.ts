@@ -9,5 +9,6 @@ export class DuplicateWave extends WaveEffect {
 
     effect(): void {
         GameController.getInstance().coin += 100;
+        GameController.getInstance().isPoisonImmune = true;
     }
 }
