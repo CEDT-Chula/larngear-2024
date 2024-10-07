@@ -10,6 +10,7 @@ export interface LevelData {
 }
 
 export class BaseTower extends Phaser.GameObjects.Sprite {
+    scene!: Phaser.Scene;
     range: number;
     attack: number;
     currentLevel: number;
@@ -45,6 +46,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
             this.attack = data.attack;
             this.reloadTime = data.reloadTime;
             this.targetCount = data.targetCount;
+            this.setTexture(data.sprite);
         }
     }
 

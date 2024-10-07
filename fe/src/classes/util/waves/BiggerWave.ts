@@ -1,4 +1,5 @@
 import { IceCreamEnemy } from "../../enemies/IceCreamEnemy";
+import { GameController } from "../GameController";
 import { WaveEffect } from "./WaveEffect";
 
 export class BiggerWave extends WaveEffect {
@@ -7,6 +8,7 @@ export class BiggerWave extends WaveEffect {
     }
 
     effect(): void {
-        
+        GameController.getInstance().enemyPerWave += 1;
+        GameController.getInstance().coinPerKill += 1;
     }
 }

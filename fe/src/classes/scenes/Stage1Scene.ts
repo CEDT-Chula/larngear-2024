@@ -53,7 +53,7 @@ export class Stage1Scene extends Phaser.Scene {
     const mapGen = new MapGenerator(this, 64, 4);
     const wave = new WaveController(this, 30, mapGen);
     const grid = mapGen.generate(20, 17);
-    const emitter = new ParticleEmitter(this, "tower4")
+    const emitter = new ParticleEmitter(this, "")
 
     const points: Phaser.Math.Vector2[] = [
       new Phaser.Math.Vector2(2, 4), // Starting Point

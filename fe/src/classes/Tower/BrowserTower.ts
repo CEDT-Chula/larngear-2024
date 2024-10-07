@@ -6,6 +6,8 @@ export class BrowserTower extends BaseTower {
         super(scene, 10, 5, 1.2, 5, 5);
         const missileSkill = new TowerSkill(15); 
         this.setSkill(missileSkill);
+        this.levelData = this.initializeLevelData();
+        this.setTexture(this.levelData[0].sprite);
     }
     
     initializeLevelData(): LevelData[] {

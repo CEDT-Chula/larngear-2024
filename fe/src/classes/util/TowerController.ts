@@ -1,17 +1,21 @@
 import Phaser from "phaser";
 import { GameController } from "./GameController";
+import { BaseTower } from "../Tower/BaseTower";
 
 export class TowerController {
   coin: number;
   towerPrices: number;
   sellingPrices: number[];
-  scene: any;
+  scene: Phaser.Scene;
   coinImage!: Phaser.GameObjects.Sprite;
   moneyText: any;
   lastClickTime: number;
   clickThreshold: number;
 
-  towerPool: string[];
+  towerPool: (new (scene: Phaser.Scene) => BaseTower)[];
+
+  // Map to track placed towers by their positions
+  towersMap: Map<string, BaseTower>;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -19,6 +23,8 @@ export class TowerController {
     this.towerPrices = 100;
     this.sellingPrices = [80, 160, 240, 320, 400]; // Selling prices for towers Lv1 to Lv5
     this.towerPool = GameController.getInstance().towerPool_Current;
+
+    this.towersMap = new Map<string, BaseTower>();
 
     // Add coin image to the left side of the screen
     this.coinImage = this.scene.add.sprite(10, 14, 'coin')
@@ -48,16 +54,18 @@ export class TowerController {
     this.updateMoneyDisplay();
 
     let randomTowerIndex = Math.floor(Math.random() * this.towerPool.length);
-    let randomTower =
-      this.towerPool[randomTowerIndex] + "_lv1";
+    let randomTower = this.towerPool[randomTowerIndex];
 
-    this.scene.add
-      .sprite(
-        x * tileSize + tileSize / 2,
-        y * tileSize + tileSize / 2,
-        randomTower
-      )
-      .setScale(scaleFactor);
+    let newTower: BaseTower = new randomTower(this.scene);
+
+    newTower.setPosition(x * tileSize + tileSize / 2, y * tileSize + tileSize / 2);
+    newTower.setScale(scaleFactor);
+
+    this.scene.add.existing(newTower);
+
+    // Keep track of the tower position
+    const towerKey = `${x},${y}`;
+    this.towersMap.set(towerKey, newTower);
 
     tile.occupied = true;
     tile.towerLevel = randomTowerIndex + 1;
@@ -70,18 +78,19 @@ export class TowerController {
       return;
     }
 
+    const towerKey = `${x},${y}`;
+    const tower = this.towersMap.get(towerKey);
+
+    if (tower) {
+      // Destroy the tower instance
+      tower.destroy();
+      this.towersMap.delete(towerKey); // Remove it from the map
+      console.log(`Tower instance destroyed at (${x}, ${y})`);
+    }
+
     let sellingPrice = this.sellingPrices[tile.towerLevel - 1];
     this.coin += sellingPrice;
     this.updateMoneyDisplay();
-
-    this.scene.children.getAll().forEach((child: any) => {
-      if (
-        child.x === x * tileSize + tileSize / 2 &&
-        child.y === y * tileSize + tileSize / 2
-      ) {
-        child.destroy();
-      }
-    });
 
     tile.occupied = false;
     tile.towerLevel = null;
