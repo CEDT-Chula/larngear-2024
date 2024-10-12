@@ -56,4 +56,12 @@ export class GameController {
         this.isBurnImmune = false;
         this.towerPool_Current = this.towerPool_All;
     }
+
+    increaseSpeed() {
+        this.enemySpeed_Multiplier += 1;
+        if (this.enemySpeed_Multiplier > 2) { // Example to limit the multiplier
+            this.enemySpeed_Multiplier = 1; // Reset to 1
+        }
+        console.log(`Enemy speed multiplier set to x${this.enemySpeed_Multiplier}`);
+    }
 }
