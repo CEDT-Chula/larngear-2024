@@ -36,12 +36,12 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
         this.setOrigin(0);
         this.setScale(4);
 
-        // Listen for speed changes from the scene
+        
         this.scene.events.on("speedChanged", this.applySpeed, this);
     }
 
     applySpeed(gameSpeed: number) {
-        // Adjust the speed based on the multiplier
+        
         this.speed = this.baseSpeed * gameSpeed;
     }
 
@@ -56,5 +56,25 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
             this.pathPosition = 0; // Reset or handle end of path
             this.destroy(); // Destroy the enemy when it reaches the end
         }
+    }
+    takeDamage(dmg: number) {
+        this.currentHealth -= dmg;
+
+        if (this.currentHealth <= 0) {
+            this.onDeath()
+            this.destroy(true)
+        }
+    }
+
+    onArrived() {
+        // TODO: decrease Player's base hp by attack
+
+        console.log(this.sprite, " reached the end!");
+        this.emit('onArrived');
+        this.destroy(true);
+    }
+
+    onDeath() {
+        this.emit('onDeath');
     }
 }
