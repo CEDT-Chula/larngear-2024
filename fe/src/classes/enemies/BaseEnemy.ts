@@ -1,4 +1,5 @@
 import { GameController } from "../util/GameController";
+import { GameUI } from "../util/GameUI";
 
 export class BaseEnemy extends Phaser.GameObjects.Sprite {
     currentHealth: number;
@@ -89,5 +90,6 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
 
     onDeath() {
         this.emit("onDeath");
+        GameUI.increaseCoin(GameController.getInstance().coinPerKill);        
     }
 }
