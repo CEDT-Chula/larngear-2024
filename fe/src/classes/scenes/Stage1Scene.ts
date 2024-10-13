@@ -9,8 +9,7 @@ import { GameController } from "../util/GameController";
 
 export class Stage1Scene extends Phaser.Scene {
   fontLoaded: boolean = false;
-  speedButton: Phaser.GameObjects.Text; // Reference for speed button
-  isSpeedX1: boolean = true; // Track current speed state
+  speedButton!: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: "Stage1Scene" });
@@ -85,7 +84,6 @@ export class Stage1Scene extends Phaser.Scene {
 
     wave.releaseWave(enemies);
 
-    // Create Speed Button at the bottom-right
     this.speedButton = this.add
       .text(
         this.cameras.main.width - 150,
@@ -93,6 +91,7 @@ export class Stage1Scene extends Phaser.Scene {
         "Speed x1",
         {
           fontSize: "24px",
+          fontFamily: "PressStart2P",
           backgroundColor: "#000",
           color: "#fff",
           padding: { left: 10, right: 10, top: 5, bottom: 5 },
@@ -110,15 +109,15 @@ export class Stage1Scene extends Phaser.Scene {
   }
 
   handleSpeedToggle() {
-    const gameController = GameController.getInstance();
+    if (this.time.timeScale == 1) {
+      this.time.timeScale = 2
+    } else {
+      this.time.timeScale = 1
+    }
 
-    this.isSpeedX1 = !this.isSpeedX1;
+    console.log(this.time.timeScale)
 
-    gameController.enemySpeed_Multiplier = this.isSpeedX1 ? 1 : 2;
-
-    this.speedButton.setText(`Speed x${gameController.enemySpeed_Multiplier}`);
-
-    this.events.emit("speedChanged", gameController.enemySpeed_Multiplier);
+    this.speedButton.setText("Speed x" + this.time.timeScale)
   }
 
   resize() {
@@ -129,6 +128,6 @@ export class Stage1Scene extends Phaser.Scene {
   }
 
   update() {
-    // No need to update the speed here since it's handled in timeScale.
+    
   }
 }

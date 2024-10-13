@@ -11,7 +11,7 @@ export class SpeedWave extends WaveEffect {
     effect(): void {
         GameController.getInstance().isBurnImmune = true;
         GameController.getInstance().towerPool_Current = [
-            new BrowserTower()
+            BrowserTower
         ];
     }
 }

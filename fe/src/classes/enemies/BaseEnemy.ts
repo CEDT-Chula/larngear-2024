@@ -35,9 +35,6 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
 
         this.setOrigin(0);
         this.setScale(4);
-
-        
-        this.scene.events.on("speedChanged", this.applySpeed, this);
     }
 
     applySpeed(gameSpeed: number) {

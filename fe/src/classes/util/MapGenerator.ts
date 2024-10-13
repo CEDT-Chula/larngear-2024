@@ -193,13 +193,12 @@ export class MapGenerator {
     this.scene.events.on('update', (time: number, delta: number) => {
       if (currentSegment >= this.path.length) return;
 
-
       const startPoint = this.path[currentSegment].getStartPoint();
       const endPoint = this.path[currentSegment].getEndPoint();
 
       const segmentDistance = Phaser.Math.Distance.Between(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
 
-      const distanceToMove = (speed * delta) / 1000;
+      const distanceToMove = (speed * delta * this.scene.time.timeScale) / 1000;
 
       segmentProgress += distanceToMove;
 
