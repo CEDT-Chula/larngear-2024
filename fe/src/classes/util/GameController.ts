@@ -8,15 +8,20 @@ export class GameController {
     currentScene!: Phaser.Scene;
 
     // Game Stats
+    enemiesGroup: Phaser.Physics.Arcade.Group | null;
     currentWave: number;
     enemyPerWave: number;
     playerHealth: number;
     coin: number;
     coinPerKill: number;
 
+    // Game Config
+    tileSize: number;
+    scaleFactor: number;
+
     isPoisonImmune: boolean;
     isBurnImmune: boolean;
-    
+
     // Multiplier
     enemyHealth_Multiplier: number;
     enemySpeed_Multiplier: number;
@@ -36,13 +41,15 @@ export class GameController {
         this.isPoisonImmune = false;
         this.isBurnImmune = false;
 
+        this.tileSize = 64;
+        this.scaleFactor = 4;
+
+        this.enemiesGroup = null;
         this.enemyHealth_Multiplier = 1;
         this.enemySpeed_Multiplier = 1;
         this.moneyDrop_Multiplier = 1;
 
-        this.towerPool_All = [
-            BrowserTower
-        ];
+        this.towerPool_All = [BrowserTower];
         this.towerPool_Current = this.towerPool_All;
     }
 

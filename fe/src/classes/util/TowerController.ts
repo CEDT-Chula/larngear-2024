@@ -62,6 +62,7 @@ export class TowerController {
     newTower.setScale(scaleFactor);
 
     this.scene.add.existing(newTower);
+    newTower.placeRangeCircle();
 
     // Keep track of the tower position
     const towerKey = `${x},${y}`;

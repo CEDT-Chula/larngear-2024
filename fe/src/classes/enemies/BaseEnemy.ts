@@ -10,17 +10,11 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
     path: Phaser.Curves.Path;
     pathPosition: number;
     currentPoint: Phaser.Math.Vector2;
+    healthBar: Phaser.GameObjects.Graphics;
 
-    constructor(
-        scene: Phaser.Scene,
-        maxHealth: number,
-        speed: number,
-        attack: number,
-        sprite: string,
-        path: Phaser.Curves.Path
-    ) {
+    constructor(scene: Phaser.Scene, maxHealth: number, speed: number, attack: number, sprite: string, path: Phaser.Curves.Path) {
         super(scene, 0, 0, sprite);
-        
+
         const gameController = GameController.getInstance();
 
         this.maxHealth = maxHealth * gameController.enemyHealth_Multiplier;
@@ -35,32 +29,51 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
 
         this.setOrigin(0);
         this.setScale(4);
+
+        this.healthBar = scene.add.graphics();
+        this.updateHealthBar();
+        this.on("destroy", () => {
+            this.healthBar.destroy();
+        });
+
+        this.on("takeDamage", this.takeDamage, this);
     }
 
     applySpeed(gameSpeed: number) {
-        
         this.speed = this.baseSpeed * gameSpeed;
     }
 
-    update(time: number, delta: number) {
-        const movement = this.speed * (delta / 1000);
-        this.pathPosition += movement;
+    preUpdate(time: number, delta: number) {
+        this.healthBar.x = 0.2 * GameController.getInstance().tileSize;
+        this.healthBar.y = this.displayHeight + 0.2 * GameController.getInstance().tileSize;
 
-        this.path.getPoint(this.pathPosition, this.currentPoint);
-        this.setPosition(this.currentPoint.x, this.currentPoint.y);
-
-        if (this.pathPosition >= this.path.getLength()) {
-            this.pathPosition = 0; // Reset or handle end of path
-            this.destroy(); // Destroy the enemy when it reaches the end
-        }
+        this.updateHealthBar();
     }
+
+    updateHealthBar() {
+        const barWidth = 0.6 * GameController.getInstance().tileSize;
+        const barHeight = 0.1 * GameController.getInstance().tileSize;
+
+        this.healthBar.clear();
+
+        this.healthBar.fillStyle(0x000000);
+        this.healthBar.fillRect(this.x, this.y, barWidth, barHeight);
+
+        const healthPercent = this.currentHealth / this.maxHealth;
+        const currentBarWidth = barWidth * healthPercent;
+
+        this.healthBar.fillStyle(0x00ff00);
+        this.healthBar.fillRect(this.x, this.y, currentBarWidth, barHeight);
+    }
+
     takeDamage(dmg: number) {
         this.currentHealth -= dmg;
 
         if (this.currentHealth <= 0) {
-            this.onDeath()
-            this.destroy(true)
+            this.onDeath();
+            this.destroy(true);
         }
+        this.updateHealthBar();
     }
 
     onArrived() {
@@ -69,12 +82,12 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
         console.log(this.sprite, " reached the end!");
 
         GameController.getInstance().playerHealth -= this.attack;
-        
-        this.emit('onArrived');
+
+        this.emit("onArrived");
         this.destroy(true);
     }
 
     onDeath() {
-        this.emit('onDeath');
+        this.emit("onDeath");
     }
 }

@@ -53,8 +53,9 @@ export class Stage1Scene extends Phaser.Scene {
   create() {
     const gameController = GameController.getInstance();
     gameController.currentScene = this;
+    gameController.enemiesGroup = this.physics.add.group();
 
-    const mapGen = new MapGenerator(this, 64, 4);
+    const mapGen = new MapGenerator(this, gameController.tileSize, gameController.scaleFactor);
     const wave = new WaveController(this, gameController.enemyPerWave, mapGen);
     const grid = mapGen.generate(20, 17);
     const emitter = new ParticleEmitter(this, "");
@@ -93,26 +94,26 @@ export class Stage1Scene extends Phaser.Scene {
         this.cameras.main.height - 50,
         "Speed x1",
         {
-          fontSize: "24px",
-          fontFamily: "PressStart2P",
-          backgroundColor: "#000",
-          color: "#fff",
-          padding: { left: 10, right: 10, top: 5, bottom: 5 },
-        }
+        fontSize: "24px",
+        fontFamily: "PressStart2P",
+        backgroundColor: "#000",
+        color: "#fff",
+        padding: { left: 10, right: 10, top: 5, bottom: 5 },
+      }
       )
       .setOrigin(0.5)
       .setInteractive()
       .on("pointerdown", this.handleSpeedToggle.bind(this));
 
-
+    
     this.heartImage = this.add.image(200, 32, "heart").setScale(3)
 
     this.healthText = this.add.text(240, 20, GameController.getInstance().playerHealth.toString(),
       {
-        fontSize: "30px",
-        fontFamily: "PressStart2P",
-        color: "#fe0000",
-      }
+      fontSize: "30px",
+      fontFamily: "PressStart2P",
+      color: "#fe0000",
+    }
     );
 
     this.input.on("pointerdown", (pointer: any) => {
