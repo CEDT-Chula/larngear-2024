@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { TowerController } from "./TowerController";
 import { BaseEnemy } from "../enemies/BaseEnemy";
+import { GameController } from "./GameController";
 
 export class MapTile extends Phaser.GameObjects.Sprite {
   occupied: boolean;
@@ -30,7 +31,7 @@ export class MapGenerator {
     this.scene = scene;
     this.tileSize = tileSize;
     this.scaleFactor = scaleFactor;
-    this.towerController = new TowerController(scene);
+    this.towerController = GameController.getInstance().towerController;
     this.path = [];
     this.grid = [];
   }
@@ -54,12 +55,13 @@ export class MapGenerator {
     return this.grid;
   }
 
+  // PLEASE UPDATE THIS FUNCTION TO MATCH CURRENT CODE IMPLEMENTATION
   handleTileInteraction(x: number, y: number, tile: MapTile, pointer: any) {
     const currentTime = pointer.downTime;
     const timeSinceLastClick = currentTime - this.towerController.lastClickTime;
 
     if (timeSinceLastClick < this.towerController.clickThreshold) {
-      this.towerController.sellTower(x, y, tile, this.tileSize);
+      // this.towerController.sellTower(x, y, tile, this.tileSize);
     } else {
       if (!tile.occupied) {
         this.towerController.placeTower(x, y, tile, this.tileSize, this.scaleFactor);

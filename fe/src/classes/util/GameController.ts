@@ -1,11 +1,13 @@
 import { BaseTower } from "../Tower/BaseTower";
 import { BrowserTower } from "../Tower/BrowserTower";
+import { TowerController } from "./TowerController";
 
 export class GameController {
 	private static instance: GameController;
 
 	// Ref
 	currentScene!: Phaser.Scene;
+	towerController!: TowerController;
 
 	// Game Stats
 	enemiesGroup: Phaser.Physics.Arcade.Group | null;
