@@ -66,6 +66,7 @@ export class WaveController {
     }
 
     checkWaveCleared() {
+ 
         if (this.activeEnemies.length === 0) {
             console.log(`Wave ${this.currentWave} cleared!`);
             this.currentWave++;
@@ -79,8 +80,10 @@ export class WaveController {
     }
 
     triggerNextWave() {
-        this.waveText.text = `${'Wave ' + this.currentWave + '/' + this.maxWave}`;
-        this.towerController.resetBoostedPrices();
+      
+        this.waveText.text = `triggerNextWave ${this.currentWave}/${this.maxWave}`;
+        console.log(`triggerNextWave ${this.currentWave}/${this.maxWave}`);
+        this.towerController.debugTowers();
         this.towerController.boostTowerSellingPrices();
         if (this.currentWave % 5 == 0) {
             // TODO : Call boss
