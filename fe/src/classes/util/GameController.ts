@@ -12,6 +12,7 @@ export class GameController {
     // Game Stats
     currentWave: number;
     enemyPerWave: number;
+    playerHealth: number;
     coin: number;
     coinPerKill: number;
 
@@ -31,6 +32,7 @@ export class GameController {
     private constructor() {
         this.currentWave = 1;
         this.enemyPerWave = 20;
+        this.playerHealth = 30;
         this.coin = 500;
         this.coinPerKill = 20;
 
@@ -62,5 +64,13 @@ export class GameController {
         this.isPoisonImmune = false;
         this.isBurnImmune = false;
         this.towerPool_Current = this.towerPool_All;
+    }
+
+    increaseSpeed() {
+        this.enemySpeed_Multiplier += 1;
+        if (this.enemySpeed_Multiplier > 2) {
+            this.enemySpeed_Multiplier = 1;
+        }
+        console.log(`Enemy speed multiplier set to x${this.enemySpeed_Multiplier}`);
     }
 }

@@ -115,18 +115,18 @@ export class MapGenerator {
     placeBase(playerBaseX, playerBaseY, 0, 0, "player_base");
 
     this.waveConfirmButton = this.scene.add.rectangle(
-      playerBaseX * this.tileSize, 
-      playerBaseY * this.tileSize, 
-      this.tileSize * 3, 
-      this.tileSize - 16, 
-      0xffffff, 
+      playerBaseX * this.tileSize,
+      playerBaseY * this.tileSize,
+      this.tileSize * 3.32,
+      this.tileSize - 16,
+      0xffffff,
       1
-    ).setOrigin(0.32, -0.16).setInteractive().setDepth(5);
+    ).setOrigin(0.34, -0.16).setInteractive().setDepth(5);
 
     this.waveConfirmText = this.scene.add.text(
       playerBaseX * this.tileSize,
       playerBaseY * this.tileSize,
-      'Next Wave',
+      'Start Wave',
       {
         fontFamily: 'PressStart2P',
         fontSize: '18px',
@@ -140,7 +140,7 @@ export class MapGenerator {
     this.scene.events.on('wait_confirm_release_wave', () => {
       console.log("wait_confirm_release_wave triggered");
       this.showWaveConfirmButton();
-  });
+    });
 
     this.waveConfirmButton.on('pointerdown', () => {
       this.scene.events.emit('confirm_release_wave');
@@ -193,13 +193,12 @@ export class MapGenerator {
     this.scene.events.on('update', (time: number, delta: number) => {
       if (currentSegment >= this.path.length) return;
 
-
       const startPoint = this.path[currentSegment].getStartPoint();
       const endPoint = this.path[currentSegment].getEndPoint();
 
       const segmentDistance = Phaser.Math.Distance.Between(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
 
-      const distanceToMove = (speed * delta) / 1000;
+      const distanceToMove = (speed * delta * this.scene.time.timeScale) / 1000;
 
       segmentProgress += distanceToMove;
 
@@ -226,7 +225,7 @@ export class MapGenerator {
     this.waveConfirmButton.setVisible(true).setInteractive();
     this.waveConfirmText.setVisible(true);
   }
-  
+
   hideWaveConfirmButton() {
     this.waveConfirmButton.setVisible(false).disableInteractive();
     this.waveConfirmText.setVisible(false);

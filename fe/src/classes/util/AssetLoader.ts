@@ -40,11 +40,12 @@ export class AssetLoader {
     });
   }
 
-  preloadCoins() {
-    this.scene.load.image("coin", "src/assets/coin.png");
-  }
-
   preloadEnemies() {
     this.scene.load.image("ice_cream", "src/assets/enemies/ice_cream.png");
+  }
+
+  preloadOthers() {
+    this.scene.load.image("coin", "src/assets/coin.png");
+    this.scene.load.image("heart", "src/assets/heart.png");
   }
 }
