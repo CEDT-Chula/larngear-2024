@@ -10,6 +10,8 @@ import { GameController } from "../util/GameController";
 export class Stage1Scene extends Phaser.Scene {
   fontLoaded: boolean = false;
   speedButton!: Phaser.GameObjects.Text;
+  heartImage!: Phaser.GameObjects.Image;
+  healthText!: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: "Stage1Scene" });
@@ -27,8 +29,8 @@ export class Stage1Scene extends Phaser.Scene {
       { key: "player_base", path: "src/assets/base/player_base_0.png" },
     ];
     assetLoader.preloadTiles(stage1Tiles);
-    assetLoader.preloadCoins();
     assetLoader.preloadEnemies();
+    assetLoader.preloadOthers();
 
     this.loadFont();
   }
@@ -82,7 +84,8 @@ export class Stage1Scene extends Phaser.Scene {
       enemies.push(newEnemy);
     }
 
-    wave.releaseWave(enemies);
+    wave.confirmReleaseWave(enemies)
+    this.events.emit("wait_confirm_release_wave");
 
     this.speedButton = this.add
       .text(
@@ -100,6 +103,17 @@ export class Stage1Scene extends Phaser.Scene {
       .setOrigin(0.5)
       .setInteractive()
       .on("pointerdown", this.handleSpeedToggle.bind(this));
+
+
+    this.heartImage = this.add.image(200, 32, "heart").setScale(3)
+
+    this.healthText = this.add.text(240, 20, GameController.getInstance().playerHealth.toString(),
+      {
+        fontSize: "30px",
+        fontFamily: "PressStart2P",
+        color: "#fe0000",
+      }
+    );
 
     this.input.on("pointerdown", (pointer: any) => {
       emitter.play(12, pointer.x, pointer.y);
@@ -128,6 +142,6 @@ export class Stage1Scene extends Phaser.Scene {
   }
 
   update() {
-    
+    this.healthText.setText(GameController.getInstance().playerHealth.toString())
   }
 }

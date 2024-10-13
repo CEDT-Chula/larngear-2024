@@ -10,6 +10,7 @@ export class GameController {
     // Game Stats
     currentWave: number;
     enemyPerWave: number;
+    playerHealth: number;
     coin: number;
     coinPerKill: number;
 
@@ -28,6 +29,7 @@ export class GameController {
     private constructor() {
         this.currentWave = 1;
         this.enemyPerWave = 20;
+        this.playerHealth = 30;
         this.coin = 500;
         this.coinPerKill = 20;
 

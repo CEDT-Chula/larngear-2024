@@ -67,6 +67,9 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
         // TODO: decrease Player's base hp by attack
 
         console.log(this.sprite, " reached the end!");
+
+        GameController.getInstance().playerHealth -= this.attack;
+        
         this.emit('onArrived');
         this.destroy(true);
     }

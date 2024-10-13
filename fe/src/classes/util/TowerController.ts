@@ -36,7 +36,7 @@ export class TowerController {
       .text(68, 20, `${this.coin}`, {
         fontFamily: 'PressStart2P',
         fontSize: '30px',
-        fill: "#ffd700", // Gold color
+        color: "#ffd700", // Gold color
       })
       .setDepth(1);
 
