@@ -41,10 +41,20 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
         this.levelData = this.initializeLevelData();
         this.setTexture(this.levelData[0].sprite);
         this.bulletSprite = bulletSprite;
+        this.setInteractive();
+
+        this.on("pointerover", () => {
+            console.log("Tower is hovered.");
+            this.showRangeCircle();
+        });
+        this.on("pointerout", () => {
+            this.hideRangeCircle();
+        });
     }
 
     placeRangeCircle() {
         this.rangeCircle = this.scene.add.circle(this.x, this.y, this.range, 0x00ff00, 0.2);
+        this.hideRangeCircle();
         this.scene.physics.world.enable(this.rangeCircle);
         const rangeBody = this.rangeCircle.body as Phaser.Physics.Arcade.Body;
         rangeBody.setCircle(this.range); // Set the physics body to be a circle with a radius of this.range
@@ -60,6 +70,18 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
             undefined,
             this
         );
+    }
+
+    hideRangeCircle() {
+        if (this.rangeCircle) {
+            this.rangeCircle.alpha = 0;
+        }
+    }
+
+    showRangeCircle() {
+        if (this.rangeCircle) {
+            this.rangeCircle.alpha = 1;
+        }
     }
 
     fire(target: Phaser.GameObjects.GameObject) {
