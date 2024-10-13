@@ -2,6 +2,7 @@ import { BaseEnemy } from "../enemies/BaseEnemy";
 import { IceCreamEnemy } from "../enemies/IceCreamEnemy";
 import { GameController } from "./GameController";
 import { MapGenerator } from "./MapGenerator";
+import { TowerController } from "./TowerController";
 import { BiggerWave } from "./waves/BiggerWave";
 import { DuplicateWave } from "./waves/DuplicateWave";
 import { SlowWave } from "./waves/SlowWave";
@@ -13,12 +14,13 @@ export class WaveController {
     currentWave: number;
     maxWave: number;
     mapGen: MapGenerator;
-    activeEnemies: BaseEnemy[]; // store enemies currently in the scene
+    activeEnemies: BaseEnemy[]; 
     popupElements: Phaser.GameObjects.GameObject[];
+    towerController: TowerController;
 
     waveText: Phaser.GameObjects.Text;
 
-    constructor(scene: Phaser.Scene, maxWave: number, mapGen: MapGenerator) {
+    constructor(scene: Phaser.Scene, maxWave: number, mapGen: MapGenerator, towerController: TowerController) {
         this.scene = scene;
         this.currentWave = GameController.getInstance().currentWave;
         this.maxWave = maxWave;
@@ -32,6 +34,7 @@ export class WaveController {
             .setDepth(1);
 
         this.popupElements = [];
+        this.towerController = towerController;
     }
 
     releaseWave(enemyList: BaseEnemy[]) {
@@ -77,7 +80,8 @@ export class WaveController {
 
     triggerNextWave() {
         this.waveText.text = `${'Wave ' + this.currentWave + '/' + this.maxWave}`;
-
+        this.towerController.resetBoostedPrices();
+        this.towerController.boostTowerSellingPrices();
         if (this.currentWave % 5 == 0) {
             // TODO : Call boss
             let mockBoss: BaseEnemy[] = [
@@ -142,13 +146,16 @@ export class WaveController {
             button.on('pointerdown', () => {
                 this.onEnemyTypeSelected(choice);
                 console.log("wait_confirm_release_wave fired");
-                this.scene.events.emit("wait_confirm_release_wave");
+                this.showBoostedTower();
+                
             });
 
             popupElements.push(button);
         });
 
         this.popupElements = popupElements;
+
+        // this.showBoostedTower();
     }
 
 
@@ -166,6 +173,83 @@ export class WaveController {
         
         this.confirmReleaseWave(waveEnemies);
     }
+
+    showBoostedTower() {
+        const boostedTowers = this.towerController.boostedTowers;
+        const boostedPrices = this.towerController.boostedPrices;
+    
+        const popupElements: Phaser.GameObjects.GameObject[] = [];
+    
+        // Background for the popup
+        const popupBg = this.scene.add
+            .rectangle(0, 0, this.scene.scale.width, this.scene.scale.height, 0x000000, 0.8)
+            .setOrigin(0)
+            .setDepth(9)
+            .setInteractive();
+    
+        // Cleanup popup on click
+        popupBg.on('pointerdown', () => {
+            this.cleanUpPopup();
+        });
+    
+        popupElements.push(popupBg);
+    
+        // Add the header
+        const headerText = this.scene.add.text(this.scene.scale.width / 2, 50, "Selling Merchant", {
+            fontFamily: 'PressStart2P',
+            fontSize: '32px',
+            color: '#FFDD00',
+        })
+        .setOrigin(0.5) // Center the text
+        .setDepth(10);
+    
+        popupElements.push(headerText);
+    
+        // Create the tower images and prices
+        boostedTowers.forEach((towerClassName, index) => {
+            const imageX = this.scene.scale.width / 2 - 300; // Adjust for bigger image on left
+            const imageY = 275 + index * 250; // Increase the multiplier for more spacing between towers
+    
+            // Find the tower class in the towerPool
+            const towerClass = this.towerController.towerPool.find(
+                (towerClass) => towerClass.name === towerClassName
+            );
+    
+            if (towerClass) {
+                const tempTower = new towerClass(this.scene);
+                const towerSprite = tempTower.texture.key;
+    
+                // Tower image (bigger size)
+                const towerImage = this.scene.add.image(imageX, imageY, towerSprite)
+                    .setScale(10) // Scale the image to fit the design (bigger)
+                    .setDepth(10);
+    
+                popupElements.push(towerImage);
+    
+                // Position for price text
+                const priceX = this.scene.scale.width / 2 + 50; // Position for price text
+                const priceY = imageY; // Align prices with the top of the image
+    
+                // Create a formatted price string with more space between levels
+                const towerPrices = boostedPrices.get(towerClassName) || [];
+                const priceText = this.scene.add.text(priceX, priceY, towerPrices.map((price, index) => `Lv${index + 1}: ${price}`).join('\n\n'), { // Added extra newline for spacing
+                    fontFamily: 'PressStart2P',
+                    fontSize: '20px',
+                    color: '#FFDD00',
+                })
+                .setOrigin(0.5)
+                .setDepth(10);
+    
+                popupElements.push(priceText);
+            }
+        });
+    
+        this.popupElements = popupElements;
+    }
+    
+    
+    
+    
 
     confirmReleaseWave(waveEnemies: BaseEnemy[]) {
         this.scene.events.once('confirm_release_wave', () => {
@@ -203,6 +287,9 @@ export class WaveController {
 
         return randomEffects;
     }
+
+  
+    
 
     // TODO : Handle Game Win & Lose
     GameOver() {

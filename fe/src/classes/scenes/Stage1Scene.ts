@@ -6,6 +6,7 @@ import { ParticleEmitter } from "../util/ParticleEmitter";
 import { IceCreamEnemy } from "../enemies/IceCreamEnemy";
 import { WaveController } from "../util/WaveController";
 import { GameController } from "../util/GameController";
+import { TowerController } from "../util/TowerController";
 
 export class Stage1Scene extends Phaser.Scene {
   fontLoaded: boolean = false;
@@ -51,7 +52,7 @@ export class Stage1Scene extends Phaser.Scene {
 
   create() {
     const mapGen = new MapGenerator(this, 64, 4);
-    const wave = new WaveController(this, 30, mapGen);
+    const wave = new WaveController(this, 30, mapGen,new TowerController(this));
     const grid = mapGen.generate(20, 17);
     const emitter = new ParticleEmitter(this, "")
 

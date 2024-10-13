@@ -1,5 +1,7 @@
 import { BaseTower } from "../Tower/BaseTower";
 import { BrowserTower } from "../Tower/BrowserTower";
+import { BrowserTower1 } from "../Tower/BrowserTower1";
+import { BrowserTower2 } from "../Tower/BrowserTower2";
 
 export class GameController {
     private static instance: GameController;
@@ -20,6 +22,7 @@ export class GameController {
     enemyHealth_Multiplier: number;
     enemySpeed_Multiplier: number;
     moneyDrop_Multiplier: number;
+    towerPrice_Multiplier: number;
 
     // Pool
     towerPool_All: (new (scene: Phaser.Scene) => BaseTower)[];
@@ -37,9 +40,13 @@ export class GameController {
         this.enemyHealth_Multiplier = 1;
         this.enemySpeed_Multiplier = 1;
         this.moneyDrop_Multiplier = 1;
+        this.towerPrice_Multiplier =2;
 
         this.towerPool_All = [
-            BrowserTower
+            BrowserTower,
+            BrowserTower1,
+            BrowserTower2
+
         ];
         this.towerPool_Current = this.towerPool_All;
     }

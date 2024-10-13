@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { GameController } from "./GameController";
 import { BaseTower } from "../Tower/BaseTower";
+import Game from "../../routes/Game";
 
 export class TowerController {
   coin: number;
@@ -129,7 +130,7 @@ export class TowerController {
       let boostedTowerPrices: number[] = [];
 
       this.sellingPrices.forEach((price, level) => {
-        const boostedPrice = price * Phaser.Math.Between(3, 5);
+        const boostedPrice = GameController.getInstance().towerPrice_Multiplier * price;
         boostedTowerPrices.push(boostedPrice);
       });
 

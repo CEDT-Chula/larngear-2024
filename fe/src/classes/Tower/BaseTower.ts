@@ -20,6 +20,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
     levelData: LevelData[];
     reloadTime: number;
     targetCount: number;
+    
 
     constructor(scene: Phaser.Scene, range: number, attack: number, reloadTime: number, targetCount: number, maxLvl: number) {
         super(scene, 0, 0, "")
