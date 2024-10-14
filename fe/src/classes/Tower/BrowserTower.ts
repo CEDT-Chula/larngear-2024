@@ -3,7 +3,7 @@ import { TowerSkill } from "./TowerSkill";
 
 export class BrowserTower extends BaseTower {
     constructor(scene: Phaser.Scene) {
-        super(scene, 10, 5, 1.2, 5, 5);
+        super(scene, 300, 5, 1.2, 5, 5, "path");
         const missileSkill = new TowerSkill(15); 
         this.setSkill(missileSkill);
         this.levelData = this.initializeLevelData();
