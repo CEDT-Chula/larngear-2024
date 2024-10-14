@@ -20,7 +20,7 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
         path: Phaser.Curves.Path
     ) {
         super(scene, 0, 0, sprite);
-        
+
         const gameController = GameController.getInstance();
 
         this.maxHealth = maxHealth * gameController.enemyHealth_Multiplier;
@@ -38,7 +38,7 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
     }
 
     applySpeed(gameSpeed: number) {
-        
+
         this.speed = this.baseSpeed * gameSpeed;
     }
 
@@ -69,7 +69,11 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
         console.log(this.sprite, " reached the end!");
 
         GameController.getInstance().playerHealth -= this.attack;
-        
+
+        if (GameController.getInstance().playerHealth <= 0) {
+            GameController.getInstance().gameOver('lose')
+        }
+
         this.emit('onArrived');
         this.destroy(true);
     }

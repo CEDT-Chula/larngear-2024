@@ -13,7 +13,7 @@ export class WaveController {
     currentWave: number;
     maxWave: number;
     mapGen: MapGenerator;
-    activeEnemies: BaseEnemy[]; // store enemies currently in the scene
+    activeEnemies: BaseEnemy[];
     popupElements: Phaser.GameObjects.GameObject[];
 
     waveText: Phaser.GameObjects.Text;
@@ -23,7 +23,7 @@ export class WaveController {
         this.currentWave = GameController.getInstance().currentWave;
         this.maxWave = maxWave;
         this.mapGen = mapGen;
-        this.activeEnemies = [];
+        this.activeEnemies = GameController.getInstance().activeEnemies;
         this.waveText = this.scene.add
             .text(1000, 20, `${'Wave ' + this.currentWave + '/' + this.maxWave}`, {
                 fontFamily: 'PressStart2P',
@@ -68,7 +68,7 @@ export class WaveController {
             this.currentWave++;
 
             if (this.currentWave > this.maxWave) {
-                this.GameOver();
+                GameController.getInstance().gameOver("win");
             } else {
                 this.triggerNextWave();
             }
@@ -163,7 +163,7 @@ export class WaveController {
             const newEnemy = new choice.enemy(this.scene);
             waveEnemies.push(newEnemy);
         }
-        
+
         this.confirmReleaseWave(waveEnemies);
     }
 
@@ -202,10 +202,5 @@ export class WaveController {
         }
 
         return randomEffects;
-    }
-
-    // TODO : Handle Game Win & Lose
-    GameOver() {
-
     }
 }

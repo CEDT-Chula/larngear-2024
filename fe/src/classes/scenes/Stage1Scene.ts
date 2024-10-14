@@ -55,7 +55,7 @@ export class Stage1Scene extends Phaser.Scene {
     gameController.currentScene = this;
 
     const mapGen = new MapGenerator(this, 64, 4);
-    const wave = new WaveController(this, gameController.enemyPerWave, mapGen);
+    const wave = new WaveController(this, 30, mapGen);
     const grid = mapGen.generate(20, 17);
     const emitter = new ParticleEmitter(this, "");
 

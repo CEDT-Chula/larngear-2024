@@ -41,7 +41,7 @@ export class MapGenerator {
       for (let x = 0; x < gridWidth; x++) {
         const tile = new MapTile(this.scene, x * this.tileSize, y * this.tileSize, "tile", this.scaleFactor);
         this.scene.add.existing(tile);
-        
+
         if (y >= trimTop) { // Trim the top
           tile.setInteractive();
           tile.on("pointerdown", (pointer: any) =>
@@ -102,7 +102,7 @@ export class MapGenerator {
         const tile = new MapTile(this.scene, x * this.tileSize, y * this.tileSize, name, this.scaleFactor, origin_x, origin_y);
         tile.setInteractive();
         this.scene.add.existing(tile);
-        
+
         grid[y][x] = tile;
         grid[y][x].occupied = true;
       }
@@ -133,102 +133,102 @@ export class MapGenerator {
         color: '#FFFFFF', // White text
         backgroundColor: '#000000',
         padding: { left: 5, right: 5, top: 5, bottom: 5 },
-        align: 'center'
+        align: 'center',
       }
     ).setOrigin(0.32, -0.64).setDepth(6);
 
-    this.scene.events.on('wait_confirm_release_wave', () => {
-      console.log("wait_confirm_release_wave triggered");
-      this.showWaveConfirmButton();
-    });
+this.scene.events.on('wait_confirm_release_wave', () => {
+  console.log("wait_confirm_release_wave triggered");
+  this.showWaveConfirmButton();
+});
 
-    this.waveConfirmButton.on('pointerdown', () => {
-      this.scene.events.emit('confirm_release_wave');
-      this.hideWaveConfirmButton();
-    });
+this.waveConfirmButton.on('pointerdown', () => {
+  this.scene.events.emit('confirm_release_wave');
+  this.hideWaveConfirmButton();
+});
 
-    this.hideWaveConfirmButton();
+this.hideWaveConfirmButton();
 
-    lines.push(new Phaser.Curves.Line(scaledPoints[0], scaledPoints[0]))
+lines.push(new Phaser.Curves.Line(scaledPoints[0], scaledPoints[0]))
 
-    for (let i = 0; i < scaledPoints.length - 1; i++) {
-      const startPoint = scaledPoints[i];
-      const endPoint = scaledPoints[i + 1];
+for (let i = 0; i < scaledPoints.length - 1; i++) {
+  const startPoint = scaledPoints[i];
+  const endPoint = scaledPoints[i + 1];
 
-      const distance = Phaser.Math.Distance.Between(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
-      const stepCount = Math.ceil(distance / this.tileSize);
+  const distance = Phaser.Math.Distance.Between(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+  const stepCount = Math.ceil(distance / this.tileSize);
 
-      for (let step = 0; step <= stepCount; step++) {
-        const t = step / stepCount;
-        const x = Phaser.Math.Interpolation.Linear([startPoint.x, endPoint.x], t);
-        const y = Phaser.Math.Interpolation.Linear([startPoint.y, endPoint.y], t);
+  for (let step = 0; step <= stepCount; step++) {
+    const t = step / stepCount;
+    const x = Phaser.Math.Interpolation.Linear([startPoint.x, endPoint.x], t);
+    const y = Phaser.Math.Interpolation.Linear([startPoint.y, endPoint.y], t);
 
-        const tileX = Math.floor(x / this.tileSize);
-        const tileY = Math.floor(y / this.tileSize);
+    const tileX = Math.floor(x / this.tileSize);
+    const tileY = Math.floor(y / this.tileSize);
 
-        placePathTile(tileX, tileY);
+    placePathTile(tileX, tileY);
+  }
+}
+
+for (let i = 0; i < scaledPoints.length - 1; i++) {
+  lines.push(new Phaser.Curves.Line(scaledPoints[i], scaledPoints[i + 1]));
+}
+
+this.path = lines;
+
+return lines;
+  }
+
+createEnemy(enemy: BaseEnemy) {
+  const startPoint = this.path[0].getStartPoint();
+  enemy.setPosition(startPoint.x, startPoint.y);
+  this.scene.add.existing(enemy);
+}
+
+moveEnemy(enemy: BaseEnemy) {
+  const speed = enemy.speed;
+  let currentSegment = 0;
+  let segmentProgress = 0;
+
+  this.scene.events.on('update', (time: number, delta: number) => {
+    if (currentSegment >= this.path.length) return;
+
+    const startPoint = this.path[currentSegment].getStartPoint();
+    const endPoint = this.path[currentSegment].getEndPoint();
+
+    const segmentDistance = Phaser.Math.Distance.Between(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+
+    const distanceToMove = (speed * delta * this.scene.time.timeScale) / 1000;
+
+    segmentProgress += distanceToMove;
+
+    if (segmentProgress >= segmentDistance) {
+      segmentProgress = 0;
+      currentSegment++;
+
+      if (currentSegment >= this.path.length) {
+        enemy.onArrived();
+        return;
       }
+    } else {
+      // Calculate the interpolation factor (between 0 and 1) based on the segment progress
+      const t = segmentProgress / segmentDistance;
+
+      // Interpolate the enemy's position between the start and end points of the segment
+      enemy.x = Phaser.Math.Interpolation.Linear([startPoint.x, endPoint.x], t);
+      enemy.y = Phaser.Math.Interpolation.Linear([startPoint.y, endPoint.y], t);
     }
+  });
+}
 
-    for (let i = 0; i < scaledPoints.length - 1; i++) {
-      lines.push(new Phaser.Curves.Line(scaledPoints[i], scaledPoints[i + 1]));
-    }
+showWaveConfirmButton() {
+  this.waveConfirmButton.setVisible(true).setInteractive();
+  this.waveConfirmText.setVisible(true);
+}
 
-    this.path = lines;
-
-    return lines;
-  }
-
-  createEnemy(enemy: BaseEnemy) {
-    const startPoint = this.path[0].getStartPoint();
-    enemy.setPosition(startPoint.x, startPoint.y);
-    this.scene.add.existing(enemy);
-  }
-
-  moveEnemy(enemy: BaseEnemy) {
-    const speed = enemy.speed;
-    let currentSegment = 0;
-    let segmentProgress = 0;
-
-    this.scene.events.on('update', (time: number, delta: number) => {
-      if (currentSegment >= this.path.length) return;
-
-      const startPoint = this.path[currentSegment].getStartPoint();
-      const endPoint = this.path[currentSegment].getEndPoint();
-
-      const segmentDistance = Phaser.Math.Distance.Between(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
-
-      const distanceToMove = (speed * delta * this.scene.time.timeScale) / 1000;
-
-      segmentProgress += distanceToMove;
-
-      if (segmentProgress >= segmentDistance) {
-        segmentProgress = 0;
-        currentSegment++;
-
-        if (currentSegment >= this.path.length) {
-          enemy.onArrived();
-          return;
-        }
-      } else {
-        // Calculate the interpolation factor (between 0 and 1) based on the segment progress
-        const t = segmentProgress / segmentDistance;
-
-        // Interpolate the enemy's position between the start and end points of the segment
-        enemy.x = Phaser.Math.Interpolation.Linear([startPoint.x, endPoint.x], t);
-        enemy.y = Phaser.Math.Interpolation.Linear([startPoint.y, endPoint.y], t);
-      }
-    });
-  }
-
-  showWaveConfirmButton() {
-    this.waveConfirmButton.setVisible(true).setInteractive();
-    this.waveConfirmText.setVisible(true);
-  }
-
-  hideWaveConfirmButton() {
-    this.waveConfirmButton.setVisible(false).disableInteractive();
-    this.waveConfirmText.setVisible(false);
-  }
+hideWaveConfirmButton() {
+  this.waveConfirmButton.setVisible(false).disableInteractive();
+  this.waveConfirmText.setVisible(false);
+}
 
 }
