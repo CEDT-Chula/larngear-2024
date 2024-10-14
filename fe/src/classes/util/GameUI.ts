@@ -10,9 +10,8 @@ export class GameUI {
 
 	private constructor() {
 		this.coinIcon = this.gameController.currentScene.add
-			.image(10, 14, "coin")
-			.setOrigin(0, 0)
-			.setScale(0.15)
+			.image(32, 32, "coin")
+			.setScale(3)
 			.setDepth(1);
 
 		this.coinText = this.gameController.currentScene.add

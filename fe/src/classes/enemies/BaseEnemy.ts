@@ -8,12 +8,13 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
     baseSpeed: number;
     attack: number;
     sprite: string;
-    path: Phaser.Curves.Path;
+    // ? What's this for? But if you still decide to use it, think about how to pass argument in child class top
+    // path: Phaser.Curves.Path;
     pathPosition: number;
     currentPoint: Phaser.Math.Vector2;
     healthBar: Phaser.GameObjects.Graphics;
 
-    constructor(scene: Phaser.Scene, maxHealth: number, speed: number, attack: number, sprite: string, path: Phaser.Curves.Path) {
+    constructor(scene: Phaser.Scene, maxHealth: number, speed: number, attack: number, sprite: string) {
         super(scene, 0, 0, sprite);
 
         const gameController = GameController.getInstance();
@@ -24,14 +25,14 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
         this.speed = speed * gameController.enemySpeed_Multiplier;
         this.attack = attack;
         this.sprite = sprite;
-        this.path = path;
+        // this.path = path;
         this.pathPosition = 0;
         this.currentPoint = new Phaser.Math.Vector2();
 
         this.setOrigin(0);
         this.setScale(4);
 
-        this.healthBar = scene.add.graphics();
+        this.healthBar = new Phaser.GameObjects.Graphics(scene);
         this.updateHealthBar();
         this.on("destroy", () => {
             this.healthBar.destroy();

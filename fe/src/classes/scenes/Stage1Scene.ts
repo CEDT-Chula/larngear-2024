@@ -7,6 +7,7 @@ import { IceCreamEnemy } from "../enemies/IceCreamEnemy";
 import { WaveController } from "../util/WaveController";
 import { GameController } from "../util/GameController";
 import { TowerController } from "../util/TowerController";
+import { GameUI } from "../util/GameUI";
 
 export class Stage1Scene extends Phaser.Scene {
   fontLoaded: boolean = false;
@@ -54,6 +55,9 @@ export class Stage1Scene extends Phaser.Scene {
   create() {
     const gameController = GameController.getInstance();
     gameController.currentScene = this;
+
+    const gameUi = GameUI.getInstance();
+    
     gameController.enemiesGroup = this.physics.add.group();
     gameController.towerController = new TowerController(this);
 
