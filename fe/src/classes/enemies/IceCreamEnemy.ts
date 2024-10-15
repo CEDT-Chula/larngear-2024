@@ -5,15 +5,15 @@ export class IceCreamEnemy extends BaseEnemy {
     constructor(
         scene: Phaser.Scene,
         Name: string = "Ice Cream",
-        Name_Color: string = "#FF69B4", // Example color: Pinkish for ice cream
+        Name_Color: string = "#FF69B4", 
         maxHealth: number = 50,
         speed: number = 70,
         attack: number = 10,
         isPoisonResist: boolean = true,
-        isBurnResist: boolean = false, // Ice cream melts in heat
+        isBurnResist: boolean = false, 
         isSlowResist: boolean = true,
-        isFreezeResist: boolean = true, // Ice cream is naturally resistant to freeze
-        sprite: string = "ice_cream_sprite",
+        isFreezeResist: boolean = true, 
+        sprite: string = "fe/src/enemies/ice_cream.png",
         path: Phaser.Curves.Path
     ) {
         super(
