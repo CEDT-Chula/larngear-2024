@@ -14,23 +14,23 @@ export class BrowserTower extends BaseTower {
         return [
             {
                 range: 20, attack: 15, reloadTime: 2, targetCount: 1,
-                sprite: "browser_lv1"
+                sprite: "assets/towers/browser/internet_explorer.png"
             },
             {
                 range: 25, attack: 20, reloadTime: 1.8, targetCount: 1,
-                sprite: "browser_lv2"
+                sprite: "assets/towers/browser/chrome.png"
             },
             {
                 range: 30, attack: 25, reloadTime: 1.6, targetCount: 1,
-                sprite: "browser_lv3"
+                sprite: "assets/towers/browser/firefox.png"
             },
             {
                 range: 35, attack: 30, reloadTime: 1.4, targetCount: 1,
-                sprite: "browser_lv4"
+                sprite: "assets/towers/browser/microsoft_edge.png"
             },
             {
                 range: 40, attack: 35, reloadTime: 1.2, targetCount: 1,
-                sprite: "browser_lv5"
+                sprite: "assets/towers/browser/opera_gx.png"
             }
         ];
     }
