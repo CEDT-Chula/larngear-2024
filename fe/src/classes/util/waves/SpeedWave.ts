@@ -1,11 +1,11 @@
-import { IceCreamEnemy } from "../../enemies/IceCreamEnemy";
+import { CoffeeEnemy } from "../../enemies/CoffeeEnemy";
 import { BrowserTower } from "../../Tower/BrowserTower";
 import { GameController } from "../GameController";
 import { WaveEffect } from "./WaveEffect";
 
 export class SpeedWave extends WaveEffect {
     constructor() {
-        super(IceCreamEnemy, "Need for Speed", "Immune to burn this wave", "Only got Browser this turn.");
+        super(CoffeeEnemy, "Need for Speed", "Immune to burn this wave", "Only got Browser this turn.");
     }
 
     effect(): void {

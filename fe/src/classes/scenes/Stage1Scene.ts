@@ -6,12 +6,16 @@ import { ParticleEmitter } from "../util/ParticleEmitter";
 import { IceCreamEnemy } from "../enemies/IceCreamEnemy";
 import { WaveController } from "../util/WaveController";
 import { GameController } from "../util/GameController";
+import { TowerController } from "../util/TowerController";
+import { GameUI } from "../util/GameUI";
 
 export class Stage1Scene extends Phaser.Scene {
   fontLoaded: boolean = false;
   speedButton!: Phaser.GameObjects.Text;
   heartImage!: Phaser.GameObjects.Image;
   healthText!: Phaser.GameObjects.Text;
+  coinIcon!: Phaser.GameObjects.Image;
+	coinText!: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: "Stage1Scene" });
@@ -54,8 +58,13 @@ export class Stage1Scene extends Phaser.Scene {
     const gameController = GameController.getInstance();
     gameController.currentScene = this;
 
-    const mapGen = new MapGenerator(this, 64, 4);
-    const wave = new WaveController(this, 30, mapGen);
+    const gameUi = GameUI.getInstance();
+
+    gameController.enemiesGroup = this.physics.add.group();
+    gameController.towerController = new TowerController(this);
+
+    const mapGen = new MapGenerator(this, gameController.tileSize, gameController.scaleFactor);
+    const wave = new WaveController(this, gameController.enemyPerWave, mapGen);
     const grid = mapGen.generate(20, 17);
     const emitter = new ParticleEmitter(this, "");
 
@@ -87,32 +96,48 @@ export class Stage1Scene extends Phaser.Scene {
     wave.confirmReleaseWave(enemies)
     this.events.emit("wait_confirm_release_wave");
 
+    this.coinIcon = this.add
+			.image(32, 32, "coin")
+			.setScale(3)
+			.setDepth(1);
+
+		this.coinText = this.add
+			.text(68, 20, `${GameController.getInstance().coin}`, {
+				fontFamily: "PressStart2P",
+				fontSize: "30px",
+				color: "#ffd700", // Gold color
+			})
+			.setDepth(1);
+
+    gameUi.coinIcon = this.coinIcon;
+    gameUi.coinText = this.coinText;
+
     this.speedButton = this.add
       .text(
         this.cameras.main.width - 150,
         this.cameras.main.height - 50,
         "Speed x1",
         {
-          fontSize: "24px",
-          fontFamily: "PressStart2P",
-          backgroundColor: "#000",
-          color: "#fff",
-          padding: { left: 10, right: 10, top: 5, bottom: 5 },
-        }
+        fontSize: "24px",
+        fontFamily: "PressStart2P",
+        backgroundColor: "#000",
+        color: "#fff",
+        padding: { left: 10, right: 10, top: 5, bottom: 5 },
+      }
       )
       .setOrigin(0.5)
       .setInteractive()
       .on("pointerdown", this.handleSpeedToggle.bind(this));
 
-
+    
     this.heartImage = this.add.image(200, 32, "heart").setScale(3)
 
     this.healthText = this.add.text(240, 20, GameController.getInstance().playerHealth.toString(),
       {
-        fontSize: "30px",
-        fontFamily: "PressStart2P",
-        color: "#fe0000",
-      }
+      fontSize: "30px",
+      fontFamily: "PressStart2P",
+      color: "#fe0000",
+    }
     );
 
     this.input.on("pointerdown", (pointer: any) => {
