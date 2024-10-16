@@ -135,16 +135,16 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		}
 	}
 
-	// TODO : Handle Sprite Change When Lv up
-	levelup() {
-		if (this.currentLevel < this.maxLevel) {
-			this.currentLevel++;
-			this.applyLevelData();
-			console.log(`Tower upgraded to level ${this.currentLevel}.`);
-		} else {
-			console.log("Tower is already at maximum level.");
-		}
-	}
+    levelup() {
+        if (this.currentLevel < this.maxLevel) {
+            this.currentLevel++;
+            this.applyLevelData();
+            this.setTexture(this.levelData[this.currentLevel - 1].sprite);
+            console.log(`Tower upgraded to level ${this.currentLevel}.`);
+        } else {
+            console.log("Tower is already at maximum level.");
+        }
+    }
 
 	upgradeTower(anotherTower: BaseTower) {
 		if (anotherTower instanceof BaseTower && this.currentLevel < this.maxLevel) {
