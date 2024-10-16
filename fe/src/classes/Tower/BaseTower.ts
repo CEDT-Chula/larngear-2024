@@ -25,7 +25,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 	reloadTime: number;
 	readyToFire: boolean = true;
 	targetCount: number;
-	bulletSpeed: number = 900;
+	bulletSpeed: number = 1500;
 	bulletSprite: string;
 
 	popupElements: any[] = [];
@@ -72,24 +72,33 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 	}
 
 	placeRangeCircle() {
-		this.rangeCircle = this.scene.add.circle(this.x, this.y, this.range, 0x00ff00, 0.2);
-		this.hideRangeCircle();
-		this.scene.physics.world.enable(this.rangeCircle);
-		const rangeBody = this.rangeCircle.body as Phaser.Physics.Arcade.Body;
-		rangeBody.setCircle(this.range); // Set the physics body to be a circle with a radius of this.range
+        this.rangeCircle = this.scene.add.circle(this.x, this.y, this.range, 0x00ff00, 0.2);
+        this.hideRangeCircle();
+        this.scene.physics.world.enable(this.rangeCircle);
+        const rangeBody = this.rangeCircle.body as Phaser.Physics.Arcade.Body;
+        rangeBody.setCircle(this.range);
 
-		this.scene.physics.add.overlap(
-			this.rangeCircle,
-			GameController.getInstance().enemiesGroup!,
-			(src: any, obj: any) => {
-				if (obj instanceof Phaser.GameObjects.GameObject) {
-					this.fire(obj);
-				}
-			},
-			undefined,
-			this
-		);
-	}
+        this.scene.time.addEvent({
+            delay: 100,
+            callback: this.checkForEnemiesInRange,
+            callbackScope: this,
+            loop: true
+        });
+    }
+
+    checkForEnemiesInRange = () => {
+        if (!this.readyToFire) return;
+
+        const activeEnemies = GameController.getInstance().activeEnemies;
+        if (!activeEnemies || activeEnemies.length === 0) return;
+
+        for (let enemy of activeEnemies) {
+            if (enemy instanceof BaseEnemy && Phaser.Math.Distance.Between(this.x, this.y, enemy.x, enemy.y) <= this.range && enemy.isAlive) {
+                this.fire(enemy);
+                break;
+            }
+        }
+    }
 
 	hideRangeCircle() {
 		if (this.rangeCircle) {
@@ -103,22 +112,22 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		}
 	}
 
-	fire(target: Phaser.GameObjects.GameObject) {
-		if (target instanceof BaseEnemy && this.readyToFire) {
-			const bullet = new BaseProjectTile(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target);
-			bullet.startProjectile(this.x, this.y);
-			this.readyToFire = false;
-			setTimeout(() => {
-				this.readyToFire = true;
-			}, this.reloadTime * 1000);
-			target.on("destroy", () => {
-				bullet.destroy();
-			});
-			this.on("destroy", () => {
-				bullet.destroy();
-			});
-		}
-	}
+	fire(target: BaseEnemy) {
+        if (this.readyToFire) {
+            const bullet = new BaseProjectTile(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target);
+            bullet.startProjectile(this.x, this.y);
+            this.readyToFire = false;
+            this.scene.time.delayedCall(this.reloadTime * 1000 / this.scene.time.timeScale, () => {
+                this.readyToFire = true;
+            });
+            target.once("destroy", () => {
+                bullet.destroy();
+            });
+            this.once("destroy", () => {
+                bullet.destroy();
+            });
+        }
+    }
 
 	initializeLevelData(): LevelData[] {
 		throw new Error("initializeLevelData must be implemented in derived classes.");
@@ -150,7 +159,6 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		if (anotherTower instanceof BaseTower && this.currentLevel < this.maxLevel) {
 			this.levelup();
 			console.log(`Your tower is successfully upgraded to level ${this.getCurrentLvl}`);
-			anotherTower.remove();
 		} else {
 			console.log("Cannot upgrade. You reached the max level");
 		}
@@ -183,9 +191,6 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		return this.maxLevel;
 	}
 
-	remove() {
-		//edit later
-	}
 	showPopup() {
 		this.clearPopup(); // Clear any existing popups
 

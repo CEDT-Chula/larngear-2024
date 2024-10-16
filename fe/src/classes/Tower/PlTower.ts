@@ -1,11 +1,8 @@
 import { BaseTower, LevelData } from "./BaseTower";
-import { TowerSkill } from "./TowerSkill";
 
 export class PlTower extends BaseTower {
     constructor(scene: Phaser.Scene) {
-        super(scene, 10, 5, 1.2, 5, 5);
-        const missileSkill = new TowerSkill(15); 
-        this.setSkill(missileSkill);
+        super(scene, 300, 5, 1.2, 5, 5, "path");
         this.levelData = this.initializeLevelData();
         this.setTexture(this.levelData[0].sprite);
     }
@@ -14,28 +11,24 @@ export class PlTower extends BaseTower {
         return [
             {
                 range: 20, attack: 15, reloadTime: 2, targetCount: 1,
-                sprite: "assets/towers/pl/cpp.png"
+                sprite: "pl_lv1"
             },
             {
                 range: 25, attack: 20, reloadTime: 1.8, targetCount: 1,
-                sprite: "assets/towers/pl/python.png"
+                sprite: "pl_lv2"
             },
             {
                 range: 30, attack: 25, reloadTime: 1.6, targetCount: 1,
-                sprite: "assets/towers/pl/java.png"
+                sprite: "pl_lv3"
             },
             {
                 range: 35, attack: 30, reloadTime: 1.4, targetCount: 1,
-                sprite: "assets/towers/pl/javascript.png"
+                sprite: "pl_lv4"
             },
             {
                 range: 40, attack: 35, reloadTime: 1.2, targetCount: 1,
-                sprite: "assets/towers/pl/typescript.png"
+                sprite: "pl_lv5"
             }
         ];
-    }
-
-    useSkill() {
-//
     }
 }

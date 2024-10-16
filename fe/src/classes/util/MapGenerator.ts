@@ -193,7 +193,11 @@ export class MapGenerator {
     let currentSegment = 0;
     let segmentProgress = 0;
 
-    this.scene.events.on('update', (time: number, delta: number) => {
+    const updateHandler = (time: number, delta: number) => {
+      if (!enemy.isAlive) {
+        this.scene.events.off('update', updateHandler);
+        return;
+      }
       if (currentSegment >= this.path.length) return;
 
       const startPoint = this.path[currentSegment].getStartPoint();
@@ -221,7 +225,9 @@ export class MapGenerator {
         enemy.x = Phaser.Math.Interpolation.Linear([startPoint.x, endPoint.x], t);
         enemy.y = Phaser.Math.Interpolation.Linear([startPoint.y, endPoint.y], t);
       }
-    });
+    };
+
+    this.scene.events.on('update', updateHandler);
   }
 
   showWaveConfirmButton() {

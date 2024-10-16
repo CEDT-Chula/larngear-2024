@@ -3,9 +3,7 @@ import { TowerSkill } from "./TowerSkill";
 
 export class ClassTower extends BaseTower {
     constructor(scene: Phaser.Scene) {
-        super(scene, 10, 5, 1.2, 5, 5);
-        const missileSkill = new TowerSkill(15); 
-        this.setSkill(missileSkill);
+        super(scene, 10, 5, 1.2, 5, 5, "");
         this.levelData = this.initializeLevelData();
         this.setTexture(this.levelData[0].sprite);
     }
@@ -33,19 +31,5 @@ export class ClassTower extends BaseTower {
                 sprite: "assets/towers/browser/opera_gx.png"
             }
         ];
-    }
-
-    useSkill() {
-        const currentTime = Date.now();
-
-        if (this.skill.isReady()) {
-            this.attack += 5;
-            this.targetCount = 9; 
-            console.log(`Missile Tower's attack increased to ${this.attack}.`);
-            this.skill.lastUsed = currentTime;
-        } else {
-            const remainingTime = ((this.skill.cooldown * 1000 - (currentTime - this.skill.lastUsed)) / 1000).toFixed(1);
-            console.log(`Skill on cooldown. Please wait ${remainingTime} seconds.`);
-        }
     }
 }

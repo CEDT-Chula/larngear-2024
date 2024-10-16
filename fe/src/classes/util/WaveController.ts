@@ -39,14 +39,13 @@ export class WaveController {
         GameController.getInstance().enemiesGroup!.addMultiple(enemyList);
         enemyList.forEach((enemy, index) => {
             this.mapGen.scene.time.delayedCall(
-                index * 100,
+                index * enemy.speed / 2,
                 () => {
                     this.mapGen.createEnemy(enemy);
                     this.mapGen.moveEnemy(enemy);
                     this.activeEnemies.push(enemy);
 
-                    enemy.on('onDeath', () => this.onEnemyDefeated(enemy));
-                    enemy.on('onArrived', () => this.onEnemyArrived(enemy));
+                    enemy.on('destroyed', () => this.checkWaveCleared());
                 },
                 [],
                 this
@@ -54,18 +53,8 @@ export class WaveController {
         });
     }
 
-    onEnemyDefeated(enemy: BaseEnemy) {
-        this.activeEnemies = this.activeEnemies.filter(e => e !== enemy);
-        this.checkWaveCleared();
-    }
-
-    onEnemyArrived(enemy: BaseEnemy) {
-        this.activeEnemies = this.activeEnemies.filter(e => e !== enemy);
-        this.checkWaveCleared();
-    }
-
     checkWaveCleared() {
-        if (this.activeEnemies.length === 0) {
+        if (this.activeEnemies.length <= 0) {
             console.log(`Wave ${this.currentWave} cleared!`);
             this.currentWave++;
 

@@ -13,6 +13,7 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
     pathPosition: number;
     currentPoint: Phaser.Math.Vector2;
     healthBar: Phaser.GameObjects.Graphics;
+    isAlive: boolean;
 
     constructor(scene: Phaser.Scene, maxHealth: number, speed: number, attack: number, sprite: string) {
         super(scene, 0, 0, sprite);
@@ -28,6 +29,8 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
         // this.path = path;
         this.pathPosition = 0;
         this.currentPoint = new Phaser.Math.Vector2();
+
+        this.isAlive = true;
 
         this.setOrigin(0);
         this.setScale(4);
@@ -73,15 +76,15 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
 
         if (this.currentHealth <= 0) {
             this.onDeath();
-            this.destroy(true);
         }
         this.updateHealthBar();
     }
 
     onArrived() {
-        // TODO: decrease Player's base hp by attack
-
         console.log(this.sprite, " reached the end!");
+        this.isAlive = false;
+        this.removeFromActive();
+        this.emit("destroyed")
 
         GameController.getInstance().playerHealth -= this.attack;
 
@@ -89,12 +92,23 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
             GameController.getInstance().gameOver('lose')
         }
 
-        this.emit("onArrived");
         this.destroy(true);
     }
 
     onDeath() {
-        this.emit("onDeath");
-        GameUI.increaseCoin(GameController.getInstance().coinPerKill);        
+        this.isAlive = false;
+        this.removeFromActive();
+        this.emit("destroyed")
+        GameUI.increaseCoin(GameController.getInstance().coinPerKill);
+        this.destroy(true);
     }
+
+    removeFromActive() {
+        const activeEnemies = GameController.getInstance().activeEnemies;
+        const index = activeEnemies.indexOf(this);
+        if (index > -1) {
+            activeEnemies.splice(index, 1);
+        }
+    }
+
 }
