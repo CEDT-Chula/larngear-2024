@@ -6,15 +6,15 @@ export class IceCreamEnemy extends BaseEnemy {
         scene: Phaser.Scene,
         Name: string = "Ice Cream",
         Name_Color: string = "#FF69B4", 
-        maxHealth: number = 50,
-        speed: number = 70,
-        attack: number = 10,
+        maxHealth: number = 20,
+        speed: number = 300,
+        attack: number = 1,
         isPoisonResist: boolean = true,
         isBurnResist: boolean = false, 
         isSlowResist: boolean = true,
         isFreezeResist: boolean = true, 
-        sprite: string = "fe/src/enemies/ice_cream.png",
-        path: Phaser.Curves.Path
+        sprite: string = "ice_cream",
+        // path: Phaser.Curves.Path
     ) {
         super(
             scene,
@@ -28,7 +28,7 @@ export class IceCreamEnemy extends BaseEnemy {
             isSlowResist,
             isFreezeResist,
             sprite,
-            path
+            // path
         );
 
     }

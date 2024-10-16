@@ -3,9 +3,9 @@ import { BaseTower } from "../Tower/BaseTower";
 import { BrowserTower } from "../Tower/BrowserTower";
 import { TowerController } from "./TowerController";
 import { MapGenerator } from "./MapGenerator";
-import { IdeTower } from "../Tower/ideTower";
 import { PlTower } from "../Tower/PlTower";
 import { GameUI } from "./GameUI";
+import { IdeTower } from "../Tower/IdeTower";
 
 export class GameController {
 	private static instance: GameController;

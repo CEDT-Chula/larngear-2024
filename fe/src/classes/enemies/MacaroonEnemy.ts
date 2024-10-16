@@ -6,15 +6,15 @@ export class MacaroonEnemy extends BaseEnemy {
         scene: Phaser.Scene,
         Name: string = "Macaroon",
         Name_Color: string = "#3944BC",
-        maxHealth: number = 60,
-        speed: number = 80,
-        attack: number = 12,
+        maxHealth: number = 30,
+        speed: number = 400,
+        attack: number = 1,
         isPoisonResist: boolean = false,
         isBurnResist: boolean = false,
         isSlowResist: boolean = false,
         isFreezeResist: boolean = false,
-        sprite: string = "fe/src/enemies/macaroon.png",
-        path: Phaser.Curves.Path
+        sprite: string = "macaroon",
+        // path: Phaser.Curves.Path
     ) {
         super(
             scene,
@@ -28,7 +28,7 @@ export class MacaroonEnemy extends BaseEnemy {
             isSlowResist,
             isFreezeResist,
             sprite,
-            path
+            // path
         );
     }
 }

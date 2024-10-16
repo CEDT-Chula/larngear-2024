@@ -7,14 +7,14 @@ export class CupCakeEnemy extends BaseEnemy {
         Name: string = "CupCake",
         Name_Color: string = "#FDFBD4", 
         maxHealth: number = 40,          
-        speed: number = 150,            
-        attack: number = 8,           
+        speed: number = 400,            
+        attack: number = 1,           
         isPoisonResist: boolean = false, 
         isBurnResist: boolean = false,
         isSlowResist: boolean = false,
         isFreezeResist: boolean = false,
-        sprite: string = "fe/src/enemies/cupcake.png",
-        path: Phaser.Curves.Path
+        sprite: string = "cupcake",
+        // path: Phaser.Curves.Path
     ) {
         super(
             scene,
@@ -28,7 +28,7 @@ export class CupCakeEnemy extends BaseEnemy {
             isSlowResist,
             isFreezeResist,
             sprite,
-            path
+            // path
         );
     }
 

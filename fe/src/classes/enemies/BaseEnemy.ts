@@ -33,7 +33,7 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
         isSlowResist: boolean = true,
         isFreezeResist: boolean = false,
         sprite: string,
-        path: Phaser.Curves.Path
+        // path: Phaser.Curves.Path
     ) {
         super(scene, 0, 0, sprite);
 

@@ -7,14 +7,14 @@ export class CoffeeEnemy extends BaseEnemy {
         Name: string = "Coffee",
         Name_Color: string = "#6F4E37", 
         maxHealth: number = 40,          
-        speed: number = 150,            
-        attack: number = 8,           
+        speed: number = 800,            
+        attack: number = 1,           
         isPoisonResist: boolean = false, 
         isBurnResist: boolean = false,
         isSlowResist: boolean = false,
         isFreezeResist: boolean = false,
-        sprite: string = "fe/src/enemies/coffee.png",
-        path: Phaser.Curves.Path
+        sprite: string = "coffee",
+        // path: Phaser.Curves.Path
     ) {
         super(
             scene,
@@ -28,7 +28,7 @@ export class CoffeeEnemy extends BaseEnemy {
             isSlowResist,
             isFreezeResist,
             sprite,
-            path
+            // path
         );
     }
 

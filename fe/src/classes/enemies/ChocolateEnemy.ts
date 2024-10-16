@@ -6,15 +6,15 @@ export class ChocolateEnemy extends BaseEnemy {
         scene: Phaser.Scene,
         Name: string = "Chocolate",
         Name_Color: string = "#8B4513",
-        maxHealth: number = 70,
-        speed: number = 60,
-        attack: number = 15,
+        maxHealth: number = 30,
+        speed: number = 400,
+        attack: number = 1,
         isPoisonResist: boolean = true, 
         isBurnResist: boolean = false,  
         isSlowResist: boolean = true,    
         isFreezeResist: boolean = true,
-        sprite: string = "fe/src/enemies/chocolate.png",
-        path: Phaser.Curves.Path
+        sprite: string = "choco",
+        // path: Phaser.Curves.Path
     ) {
         super(
             scene,
@@ -28,7 +28,7 @@ export class ChocolateEnemy extends BaseEnemy {
             isSlowResist,
             isFreezeResist,
             sprite,
-            path
+            // path
         );
     }
 
