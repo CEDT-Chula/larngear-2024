@@ -5,6 +5,7 @@ import { TowerController } from "./TowerController";
 import { MapGenerator } from "./MapGenerator";
 import { IdeTower } from "../Tower/ideTower";
 import { PlTower } from "../Tower/PlTower";
+import { GameUI } from "./GameUI";
 
 export class GameController {
 	private static instance: GameController;

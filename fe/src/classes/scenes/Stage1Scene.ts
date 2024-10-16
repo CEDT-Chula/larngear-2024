@@ -14,6 +14,8 @@ export class Stage1Scene extends Phaser.Scene {
   speedButton!: Phaser.GameObjects.Text;
   heartImage!: Phaser.GameObjects.Image;
   healthText!: Phaser.GameObjects.Text;
+  coinIcon!: Phaser.GameObjects.Image;
+	coinText!: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: "Stage1Scene" });
@@ -57,7 +59,7 @@ export class Stage1Scene extends Phaser.Scene {
     gameController.currentScene = this;
 
     const gameUi = GameUI.getInstance();
-    
+
     gameController.enemiesGroup = this.physics.add.group();
     gameController.towerController = new TowerController(this);
 
@@ -93,6 +95,22 @@ export class Stage1Scene extends Phaser.Scene {
 
     wave.confirmReleaseWave(enemies)
     this.events.emit("wait_confirm_release_wave");
+
+    this.coinIcon = this.add
+			.image(32, 32, "coin")
+			.setScale(3)
+			.setDepth(1);
+
+		this.coinText = this.add
+			.text(68, 20, `${GameController.getInstance().coin}`, {
+				fontFamily: "PressStart2P",
+				fontSize: "30px",
+				color: "#ffd700", // Gold color
+			})
+			.setDepth(1);
+
+    gameUi.coinIcon = this.coinIcon;
+    gameUi.coinText = this.coinText;
 
     this.speedButton = this.add
       .text(

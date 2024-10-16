@@ -117,7 +117,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
             const bullet = new BaseProjectTile(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target);
             bullet.startProjectile(this.x, this.y);
             this.readyToFire = false;
-            this.scene.time.delayedCall(this.reloadTime * 1000 / this.scene.time.timeScale, () => {
+            this.scene.time.delayedCall((this.reloadTime * 1000) / this.scene.time.timeScale, () => {
                 this.readyToFire = true;
             });
             target.once("destroy", () => {

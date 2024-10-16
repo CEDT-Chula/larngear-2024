@@ -5,22 +5,11 @@ export class GameUI {
 
 	// Ref
 	gameController: GameController = GameController.getInstance();
-	coinIcon: Phaser.GameObjects.Image;
-	coinText: Phaser.GameObjects.Text;
+	coinIcon!: Phaser.GameObjects.Image;
+	coinText!: Phaser.GameObjects.Text;
 
 	private constructor() {
-		this.coinIcon = this.gameController.currentScene.add
-			.image(32, 32, "coin")
-			.setScale(3)
-			.setDepth(1);
-
-		this.coinText = this.gameController.currentScene.add
-			.text(68, 20, `${GameController.getInstance().coin}`, {
-				fontFamily: "PressStart2P",
-				fontSize: "30px",
-				color: "#ffd700", // Gold color
-			})
-			.setDepth(1);
+		
 	}
 
 	public static getInstance(): GameUI {
