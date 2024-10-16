@@ -2,11 +2,17 @@ import { GameController } from "../util/GameController";
 import { GameUI } from "../util/GameUI";
 
 export class BaseEnemy extends Phaser.GameObjects.Sprite {
+    Name: string;
+    Name_Color: string;
     currentHealth: number;
     maxHealth: number;
     speed: number;
     baseSpeed: number;
     attack: number;
+    isPoisonResist: boolean;
+    isBurnResist: boolean;
+    isSlowResist: boolean;
+    isFreezeResist: boolean;
     sprite: string;
     // ? What's this for? But if you still decide to use it, think about how to pass argument in child class top
     // path: Phaser.Curves.Path;
@@ -15,16 +21,35 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
     healthBar: Phaser.GameObjects.Graphics;
     isAlive: boolean;
 
-    constructor(scene: Phaser.Scene, maxHealth: number, speed: number, attack: number, sprite: string) {
+    constructor(
+        scene: Phaser.Scene,
+        Name: string,
+        Name_Color: string,
+        maxHealth: number,
+        speed: number,
+        attack: number,
+        isPoisonResist: boolean = true,
+        isBurnResist: boolean = true,
+        isSlowResist: boolean = true,
+        isFreezeResist: boolean = false,
+        sprite: string,
+        path: Phaser.Curves.Path
+    ) {
         super(scene, 0, 0, sprite);
 
         const gameController = GameController.getInstance();
 
+        this.Name = Name;
+        this.Name_Color = Name_Color;
         this.maxHealth = maxHealth * gameController.enemyHealth_Multiplier;
         this.currentHealth = this.maxHealth;
         this.baseSpeed = speed;
         this.speed = speed * gameController.enemySpeed_Multiplier;
         this.attack = attack;
+        this.isPoisonResist = isPoisonResist;
+        this.isBurnResist = isBurnResist;
+        this.isSlowResist = isSlowResist;
+        this.isFreezeResist = isFreezeResist;
         this.sprite = sprite;
         // this.path = path;
         this.pathPosition = 0;
@@ -89,7 +114,7 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
         GameController.getInstance().playerHealth -= this.attack;
 
         if (GameController.getInstance().playerHealth <= 0) {
-            GameController.getInstance().gameOver('lose')
+            GameController.getInstance().gameOver('lose');
         }
 
         this.destroy(true);
