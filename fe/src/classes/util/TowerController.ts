@@ -11,9 +11,7 @@ export class TowerController {
 	clickThreshold: number;
 
 	towerPool: (new (scene: Phaser.Scene) => BaseTower)[];
-
-	// Map to track placed towers by their positions
-	towersMap: Map<Phaser.Math.Vector2, BaseTower>;
+	towerList: BaseTower[]; // track towers in the scene
 
 	constructor(scene: Phaser.Scene) {
 		this.scene = scene;
@@ -21,13 +19,13 @@ export class TowerController {
 		this.sellingPrices = [80, 160, 240, 320, 400]; // Selling prices for towers Lv1 to Lv5
 		this.towerPool = GameController.getInstance().towerPool_Current;
 
-		this.towersMap = GameController.getInstance().towersMap;
+		this.towerList = GameController.getInstance().towerList;
 
 		this.lastClickTime = 0;
 		this.clickThreshold = 300; // Time threshold in milliseconds for double-click
 	}
 
-	placeTower(x: number, y: number, tile: any, tileSize: number, scaleFactor: number) {
+	placeTower(x: number, y: number, tileSize: number, scaleFactor: number) {
 		if (GameController.getInstance().coin < this.towerPrices) {
 			console.log("Not enough currency to place a tower.");
 			return;
@@ -46,43 +44,32 @@ export class TowerController {
 		this.scene.add.existing(newTower);
 		newTower.placeRangeCircle();
 
-		// Keep track of the tower position
-		const towerKey = new Phaser.Math.Vector2(x, y);
-		this.towersMap.set(towerKey, newTower);
+		// Update the tower position
+		newTower.pos = new Phaser.Math.Vector2(x, y);
+		this.towerList.push(newTower);
 
-		tile.occupied = true;
-		tile.towerLevel = randomTowerIndex + 1;
+		GameController.getInstance().gridMap[newTower.pos.y][newTower.pos.x].occupied = true;
 		console.log(`Tower placed at (${x}, ${y})`);
 	}
 
-	sellTower(x: number, y: number, tile: any, tileSize: number) {
-		if (!tile.occupied) {
-			console.log("No tower to sell at this tile.");
+	sellTower(sell: BaseTower) {
+		const towerIndex = this.towerList.findIndex(x => x == sell);
+
+		if (towerIndex < 0) {
 			return;
 		}
 
-		const towerKey = new Phaser.Math.Vector2(x, y);
-		const tower = this.towersMap.get(towerKey);
+		const tower = this.towerList[towerIndex]
 
-		if (tower) {
-			// Destroy the tower instance
-			tower.destroy();
-			this.towersMap.delete(towerKey); // Remove it from the map
-			console.log(`Tower instance destroyed at (${x}, ${y})`);
-		}
-
-		let sellingPrice = this.sellingPrices[tile.towerLevel - 1];
-		GameUI.increaseCoin(sellingPrice);
-
-		tile.occupied = false;
-		tile.towerLevel = null;
-		console.log(`Tower sold at (${x}, ${y})`);
-	}
-
-	public sellTowerPLEASE_FIX(tower: BaseTower) {
 		// Destroy the tower instance
-		let sellingPrice = this.sellingPrices[tower!.currentLevel - 1];
-		GameUI.increaseCoin(sellingPrice);
 		tower.destroy();
+		this.towerList.splice(towerIndex, 1); // Remove it from the list
+		console.log(`Tower instance destroyed at (${tower.pos.x}, ${tower.pos.y})`);
+
+		let sellingPrice = this.sellingPrices[tower.currentLevel - 1];
+		GameUI.increaseCoin(sellingPrice);
+
+		GameController.getInstance().gridMap[tower.pos.y][tower.pos.x].occupied = false;
+		console.log(`Tower sold at (${tower.pos.x}, ${tower.pos.y})`);
 	}
 }

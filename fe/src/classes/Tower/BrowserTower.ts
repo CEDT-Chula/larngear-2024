@@ -1,8 +1,8 @@
 import { BaseTower, LevelData } from "./BaseTower";
 
 export class BrowserTower extends BaseTower {
-    constructor(scene: Phaser.Scene) {
-        super(scene, 300, 5, 0.7, 5, 5, "path");
+    constructor(scene: Phaser.Scene, pos?: Phaser.Math.Vector2) {
+        super(scene, pos, 300, 5, 0.7, 5, 5, "path");
         this.levelData = this.initializeLevelData();
         this.setTexture(this.levelData[0].sprite);
     }

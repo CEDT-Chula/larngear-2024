@@ -28,11 +28,14 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 	bulletSpeed: number = 1500;
 	bulletSprite: string;
 
+	pos: Phaser.Math.Vector2;
+
 	popupElements: any[] = [];
 	popupTimeout: NodeJS.Timeout | null = null;
 
 	constructor(
 		scene: Phaser.Scene,
+		pos: Phaser.Math.Vector2 | undefined,
 		range: number,
 		attack: number,
 		reloadTime: number,
@@ -41,6 +44,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		bulletSprite: string
 	) {
 		super(scene, 0, 0, "");
+		this.pos = pos ?? new Phaser.Math.Vector2(0, 0);
 		this.range = range;
 		this.attack = attack;
 		this.reloadTime = reloadTime;
@@ -89,7 +93,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
     checkForEnemiesInRange = () => {
         if (!this.readyToFire) return;
 
-        const activeEnemies = GameController.getInstance().activeEnemies;
+        const activeEnemies = GameController.getInstance().activeEnemiesList;
         if (!activeEnemies || activeEnemies.length === 0) return;
 
         for (let enemy of activeEnemies) {
@@ -165,7 +169,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 	}
 
 	sellTower() {
-		GameController.getInstance().towerController.sellTowerPLEASE_FIX(this);
+		GameController.getInstance().towerController.sellTower(this)
 	}
 
 	setSkill(skill: TowerSkill) {

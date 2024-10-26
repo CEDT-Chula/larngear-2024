@@ -2,7 +2,7 @@ import { BaseEnemy } from "../enemies/BaseEnemy";
 import { BaseTower } from "../Tower/BaseTower";
 import { BrowserTower } from "../Tower/BrowserTower";
 import { TowerController } from "./TowerController";
-import { MapGenerator } from "./MapGenerator";
+import { MapGenerator, MapTile } from "./MapGenerator";
 import { PlTower } from "../Tower/PlTower";
 import { GameUI } from "./GameUI";
 import { IdeTower } from "../Tower/ideTower";
@@ -25,8 +25,9 @@ export class GameController {
 	coinPerKill: number;
 
 	// Tracking
-	activeEnemies: BaseEnemy[]; // store enemies currently in the scene
-	towersMap: Map<Phaser.Math.Vector2, BaseTower>;
+	activeEnemiesList: BaseEnemy[]; // store enemies currently in the scene
+	towerList: BaseTower[];
+	gridMap: MapTile[][]; // y, x notation
 
 	// Game Config
 	tileSize: number;
@@ -53,8 +54,9 @@ export class GameController {
 		this.coin = 500;
 		this.coinPerKill = 20;
 
-		this.activeEnemies = [];
-		this.towersMap = new Map<Phaser.Math.Vector2, BaseTower>();
+		this.activeEnemiesList = [];
+		this.towerList = [];
+		this.gridMap = [];
 
 		this.isPoisonImmune = false;
 		this.isBurnImmune = false;

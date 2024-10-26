@@ -129,7 +129,7 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
     }
 
     removeFromActive() {
-        const activeEnemies = GameController.getInstance().activeEnemies;
+        const activeEnemies = GameController.getInstance().activeEnemiesList;
         const index = activeEnemies.indexOf(this);
         if (index > -1) {
             activeEnemies.splice(index, 1);

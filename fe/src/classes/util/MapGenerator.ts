@@ -33,7 +33,7 @@ export class MapGenerator {
     this.scaleFactor = scaleFactor;
     this.towerController = GameController.getInstance().towerController;
     this.path = [];
-    this.grid = [];
+    this.grid = GameController.getInstance().gridMap;
   }
 
   generate(gridWidth: number, gridHeight: number, trimTop: number = 3) {
@@ -45,8 +45,13 @@ export class MapGenerator {
 
         if (y >= trimTop) { // Trim the top
           tile.setInteractive();
-          tile.on("pointerdown", (pointer: any) =>
-            this.handleTileInteraction(x, y, tile, pointer)
+          tile.on("pointerdown", (pointer: any) => {
+            if (!tile.occupied) {
+              this.towerController.placeTower(x, y, this.tileSize, this.scaleFactor);
+            } else {
+              console.log("Tile is already occupied.");
+            }
+          }
           );
         }
         this.grid[y][x] = tile;
@@ -55,23 +60,6 @@ export class MapGenerator {
     return this.grid;
   }
 
-  // ! PLEASE UPDATE THIS FUNCTION TO MATCH CURRENT CODE IMPLEMENTATION
-  handleTileInteraction(x: number, y: number, tile: MapTile, pointer: any) {
-    const currentTime = pointer.downTime;
-    const timeSinceLastClick = currentTime - this.towerController.lastClickTime;
-
-    if (timeSinceLastClick < this.towerController.clickThreshold) {
-      // this.towerController.sellTower(x, y, tile, this.tileSize);
-    } else {
-      if (!tile.occupied) {
-        this.towerController.placeTower(x, y, tile, this.tileSize, this.scaleFactor);
-      } else {
-        console.log("Tile is already occupied.");
-      }
-    }
-
-    this.towerController.lastClickTime = currentTime;
-  }
 
   definePath(grid: MapTile[][], points: Phaser.Math.Vector2[]): Phaser.Curves.Line[] {
     console.log("Path points:", points);

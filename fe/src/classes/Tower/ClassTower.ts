@@ -2,8 +2,8 @@ import { BaseTower, LevelData } from "./BaseTower";
 import { TowerSkill } from "./TowerSkill";
 
 export class ClassTower extends BaseTower {
-    constructor(scene: Phaser.Scene) {
-        super(scene, 10, 5, 1.2, 5, 5, "");
+    constructor(scene: Phaser.Scene, pos?: Phaser.Math.Vector2) {
+        super(scene, pos, 10, 5, 1.2, 5, 5, "");
         this.levelData = this.initializeLevelData();
         this.setTexture(this.levelData[0].sprite);
     }

@@ -23,7 +23,7 @@ export class WaveController {
         this.currentWave = GameController.getInstance().currentWave;
         this.maxWave = maxWave;
         this.mapGen = mapGen;
-        this.activeEnemies = GameController.getInstance().activeEnemies;
+        this.activeEnemies = GameController.getInstance().activeEnemiesList;
         this.waveText = this.scene.add
             .text(1000, 20, `${'Wave ' + this.currentWave + '/' + this.maxWave}`, {
                 fontFamily: 'PressStart2P',
