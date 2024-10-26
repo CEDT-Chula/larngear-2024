@@ -6,6 +6,12 @@ import { MapGenerator, MapTile } from "./MapGenerator";
 import { PlTower } from "../Tower/PlTower";
 import { GameUI } from "./GameUI";
 import { IdeTower } from "../Tower/ideTower";
+import { AITower } from "../Tower/AITower";
+import { CliTower } from "../Tower/CliTower";
+import { DataBaseTower } from "../Tower/DataBaseTower";
+import { MeetingTower } from "../Tower/MeetingTower";
+import { SearchTower } from "../Tower/SearchTower";
+
 
 export class GameController {
 	private static instance: GameController;
@@ -20,7 +26,9 @@ export class GameController {
 	enemiesGroup: Phaser.Physics.Arcade.Group | null;
 	currentWave: number;
 	enemyPerWave: number;
+	enemyKilled: number;
 	playerHealth: number;
+	accumCoin: number;
 	coin: number;
 	coinPerKill: number;
 
@@ -49,9 +57,11 @@ export class GameController {
 		this.isPause = false;
 		this.timeSpeedBuffer = 1;
 		this.currentWave = 1;
-		this.enemyPerWave = 20;
+		this.enemyPerWave = 30; // TODO : 30 is for testing
+		this.enemyKilled = 0;
 		this.playerHealth = 30;
-		this.coin = 500;
+		this.accumCoin = 0;
+		this.coin = 1000;
 		this.coinPerKill = 20;
 
 		this.activeEnemiesList = [];
@@ -70,7 +80,7 @@ export class GameController {
 		this.moneyDrop_Multiplier = 1;
 
 		this.towerPool_All = [
-			BrowserTower, IdeTower, PlTower
+			BrowserTower, IdeTower, PlTower, AITower, CliTower, DataBaseTower, MeetingTower, SearchTower
 		];
 		this.towerPool_Current = this.towerPool_All;
 	}
@@ -107,7 +117,7 @@ export class GameController {
 		this.currentScene.time.timeScale = this.timeSpeedBuffer;
 	}
 
-	// TODO : Handle Game Win & Lose
+	// TODO : Better UI
 	gameOver(key: string) {
 		this.pause();
 
@@ -121,11 +131,34 @@ export class GameController {
 		);
 		overlay.setOrigin(0.5, 0.5);
 
+		const offsetY = 80;
+
 		const middleText = this.currentScene.add.text(
 			this.currentScene.cameras.main.width / 2,
 			this.currentScene.cameras.main.height / 3,
 			`You ${key}!`,
 			{ fontSize: '48px', color: '#ffffff', fontFamily: 'PressStart2P' }
+		).setOrigin(0.5);
+		
+		const s1Text = this.currentScene.add.text(
+			this.currentScene.cameras.main.width / 2,
+			this.currentScene.cameras.main.height / 3 + offsetY,
+			`You survived: ${this.currentWave} waves`,
+			{ fontSize: '24px', color: '#ffffff', fontFamily: 'PressStart2P' }
+		).setOrigin(0.5);
+
+		const s2Text = this.currentScene.add.text(
+			this.currentScene.cameras.main.width / 2,
+			this.currentScene.cameras.main.height / 3 + offsetY * 2,
+			`You earned: ${this.accumCoin} coin`,
+			{ fontSize: '24px', color: '#ffffff', fontFamily: 'PressStart2P' }
+		).setOrigin(0.5);
+
+		const s3Text = this.currentScene.add.text(
+			this.currentScene.cameras.main.width / 2,
+			this.currentScene.cameras.main.height / 3 + offsetY * 3,
+			`You killed: ${this.enemyKilled} enemies`,
+			{ fontSize: '24px', color: '#ffffff', fontFamily: 'PressStart2P' }
 		).setOrigin(0.5);
 
 		const button = this.currentScene.add.text(
@@ -137,7 +170,7 @@ export class GameController {
 				color: '#FFFFFF',
 				backgroundColor: '#000000',
 				fontFamily: 'PressStart2P',
-				padding: { left: 5, right: 5, top: 5, bottom: 5 },
+				padding: { left: 10, right: 10, top: 10, bottom: 10 },
 			}
 		).setOrigin(0.5).setInteractive();
 

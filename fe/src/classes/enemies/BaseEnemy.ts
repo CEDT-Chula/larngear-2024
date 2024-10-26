@@ -109,12 +109,13 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
         console.log(this.sprite, " reached the end!");
         this.isAlive = false;
         this.removeFromActive();
-        this.emit("destroyed")
-
+        
         GameController.getInstance().playerHealth -= this.attack;
-
+        
         if (GameController.getInstance().playerHealth <= 0) {
             GameController.getInstance().gameOver('lose');
+        } else {
+            this.emit("destroyed")
         }
 
         this.destroy(true);

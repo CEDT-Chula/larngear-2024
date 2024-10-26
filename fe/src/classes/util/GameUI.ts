@@ -26,6 +26,7 @@ export class GameUI {
 
 	public static increaseCoin(amount: number) {
 		GameController.getInstance().coin += amount;
+		GameController.getInstance().accumCoin += amount;
 		this.updateCoinText();
 	}
 
