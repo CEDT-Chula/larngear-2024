@@ -13,7 +13,7 @@ export class TowerController {
 	towerPool: (new (scene: Phaser.Scene) => BaseTower)[];
 
 	// Map to track placed towers by their positions
-	towersMap: Map<string, BaseTower>;
+	towersMap: Map<Phaser.Math.Vector2, BaseTower>;
 
 	constructor(scene: Phaser.Scene) {
 		this.scene = scene;
@@ -21,7 +21,7 @@ export class TowerController {
 		this.sellingPrices = [80, 160, 240, 320, 400]; // Selling prices for towers Lv1 to Lv5
 		this.towerPool = GameController.getInstance().towerPool_Current;
 
-		this.towersMap = new Map<string, BaseTower>();
+		this.towersMap = GameController.getInstance().towersMap;
 
 		this.lastClickTime = 0;
 		this.clickThreshold = 300; // Time threshold in milliseconds for double-click
@@ -47,7 +47,7 @@ export class TowerController {
 		newTower.placeRangeCircle();
 
 		// Keep track of the tower position
-		const towerKey = `${x},${y}`;
+		const towerKey = new Phaser.Math.Vector2(x, y);
 		this.towersMap.set(towerKey, newTower);
 
 		tile.occupied = true;
@@ -61,7 +61,7 @@ export class TowerController {
 			return;
 		}
 
-		const towerKey = `${x},${y}`;
+		const towerKey = new Phaser.Math.Vector2(x, y);
 		const tower = this.towersMap.get(towerKey);
 
 		if (tower) {
