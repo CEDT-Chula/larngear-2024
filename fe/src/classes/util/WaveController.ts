@@ -54,6 +54,7 @@ export class WaveController {
     }
 
     checkWaveCleared() {
+        GameController.getInstance().enemyKilled++;
         if (this.activeEnemies.length <= 0) {
             console.log(`Wave ${this.currentWave} cleared!`);
             this.currentWave++;
@@ -105,24 +106,24 @@ export class WaveController {
             popupElements.push(enemyImage);
 
             const titleText = this.scene.add.text(textX, imageY - 60, choice.title, {
-                    fontFamily: 'PressStart2P',
-                    fontSize: '24px',
-                    color: '#FFDD00',
-                }).setDepth(11);
+                fontFamily: 'PressStart2P',
+                fontSize: '24px',
+                color: '#FFDD00',
+            }).setDepth(11);
             popupElements.push(titleText);
 
             const debuffText = this.scene.add.text(textX, imageY - 10, choice.debuff, {
-                    fontFamily: 'PressStart2P',
-                    fontSize: '18px',
-                    color: '#FF4545',
-                }).setDepth(11);
+                fontFamily: 'PressStart2P',
+                fontSize: '18px',
+                color: '#FF4545',
+            }).setDepth(11);
             popupElements.push(debuffText);
 
             const buffText = this.scene.add.text(textX, imageY + 40, choice.buff, {
-                    fontFamily: 'PressStart2P',
-                    fontSize: '18px',
-                    color: '#45FF58',
-                }).setDepth(11);
+                fontFamily: 'PressStart2P',
+                fontSize: '18px',
+                color: '#45FF58',
+            }).setDepth(11);
             popupElements.push(buffText);
 
             const button = this.scene.add.rectangle(imageX, imageY, 900, 200, 0xFFFFFF, 0.1)

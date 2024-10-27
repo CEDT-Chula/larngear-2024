@@ -5,7 +5,7 @@ import { TowerController } from "./TowerController";
 import { MapGenerator, MapTile } from "./MapGenerator";
 import { PlTower } from "../Tower/PlTower";
 import { GameUI } from "./GameUI";
-import { IdeTower } from "../Tower/ideTower";
+import { IdeTower } from "../Tower/IdeTower";
 import { AITower } from "../Tower/AITower";
 import { CliTower } from "../Tower/CliTower";
 import { DataBaseTower } from "../Tower/DataBaseTower";
