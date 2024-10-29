@@ -16,6 +16,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 	scene!: Phaser.Scene;
 	range: number;
 	rangeCircle: Phaser.GameObjects.Arc | undefined;
+	rangeCheckEvent: Phaser.Time.TimerEvent | undefined;
 	attack: number;
 	currentLevel: number;
 	maxLevel: number;
@@ -72,6 +73,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		this.on("destroy", () => {
 			this.clearPopup();
 			this.rangeCircle?.destroy();
+			this.rangeCheckEvent?.destroy();
 		});
 	}
 
@@ -82,7 +84,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
         const rangeBody = this.rangeCircle.body as Phaser.Physics.Arcade.Body;
         rangeBody.setCircle(this.range);
 
-        this.scene.time.addEvent({
+        this.rangeCheckEvent = this.scene.time.addEvent({
             delay: 100,
             callback: this.checkForEnemiesInRange,
             callbackScope: this,
