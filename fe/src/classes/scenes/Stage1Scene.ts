@@ -150,13 +150,16 @@ export class Stage1Scene extends Phaser.Scene {
   handleSpeedToggle() {
     if (this.time.timeScale == 1) {
       this.time.timeScale = 2
+    } else if (this.time.timeScale == 2){
+      this.time.timeScale = 0
     } else {
       this.time.timeScale = 1
     }
 
     console.log(this.time.timeScale)
 
-    this.speedButton.setText("Speed x" + this.time.timeScale)
+    if (this.time.timeScale != 0) this.speedButton.setText("Speed x" + this.time.timeScale)
+      else this.speedButton.setText("Paused")
   }
 
   resize() {
