@@ -1,5 +1,6 @@
 import { CakeEnemy } from "../../enemies/CakeEnemey";
 import { GameController } from "../GameController";
+import { GameUI } from "../GameUI";
 import { WaveEffect } from "./WaveEffect";
 
 export class DuplicateWave extends WaveEffect {
@@ -8,7 +9,7 @@ export class DuplicateWave extends WaveEffect {
     }
 
     effect(): void {
-        GameController.getInstance().coin += 100;
+        GameUI.increaseCoin(100)
         GameController.getInstance().isPoisonImmune = true;
     }
 }

@@ -36,7 +36,7 @@ export class MapGenerator {
     this.grid = GameController.getInstance().gridMap;
   }
 
-  generate(gridWidth: number, gridHeight: number, trimTop: number = 3) {
+  generate(gridWidth: number, gridHeight: number, trimTop: number = 4) {
     for (let y = 0; y < gridHeight; y++) {
       this.grid[y] = [];
       for (let x = 0; x < gridWidth; x++) {
@@ -45,14 +45,15 @@ export class MapGenerator {
 
         if (y >= trimTop) { // Trim the top
           tile.setInteractive();
-          tile.on("pointerdown", (pointer: any) => {
-            if (!tile.occupied) {
-              this.towerController.placeTower(x, y, this.tileSize, this.scaleFactor);
-            } else {
-              console.log("Tile is already occupied.");
+          tile.on("pointerup", (pointer: any) => {
+            if (!GameController.getInstance().isDragging) {
+              if (!tile.occupied) {
+                this.towerController.placeTower(x, y, this.tileSize, this.scaleFactor);
+              } else {
+                console.log("Tile is already occupied.");
+              }
             }
-          }
-          );
+          });
         }
         this.grid[y][x] = tile;
       }

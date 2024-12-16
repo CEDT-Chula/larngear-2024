@@ -15,7 +15,8 @@ export class Stage1Scene extends Phaser.Scene {
   heartImage!: Phaser.GameObjects.Image;
   healthText!: Phaser.GameObjects.Text;
   coinIcon!: Phaser.GameObjects.Image;
-	coinText!: Phaser.GameObjects.Text;
+  coinText!: Phaser.GameObjects.Text;
+  popupElements!: Phaser.GameObjects.GameObject[];
 
   constructor() {
     super({ key: "Stage1Scene" });
@@ -65,8 +66,63 @@ export class Stage1Scene extends Phaser.Scene {
 
     const mapGen = new MapGenerator(this, gameController.tileSize, gameController.scaleFactor);
     const wave = new WaveController(this, gameController.enemyPerWave, mapGen);
+    this.popupElements = wave.popupElements;
     const grid = mapGen.generate(20, 17);
     const emitter = new ParticleEmitter(this, "");
+
+    const screenWidth = this.scale.width;
+    const screenHeight = this.scale.height;
+
+    const worldWidth = grid[0].length * gameController.tileSize;
+    const worldHeight = grid.length * gameController.tileSize;
+
+    this.cameras.main.setBounds(0, 0, worldWidth, worldHeight);
+    this.cameras.main.setViewport(0, 0, screenWidth, screenHeight);
+
+    console.log("Camera Size:", screenWidth, screenHeight);
+    console.log("World Size:", worldWidth, worldHeight);
+
+    // *** Zoom ***
+    const minZoom = Math.max(screenWidth / worldWidth, screenHeight / worldHeight);
+    this.cameras.main.setZoom(minZoom);
+
+    this.input.on("wheel", (pointer: Phaser.Input.Pointer, gameObjects: any, deltaX: any, deltaY: any) => {
+      const zoomSpeed = 0.3;
+      const newZoom = Phaser.Math.Clamp(this.cameras.main.zoom - deltaY * zoomSpeed * 0.001, minZoom, 2);
+
+      this.cameras.main.setZoom(newZoom);
+    });
+
+
+    // *** Drag ***
+    let dragThreshold = 10;
+    let dragStartX = 0;
+    let dragStartY = 0;
+
+    this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+      gameController.isDragging = false;
+      dragStartX = pointer.worldX; // Use world coordinates for zoom consistency
+      dragStartY = pointer.worldY;
+    });
+
+    this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
+      if (pointer.isDown) {
+        const deltaX = dragStartX - pointer.worldX;
+        const deltaY = dragStartY - pointer.worldY;
+
+        this.cameras.main.scrollX += deltaX;
+        this.cameras.main.scrollY += deltaY;
+
+        dragStartX = pointer.worldX;
+        dragStartY = pointer.worldY;
+
+        const distance = Phaser.Math.Distance.Between(dragStartX, dragStartY, pointer.x, pointer.y);
+        if (distance > dragThreshold) {
+          gameController.isDragging = true;
+        }
+      }
+    });
+
 
     const points: Phaser.Math.Vector2[] = [
       new Phaser.Math.Vector2(2, 4), // Starting Point
@@ -97,54 +153,55 @@ export class Stage1Scene extends Phaser.Scene {
     this.events.emit("wait_confirm_release_wave");
 
     this.coinIcon = this.add
-			.image(32, 32, "coin")
-			.setScale(3)
-			.setDepth(1);
+      .image(32, 32, "coin")
+      .setScale(3)
+      .setDepth(1);
 
-		this.coinText = this.add
-			.text(68, 20, `${GameController.getInstance().coin}`, {
-				fontFamily: "PressStart2P",
-				fontSize: "30px",
-				color: "#ffd700", // Gold color
-			})
-			.setDepth(1);
-
-    gameUi.coinIcon = this.coinIcon;
-    gameUi.coinText = this.coinText;
+    this.coinText = this.add
+      .text(68, 20, `${GameController.getInstance().coin}`, {
+        fontFamily: "PressStart2P",
+        fontSize: "30px",
+        color: "#ffd700", // Gold color
+      })
+      .setDepth(1);
 
     this.speedButton = this.add
       .text(
-        this.cameras.main.width - 150,
-        this.cameras.main.height - 50,
+        worldWidth - 150,
+        worldHeight - 50,
         "Speed x1",
         {
-        fontSize: "24px",
-        fontFamily: "PressStart2P",
-        backgroundColor: "#000",
-        color: "#fff",
-        padding: { left: 10, right: 10, top: 5, bottom: 5 },
-      }
+          fontSize: "24px",
+          fontFamily: "PressStart2P",
+          backgroundColor: "#000",
+          color: "#fff",
+          padding: { left: 10, right: 10, top: 5, bottom: 5 },
+        }
       )
       .setOrigin(0.5)
       .setInteractive()
       .on("pointerdown", this.handleSpeedToggle.bind(this));
 
-    
+
     this.heartImage = this.add.image(200, 32, "heart").setScale(3)
 
     this.healthText = this.add.text(240, 20, GameController.getInstance().playerHealth.toString(),
       {
-      fontSize: "30px",
-      fontFamily: "PressStart2P",
-      color: "#fe0000",
-    }
+        fontSize: "30px",
+        fontFamily: "PressStart2P",
+        color: "#fe0000",
+      }
     );
 
-    this.input.on("pointerdown", (pointer: any) => {
-      emitter.play(12, pointer.x, pointer.y);
-    });
+    gameUi.coinIcon = this.coinIcon;
+    gameUi.coinText = this.coinText;
+    gameUi.heartIcon = this.heartImage;
+    gameUi.healthText = this.healthText;
+    gameUi.speedButton = this.speedButton;
 
-    this.scale.on("resize", this.resize.bind(this));
+    this.input.on("pointerdown", (pointer: any) => {
+      emitter.play(12, pointer.worldX, pointer.worldY);
+    });
   }
 
   handleSpeedToggle() {
@@ -159,14 +216,9 @@ export class Stage1Scene extends Phaser.Scene {
     this.speedButton.setText("Speed x" + this.time.timeScale)
   }
 
-  resize() {
-    this.speedButton.setPosition(
-      this.cameras.main.width - 150,
-      this.cameras.main.height - 50
-    );
-  }
-
   update() {
     this.healthText.setText(GameController.getInstance().playerHealth.toString())
+
+    GameUI.getInstance().alignCamera(this.cameras.main)
   }
 }
