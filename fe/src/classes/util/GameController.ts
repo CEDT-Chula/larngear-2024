@@ -36,6 +36,7 @@ export class GameController {
 	activeEnemiesList: BaseEnemy[]; // store enemies currently in the scene
 	towerList: BaseTower[];
 	gridMap: MapTile[][]; // y, x notation
+	isDragging: boolean;
 
 	// Game Config
 	tileSize: number;
@@ -57,16 +58,17 @@ export class GameController {
 		this.isPause = false;
 		this.timeSpeedBuffer = 1;
 		this.currentWave = 1;
-		this.enemyPerWave = 30; // TODO : 30 is for testing
+		this.enemyPerWave = 10; // TODO : 30 is for testing
 		this.enemyKilled = 0;
 		this.playerHealth = 30;
 		this.accumCoin = 0;
-		this.coin = 1000;
-		this.coinPerKill = 20;
+		this.coin = 500;
+		this.coinPerKill = 10;
 
 		this.activeEnemiesList = [];
 		this.towerList = [];
 		this.gridMap = [];
+		this.isDragging = false;
 
 		this.isPoisonImmune = false;
 		this.isBurnImmune = false;

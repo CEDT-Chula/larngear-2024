@@ -1,6 +1,7 @@
 import { BaseEnemy } from "../enemies/BaseEnemy";
 import { IceCreamEnemy } from "../enemies/IceCreamEnemy";
 import { GameController } from "./GameController";
+import { GameUI } from "./GameUI";
 import { MapGenerator } from "./MapGenerator";
 import { BiggerWave } from "./waves/BiggerWave";
 import { DuplicateWave } from "./waves/DuplicateWave";
@@ -30,6 +31,8 @@ export class WaveController {
                 fontSize: '30px',
             })
             .setDepth(1);
+
+        GameUI.getInstance().waveText = this.waveText;
 
         this.popupElements = [];
     }
@@ -75,7 +78,9 @@ export class WaveController {
             let mockBoss: BaseEnemy[] = [
                 new IceCreamEnemy(this.scene),
             ]
-            this.releaseWave(mockBoss);
+            console.log("wait_confirm_release_wave fired");
+            this.scene.events.emit("wait_confirm_release_wave");
+            this.confirmReleaseWave(mockBoss);
         } else {
             this.showEnemySelectionPopup();
         }
@@ -85,7 +90,7 @@ export class WaveController {
         const popupElements: Phaser.GameObjects.GameObject[] = [];
 
         const popupBg = this.scene.add
-            .rectangle(0, 0, this.scene.scale.width, this.scene.scale.height, 0x000000, 0.8)
+            .rectangle(0, 0, 1280, 1088, 0x000000, 0.8)
             .setOrigin(0)
             .setDepth(9)
             .setInteractive();
@@ -131,10 +136,12 @@ export class WaveController {
                 .setDepth(10)
                 .setInteractive();
 
-            button.on('pointerdown', () => {
-                this.onEnemyTypeSelected(choice);
-                console.log("wait_confirm_release_wave fired");
-                this.scene.events.emit("wait_confirm_release_wave");
+            button.on('pointerup', () => {
+                if (!GameController.getInstance().isDragging) {
+                    this.onEnemyTypeSelected(choice);
+                    console.log("wait_confirm_release_wave fired");
+                    this.scene.events.emit("wait_confirm_release_wave");
+                }
             });
 
             popupElements.push(button);

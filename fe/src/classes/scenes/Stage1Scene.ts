@@ -16,8 +16,7 @@ export class Stage1Scene extends Phaser.Scene {
   healthText!: Phaser.GameObjects.Text;
   coinIcon!: Phaser.GameObjects.Image;
   coinText!: Phaser.GameObjects.Text;
-
-  private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
+  popupElements!: Phaser.GameObjects.GameObject[];
 
   constructor() {
     super({ key: "Stage1Scene" });
@@ -67,6 +66,7 @@ export class Stage1Scene extends Phaser.Scene {
 
     const mapGen = new MapGenerator(this, gameController.tileSize, gameController.scaleFactor);
     const wave = new WaveController(this, gameController.enemyPerWave, mapGen);
+    this.popupElements = wave.popupElements;
     const grid = mapGen.generate(20, 17);
     const emitter = new ParticleEmitter(this, "");
 
@@ -77,21 +77,17 @@ export class Stage1Scene extends Phaser.Scene {
     const worldHeight = grid.length * gameController.tileSize;
 
     this.cameras.main.setBounds(0, 0, worldWidth, worldHeight);
-
     this.cameras.main.setViewport(0, 0, screenWidth, screenHeight);
 
     console.log("Camera Size:", screenWidth, screenHeight);
     console.log("World Size:", worldWidth, worldHeight);
-
-    this.cursors = this.input.keyboard?.createCursorKeys();
-
 
     // *** Zoom ***
     const minZoom = Math.max(screenWidth / worldWidth, screenHeight / worldHeight);
     this.cameras.main.setZoom(minZoom);
 
     this.input.on("wheel", (pointer: Phaser.Input.Pointer, gameObjects: any, deltaX: any, deltaY: any) => {
-      const zoomSpeed = 0.05;
+      const zoomSpeed = 0.3;
       const newZoom = Phaser.Math.Clamp(this.cameras.main.zoom - deltaY * zoomSpeed * 0.001, minZoom, 2);
 
       this.cameras.main.setZoom(newZoom);
@@ -99,10 +95,12 @@ export class Stage1Scene extends Phaser.Scene {
 
 
     // *** Drag ***
+    let dragThreshold = 10;
     let dragStartX = 0;
     let dragStartY = 0;
 
     this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+      gameController.isDragging = false;
       dragStartX = pointer.worldX; // Use world coordinates for zoom consistency
       dragStartY = pointer.worldY;
     });
@@ -117,6 +115,11 @@ export class Stage1Scene extends Phaser.Scene {
 
         dragStartX = pointer.worldX;
         dragStartY = pointer.worldY;
+
+        const distance = Phaser.Math.Distance.Between(dragStartX, dragStartY, pointer.x, pointer.y);
+        if (distance > dragThreshold) {
+          gameController.isDragging = true;
+        }
       }
     });
 
@@ -162,9 +165,6 @@ export class Stage1Scene extends Phaser.Scene {
       })
       .setDepth(1);
 
-    gameUi.coinIcon = this.coinIcon;
-    gameUi.coinText = this.coinText;
-
     this.speedButton = this.add
       .text(
         worldWidth - 150,
@@ -193,6 +193,12 @@ export class Stage1Scene extends Phaser.Scene {
       }
     );
 
+    gameUi.coinIcon = this.coinIcon;
+    gameUi.coinText = this.coinText;
+    gameUi.heartIcon = this.heartImage;
+    gameUi.healthText = this.healthText;
+    gameUi.speedButton = this.speedButton;
+
     this.input.on("pointerdown", (pointer: any) => {
       emitter.play(12, pointer.worldX, pointer.worldY);
     });
@@ -212,5 +218,7 @@ export class Stage1Scene extends Phaser.Scene {
 
   update() {
     this.healthText.setText(GameController.getInstance().playerHealth.toString())
+
+    GameUI.getInstance().alignCamera(this.cameras.main)
   }
 }

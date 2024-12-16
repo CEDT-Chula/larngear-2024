@@ -59,8 +59,9 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		this.bulletSprite = bulletSprite;
 		this.setInteractive();
 
-		this.on("pointerdown", () => {
-			this.showPopup();
+		this.on("pointerup", () => {
+			if (!GameController.getInstance().isDragging)
+				this.showPopup();
 		});
 		this.on("pointerover", () => {
 			this.showRangeCircle();
@@ -78,33 +79,33 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 	}
 
 	placeRangeCircle() {
-        this.rangeCircle = this.scene.add.circle(this.x, this.y, this.range, 0x00ff00, 0.2);
-        this.hideRangeCircle();
-        this.scene.physics.world.enable(this.rangeCircle);
-        const rangeBody = this.rangeCircle.body as Phaser.Physics.Arcade.Body;
-        rangeBody.setCircle(this.range);
+		this.rangeCircle = this.scene.add.circle(this.x, this.y, this.range, 0x00ff00, 0.2);
+		this.hideRangeCircle();
+		this.scene.physics.world.enable(this.rangeCircle);
+		const rangeBody = this.rangeCircle.body as Phaser.Physics.Arcade.Body;
+		rangeBody.setCircle(this.range);
 
-        this.rangeCheckEvent = this.scene.time.addEvent({
-            delay: 100,
-            callback: this.checkForEnemiesInRange,
-            callbackScope: this,
-            loop: true
-        });
-    }
+		this.rangeCheckEvent = this.scene.time.addEvent({
+			delay: 100,
+			callback: this.checkForEnemiesInRange,
+			callbackScope: this,
+			loop: true
+		});
+	}
 
-    checkForEnemiesInRange = () => {
-        if (!this.readyToFire) return;
+	checkForEnemiesInRange = () => {
+		if (!this.readyToFire) return;
 
-        const activeEnemies = GameController.getInstance().activeEnemiesList;
-        if (!activeEnemies || activeEnemies.length === 0) return;
+		const activeEnemies = GameController.getInstance().activeEnemiesList;
+		if (!activeEnemies || activeEnemies.length === 0) return;
 
-        for (let enemy of activeEnemies) {
-            if (enemy instanceof BaseEnemy && Phaser.Math.Distance.Between(this.x, this.y, enemy.x, enemy.y) <= this.range && enemy.isAlive) {
-                this.fire(enemy);
-                break;
-            }
-        }
-    }
+		for (let enemy of activeEnemies) {
+			if (enemy instanceof BaseEnemy && Phaser.Math.Distance.Between(this.x, this.y, enemy.x, enemy.y) <= this.range && enemy.isAlive) {
+				this.fire(enemy);
+				break;
+			}
+		}
+	}
 
 	hideRangeCircle() {
 		if (this.rangeCircle) {
@@ -119,21 +120,21 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 	}
 
 	fire(target: BaseEnemy) {
-        if (this.readyToFire) {
-            const bullet = new BaseProjectTile(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target);
-            bullet.startProjectile(this.x, this.y);
-            this.readyToFire = false;
-            this.scene.time.delayedCall((this.reloadTime * 1000) / this.scene.time.timeScale, () => {
-                this.readyToFire = true;
-            });
-            target.once("destroy", () => {
-                bullet.destroy();
-            });
-            this.once("destroy", () => {
-                bullet.destroy();
-            });
-        }
-    }
+		if (this.readyToFire) {
+			const bullet = new BaseProjectTile(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target);
+			bullet.startProjectile(this.x, this.y);
+			this.readyToFire = false;
+			this.scene.time.delayedCall((this.reloadTime * 1000) / this.scene.time.timeScale, () => {
+				this.readyToFire = true;
+			});
+			target.once("destroy", () => {
+				bullet.destroy();
+			});
+			this.once("destroy", () => {
+				bullet.destroy();
+			});
+		}
+	}
 
 	initializeLevelData(): LevelData[] {
 		throw new Error("initializeLevelData must be implemented in derived classes.");
@@ -150,16 +151,16 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		}
 	}
 
-    levelup() {
-        if (this.currentLevel < this.maxLevel) {
-            this.currentLevel++;
-            this.applyLevelData();
-            this.setTexture(this.levelData[this.currentLevel - 1].sprite);
-            console.log(`Tower upgraded to level ${this.currentLevel}.`);
-        } else {
-            console.log("Tower is already at maximum level.");
-        }
-    }
+	levelup() {
+		if (this.currentLevel < this.maxLevel) {
+			this.currentLevel++;
+			this.applyLevelData();
+			this.setTexture(this.levelData[this.currentLevel - 1].sprite);
+			console.log(`Tower upgraded to level ${this.currentLevel}.`);
+		} else {
+			console.log("Tower is already at maximum level.");
+		}
+	}
 
 	upgradeTower(anotherTower: BaseTower) {
 		if (anotherTower instanceof BaseTower && this.currentLevel < this.maxLevel) {
@@ -210,14 +211,16 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		const sellButton = this.createButton(
 			"Sell",
 			() => {
-				this.confirmAction("sell");
+				if (!GameController.getInstance().isDragging)
+					this.confirmAction("sell");
 			},
 			-30
 		);
 		const upgradeButton = this.createButton(
 			"Upgrade",
 			() => {
-				this.confirmAction("upgrade");
+				if (!GameController.getInstance().isDragging)
+					this.confirmAction("upgrade");
 			},
 			30
 		);
@@ -234,7 +237,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 			.setDepth(10)
 			.setInteractive();
 
-		button.on("pointerdown", callback);
+		button.on("pointerup", callback);
 
 		const text = this.scene.add
 			.text(this.x, this.y + offsetY, label, {

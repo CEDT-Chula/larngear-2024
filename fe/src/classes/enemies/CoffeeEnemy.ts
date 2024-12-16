@@ -7,7 +7,7 @@ export class CoffeeEnemy extends BaseEnemy {
         Name: string = "Coffee",
         Name_Color: string = "#6F4E37", 
         maxHealth: number = 40,          
-        speed: number = 800,            
+        speed: number = 600,            
         attack: number = 1,           
         isPoisonResist: boolean = false, 
         isBurnResist: boolean = false,
