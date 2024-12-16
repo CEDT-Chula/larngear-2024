@@ -6,11 +6,12 @@ const Stage1: React.FC = () => {
   useEffect(() => {
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
+      parent: "stage-1",
       width: 1280, // Fixed width
       height: 1088, // Fixed height
       pixelArt: true,
       scale: {
-        mode: Phaser.Scale.FIT,
+        mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH,
       },
       physics: {
