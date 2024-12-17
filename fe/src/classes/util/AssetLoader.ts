@@ -75,10 +75,19 @@ export class AssetLoader {
     this.scene.load.image("choco", "src/assets/enemies/choco.png");
     this.scene.load.image("cake", "src/assets/enemies/cake.png");
     this.scene.load.image("coffee", "src/assets/enemies/coffee.png");
+    this.scene.load.image("coke", "src/assets/enemies/coke.png");
   }
 
   preloadOthers() {
     this.scene.load.image("coin", "src/assets/coin.png");
     this.scene.load.image("heart", "src/assets/heart.png");
+
+    this.scene.load.image("bomb", "src/assets/effects/bomb.png")
+    this.scene.load.image("fire", "src/assets/effects/fire.png")
+    this.scene.load.image("poison", "src/assets/effects/poison.png")
+    this.scene.load.image("slow", "src/assets/effects/slow.png")
+    this.scene.load.image("smoke", "src/assets/effects/smoke.png")
+    this.scene.load.image("ricochet", "src/assets/effects/ricochet.png")
+    this.scene.load.image("crit", "src/assets/effects/crit.png")
   }
 }

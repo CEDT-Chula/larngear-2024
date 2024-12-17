@@ -1,62 +1,85 @@
-import { TowerSkill } from "./TowerSkill";
-import { TowerPassive } from "./TowerPassive";
 import { BaseProjectTile } from "../projectile/BaseProjectile";
 import { BaseEnemy } from "../enemies/BaseEnemy";
 import { GameController } from "../util/GameController";
+import { RicochetBullet } from "../projectile/RicochetBullet";
+import { ExplosionBullet } from "../projectile/ExplosionBullet";
+import { BurnBullet } from "../projectile/BurnBullet";
+import { NormalBullet } from "../projectile/NormalBullet";
+import { PoisonBullet } from "../projectile/PoisonBullet";
+import { SlowBullet } from "../projectile/SlowBullet";
+import { CriticalBullet } from "../projectile/CritialBullet";
+
+type BulletType = "normal" | "ricochet" | "explosion" | "burn" | "poison" | "slow" | "crit"
 
 export interface LevelData {
 	range: number;
 	attack: number;
 	reloadTime: number; // how fast it can shoot
-	targetCount: number; // how many target it can shoot at once
+	maxTarget: number; // how many target it can shoot at once
 	sprite: string;
+
+	explosionRange?: number;
+	poisonDamage?: number;
+	poisonDuration?: number;
+	burnDamage?: number;
+	burnDuration?: number;
+	slowAmount?: number;
+	slowDuration?: number;
+	ricochetCount?: number;
+	critChance?: number;
+	critMultiplier?: number;
 }
 
 export class BaseTower extends Phaser.GameObjects.Sprite {
 	scene!: Phaser.Scene;
-	range: number;
+	range!: number;
 	rangeCircle: Phaser.GameObjects.Arc | undefined;
 	rangeCheckEvent: Phaser.Time.TimerEvent | undefined;
-	attack: number;
+	attack!: number;
 	currentLevel: number;
 	maxLevel: number;
-	skill: TowerSkill;
-	passive: TowerPassive;
 	levelData: LevelData[];
-	reloadTime: number;
+	reloadTime!: number;
 	readyToFire: boolean = true;
-	targetCount: number;
+	maxTarget!: number;
 	bulletSpeed: number = 1500;
 	bulletSprite: string;
+
+	// custom
+	explosionRange?: number;
+	poisonDamage?: number;
+	poisonDuration?: number;
+	burnDamage?: number;
+	burnDuration?: number;
+	slowAmount?: number;
+	slowDuration?: number;
+	ricochetCount?: number;
+	critChance?: number;
+	critMultiplier?: number;
 
 	pos: Phaser.Math.Vector2;
 
 	popupElements: any[] = [];
 	popupTimeout: NodeJS.Timeout | null = null;
 
+	bulletType: BulletType
+
 	constructor(
 		scene: Phaser.Scene,
 		pos: Phaser.Math.Vector2 | undefined,
-		range: number,
-		attack: number,
-		reloadTime: number,
-		targetCount: number,
 		maxLvl: number,
-		bulletSprite: string
+		bulletSprite: string,
+		bulletType: BulletType = "normal"
 	) {
 		super(scene, 0, 0, "");
 		this.pos = pos ?? new Phaser.Math.Vector2(0, 0);
-		this.range = range;
-		this.attack = attack;
-		this.reloadTime = reloadTime;
-		this.targetCount = targetCount;
 		this.currentLevel = 1;
 		this.maxLevel = maxLvl;
-		this.skill = new TowerSkill(0);
-		this.passive = new TowerPassive();
 		this.levelData = this.initializeLevelData();
+		this.applyLevelData()
 		this.setTexture(this.levelData[0].sprite);
 		this.bulletSprite = bulletSprite;
+		this.bulletType = bulletType
 		this.setInteractive();
 
 		this.on("pointerup", () => {
@@ -79,7 +102,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 	}
 
 	placeRangeCircle() {
-		this.rangeCircle = this.scene.add.circle(this.x, this.y, this.range, 0x00ff00, 0.2);
+		this.rangeCircle = this.scene.add.circle(this.x, this.y, this.range, 0x00fffb, 0.2);
 		this.hideRangeCircle();
 		this.scene.physics.world.enable(this.rangeCircle);
 		const rangeBody = this.rangeCircle.body as Phaser.Physics.Arcade.Body;
@@ -93,19 +116,27 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		});
 	}
 
+
 	checkForEnemiesInRange = () => {
 		if (!this.readyToFire) return;
 
 		const activeEnemies = GameController.getInstance().activeEnemiesList;
 		if (!activeEnemies || activeEnemies.length === 0) return;
 
-		for (let enemy of activeEnemies) {
-			if (enemy instanceof BaseEnemy && Phaser.Math.Distance.Between(this.x, this.y, enemy.x, enemy.y) <= this.range && enemy.isAlive) {
-				this.fire(enemy);
-				break;
-			}
+		// Collect targets within range up to the maxTarget limit
+		const targets: BaseEnemy[] = activeEnemies.filter(
+			(enemy) =>
+				enemy instanceof BaseEnemy &&
+				Phaser.Math.Distance.Between(this.x, this.y, enemy.x, enemy.y) <= this.range &&
+				enemy.isAlive
+		).slice(0, this.maxTarget); // Limit to maxTarget enemies
+
+		// Fire at collected targets
+		if (targets.length > 0) {
+			this.fire(targets);
 		}
-	}
+	};
+
 
 	hideRangeCircle() {
 		if (this.rangeCircle) {
@@ -119,22 +150,46 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		}
 	}
 
-	fire(target: BaseEnemy) {
-		if (this.readyToFire) {
-			const bullet = new BaseProjectTile(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target);
+	fire(targets: BaseEnemy[]) {
+		if (!this.readyToFire) return;
+
+		targets.forEach((target) => {
+			let bullet: BaseProjectTile;
+
+			switch (this.bulletType) {
+				case "ricochet":
+					bullet = new RicochetBullet(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target, this.ricochetCount);
+					break;
+				case "explosion":
+					bullet = new ExplosionBullet(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target, this.explosionRange);
+					break;
+				case "burn":
+					bullet = new BurnBullet(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target, this.burnDamage, this.burnDuration);
+					break;
+				case "poison":
+					bullet = new PoisonBullet(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target, this.poisonDamage, this.poisonDuration);
+					break;
+				case "slow":
+					bullet = new SlowBullet(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target, this.slowAmount, this.slowDuration);
+					break;
+				case "crit":
+					bullet = new CriticalBullet(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target, this.critChance, this.critMultiplier);
+					break;
+				default:
+					bullet = new NormalBullet(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target);
+					break;
+			}
+
 			bullet.startProjectile(this.x, this.y);
-			this.readyToFire = false;
-			this.scene.time.delayedCall((this.reloadTime * 1000) / this.scene.time.timeScale, () => {
-				this.readyToFire = true;
-			});
-			target.once("destroy", () => {
-				bullet.destroy();
-			});
-			this.once("destroy", () => {
-				bullet.destroy();
-			});
-		}
+		});
+
+		this.readyToFire = false;
+
+		this.scene.time.delayedCall((this.reloadTime * 1000) / this.scene.time.timeScale, () => {
+			this.readyToFire = true;
+		});
 	}
+
 
 	initializeLevelData(): LevelData[] {
 		throw new Error("initializeLevelData must be implemented in derived classes.");
@@ -146,10 +201,34 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 			this.range = data.range;
 			this.attack = data.attack;
 			this.reloadTime = data.reloadTime;
-			this.targetCount = data.targetCount;
+			this.maxTarget = data.maxTarget;
+
+			this.explosionRange = data.explosionRange;
+			this.poisonDamage = data.poisonDamage;
+			this.poisonDuration = data.poisonDuration;
+			this.burnDamage = data.burnDamage;
+			this.burnDuration = data.burnDuration;
+			this.slowAmount = data.slowAmount;
+			this.slowDuration = data.slowDuration;
+			this.ricochetCount = data.ricochetCount;
+			this.critChance = data.critChance;
+			this.critMultiplier = data.critMultiplier;
+
 			this.setTexture(data.sprite);
+
+			this.updateRangeCircle();
 		}
 	}
+
+	updateRangeCircle() {
+		// Destroy existing range circle and timer event
+		this.rangeCircle?.destroy();
+		this.rangeCheckEvent?.remove();
+
+		// Re-create the range circle
+		this.placeRangeCircle();
+	}
+
 
 	levelup() {
 		if (this.currentLevel < this.maxLevel) {
@@ -175,10 +254,6 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		GameController.getInstance().towerController.sellTower(this)
 	}
 
-	setSkill(skill: TowerSkill) {
-		this.skill = skill;
-	}
-
 	getRange() {
 		return this.range;
 	}
@@ -189,7 +264,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		return this.reloadTime;
 	}
 	getTargetCount() {
-		return this.targetCount;
+		return this.maxTarget;
 	}
 	getCurrentLvl() {
 		return this.currentLevel;

@@ -65,7 +65,9 @@ export class Stage1Scene extends Phaser.Scene {
     gameController.towerController = new TowerController(this);
 
     const mapGen = new MapGenerator(this, gameController.tileSize, gameController.scaleFactor);
-    const wave = new WaveController(this, gameController.enemyPerWave, mapGen);
+    gameController.mapGen = mapGen;
+    const wave = new WaveController(this, gameController.maxWave, mapGen);
+    gameController.waveController = wave;
     this.popupElements = wave.popupElements;
     const grid = mapGen.generate(20, 17);
     const emitter = new ParticleEmitter(this, "");
@@ -200,7 +202,9 @@ export class Stage1Scene extends Phaser.Scene {
     gameUi.speedButton = this.speedButton;
 
     this.input.on("pointerdown", (pointer: any) => {
-      emitter.play(12, pointer.worldX, pointer.worldY);
+      emitter.explode(12, pointer.worldX, pointer.worldY);
+
+      console.log("pointer at", pointer.worldX, pointer.worldY)
     });
   }
 

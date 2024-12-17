@@ -32,4 +32,7 @@ export class CupCakeEnemy extends BaseEnemy {
         );
     }
 
+    summon() {
+        
+    }
 }

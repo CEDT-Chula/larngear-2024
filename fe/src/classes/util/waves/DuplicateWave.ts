@@ -1,4 +1,4 @@
-import { CakeEnemy } from "../../enemies/CakeEnemey";
+import { CakeEnemy } from "../../enemies/CakeEnemy";
 import { GameController } from "../GameController";
 import { GameUI } from "../GameUI";
 import { WaveEffect } from "./WaveEffect";

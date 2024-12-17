@@ -1,9 +1,10 @@
 import { BaseTower, LevelData } from "./BaseTower";
-import { TowerSkill } from "./TowerSkill";
+
+// High damage, low fire-rate, multi-attack
 
 export class DataBaseTower extends BaseTower {
     constructor(scene: Phaser.Scene, pos?: Phaser.Math.Vector2) {
-        super(scene, pos, 300, 5, 1.2, 5, 5, "path");
+        super(scene, pos, 5, "path");
         this.levelData = this.initializeLevelData();
         this.setTexture(this.levelData[0].sprite);
     }
@@ -11,23 +12,23 @@ export class DataBaseTower extends BaseTower {
     initializeLevelData(): LevelData[] {
         return [
             {
-                range: 20, attack: 15, reloadTime: 2, targetCount: 1,
+                range: 300, attack: 30, reloadTime: 2.5, maxTarget: 2,
                 sprite: "db_lv1"
             },
             {
-                range: 25, attack: 20, reloadTime: 1.8, targetCount: 1,
+                range: 300, attack: 50, reloadTime: 3, maxTarget: 2,
                 sprite: "db_lv2"
             },
             {
-                range: 30, attack: 25, reloadTime: 1.6, targetCount: 1,
+                range: 350, attack: 70, reloadTime: 3, maxTarget: 3,
                 sprite: "db_lv3"
             },
             {
-                range: 35, attack: 30, reloadTime: 1.4, targetCount: 1,
+                range: 350, attack: 70, reloadTime: 2.5, maxTarget: 4,
                 sprite: "db_lv4"
             },
             {
-                range: 40, attack: 35, reloadTime: 1.2, targetCount: 1,
+                range: 400, attack: 100, reloadTime: 3.5, maxTarget: 5,
                 sprite: "db_lv5"
             }
         ];
