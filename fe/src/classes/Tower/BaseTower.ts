@@ -1,5 +1,3 @@
-import { TowerSkill } from "./TowerSkill";
-import { TowerPassive } from "./TowerPassive";
 import { BaseProjectTile } from "../projectile/BaseProjectile";
 import { BaseEnemy } from "../enemies/BaseEnemy";
 import { GameController } from "../util/GameController";
@@ -31,8 +29,6 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 	attack: number;
 	currentLevel: number;
 	maxLevel: number;
-	skill: TowerSkill;
-	passive: TowerPassive;
 	levelData: LevelData[];
 	reloadTime: number;
 	readyToFire: boolean = true;
@@ -71,8 +67,6 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		this.targetCount = targetCount;
 		this.currentLevel = 1;
 		this.maxLevel = maxLvl;
-		this.skill = new TowerSkill(0);
-		this.passive = new TowerPassive();
 		this.levelData = this.initializeLevelData();
 		this.setTexture(this.levelData[0].sprite);
 		this.bulletSprite = bulletSprite;
@@ -225,10 +219,6 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 
 	sellTower() {
 		GameController.getInstance().towerController.sellTower(this)
-	}
-
-	setSkill(skill: TowerSkill) {
-		this.skill = skill;
 	}
 
 	getRange() {
