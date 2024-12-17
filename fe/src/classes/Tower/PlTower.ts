@@ -1,5 +1,7 @@
 import { BaseTower, LevelData } from "./BaseTower";
 
+// Slow Bullet
+
 export class PlTower extends BaseTower {
     constructor(scene: Phaser.Scene, pos?: Phaser.Math.Vector2) {
         super(scene, pos, 300, 5, 1.2, 5, 5, "path");

@@ -3,6 +3,13 @@ import { TowerPassive } from "./TowerPassive";
 import { BaseProjectTile } from "../projectile/BaseProjectile";
 import { BaseEnemy } from "../enemies/BaseEnemy";
 import { GameController } from "../util/GameController";
+import { RicochetBullet } from "../projectile/RicochetBullet";
+import { ExplosionBullet } from "../projectile/ExplosionBullet";
+import { BurnBullet } from "../projectile/BurnBullet";
+import { NormalBullet } from "../projectile/NormalBullet";
+import { PoisonBullet } from "../projectile/PoisonBullet";
+
+type BulletType = "normal" | "ricochet" | "explosion" | "burn" | "poison" | "slow"
 
 export interface LevelData {
 	range: number;
@@ -10,6 +17,10 @@ export interface LevelData {
 	reloadTime: number; // how fast it can shoot
 	targetCount: number; // how many target it can shoot at once
 	sprite: string;
+
+	explosionRange?: number;
+	poisonDamage?: number;
+	poisonDuration?: number;
 }
 
 export class BaseTower extends Phaser.GameObjects.Sprite {
@@ -29,10 +40,17 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 	bulletSpeed: number = 1500;
 	bulletSprite: string;
 
+	// custom
+	explosionRange?: number;
+	poisonDamage?: number;
+	poisonDuration?: number;
+
 	pos: Phaser.Math.Vector2;
 
 	popupElements: any[] = [];
 	popupTimeout: NodeJS.Timeout | null = null;
+
+	bulletType: BulletType
 
 	constructor(
 		scene: Phaser.Scene,
@@ -42,7 +60,8 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		reloadTime: number,
 		targetCount: number,
 		maxLvl: number,
-		bulletSprite: string
+		bulletSprite: string,
+		bulletType: BulletType = "normal"
 	) {
 		super(scene, 0, 0, "");
 		this.pos = pos ?? new Phaser.Math.Vector2(0, 0);
@@ -57,6 +76,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		this.levelData = this.initializeLevelData();
 		this.setTexture(this.levelData[0].sprite);
 		this.bulletSprite = bulletSprite;
+		this.bulletType = bulletType
 		this.setInteractive();
 
 		this.on("pointerup", () => {
@@ -79,7 +99,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 	}
 
 	placeRangeCircle() {
-		this.rangeCircle = this.scene.add.circle(this.x, this.y, this.range, 0x00ff00, 0.2);
+		this.rangeCircle = this.scene.add.circle(this.x, this.y, this.range, 0x00fffb, 0.2);
 		this.hideRangeCircle();
 		this.scene.physics.world.enable(this.rangeCircle);
 		const rangeBody = this.rangeCircle.body as Phaser.Physics.Arcade.Body;
@@ -92,6 +112,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 			loop: true
 		});
 	}
+
 
 	checkForEnemiesInRange = () => {
 		if (!this.readyToFire) return;
@@ -120,20 +141,34 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 	}
 
 	fire(target: BaseEnemy) {
-		if (this.readyToFire) {
-			const bullet = new BaseProjectTile(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target);
-			bullet.startProjectile(this.x, this.y);
-			this.readyToFire = false;
-			this.scene.time.delayedCall((this.reloadTime * 1000) / this.scene.time.timeScale, () => {
-				this.readyToFire = true;
-			});
-			target.once("destroy", () => {
-				bullet.destroy();
-			});
-			this.once("destroy", () => {
-				bullet.destroy();
-			});
+		if (!this.readyToFire) return
+
+		let bullet: BaseProjectTile
+
+		switch (this.bulletType) {
+			case "ricochet":
+				bullet = new RicochetBullet(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target, 3)
+				break
+			case "explosion":
+				bullet = new ExplosionBullet(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target, this.explosionRange)
+				break
+			case "burn":
+				bullet = new BurnBullet(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target, 5, 3000)
+				break
+			case "poison":
+				bullet = new PoisonBullet(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target, this.poisonDamage, this.poisonDuration)
+				break
+			default:
+				bullet = new NormalBullet(this.scene, this.bulletSpeed, this.attack, this.bulletSprite, target)
+				break
 		}
+
+		bullet.startProjectile(this.x, this.y)
+		this.readyToFire = false
+
+		this.scene.time.delayedCall((this.reloadTime * 1000) / this.scene.time.timeScale, () => {
+			this.readyToFire = true
+		})
 	}
 
 	initializeLevelData(): LevelData[] {
@@ -147,9 +182,26 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 			this.attack = data.attack;
 			this.reloadTime = data.reloadTime;
 			this.targetCount = data.targetCount;
+
+			this.explosionRange = data.explosionRange;
+			this.poisonDamage = data.poisonDamage;
+			this.poisonDuration = data.poisonDuration;
+
 			this.setTexture(data.sprite);
+
+			this.updateRangeCircle();
 		}
 	}
+
+	updateRangeCircle() {
+		// Destroy existing range circle and timer event
+		this.rangeCircle?.destroy();
+		this.rangeCheckEvent?.remove();
+
+		// Re-create the range circle
+		this.placeRangeCircle();
+	}
+
 
 	levelup() {
 		if (this.currentLevel < this.maxLevel) {

@@ -11,6 +11,15 @@ import { CliTower } from "../Tower/CliTower";
 import { DataBaseTower } from "../Tower/DataBaseTower";
 import { MeetingTower } from "../Tower/MeetingTower";
 import { SearchTower } from "../Tower/SearchTower";
+import { WaveController } from './WaveController';
+import { CakeEnemy } from "../enemies/CakeEnemy";
+import { ChocolateEnemy } from "../enemies/ChocolateEnemy";
+import { CoffeeEnemy } from "../enemies/CoffeeEnemy";
+import { CokeEnemy } from "../enemies/CokeEnemy";
+import { CupCakeEnemy } from "../enemies/CupCakeEnemy";
+import { IceCreamEnemy } from "../enemies/IceCreamEnemy";
+import { MacaroonEnemy } from "../enemies/MacaroonEnemy";
+import { ParticleEmitter } from "./ParticleEmitter";
 
 
 export class GameController {
@@ -19,12 +28,15 @@ export class GameController {
 	// Ref
 	currentScene!: Phaser.Scene;
 	towerController!: TowerController;
+	mapGen!: MapGenerator;
+	waveController!: WaveController;
 
 	// Game Stats
 	isPause: boolean;
 	timeSpeedBuffer: number;
 	enemiesGroup: Phaser.Physics.Arcade.Group | null;
 	currentWave: number;
+	maxWave: number;
 	enemyPerWave: number;
 	enemyKilled: number;
 	playerHealth: number;
@@ -53,12 +65,14 @@ export class GameController {
 	// Pool
 	towerPool_All: (new (scene: Phaser.Scene) => BaseTower)[];
 	towerPool_Current: (new (scene: Phaser.Scene) => BaseTower)[];
+	enemyPool: (new (scene: Phaser.Scene) => BaseEnemy)[];
 
 	private constructor() {
 		this.isPause = false;
 		this.timeSpeedBuffer = 1;
 		this.currentWave = 1;
-		this.enemyPerWave = 10; // TODO : 30 is for testing
+		this.maxWave = 30;
+		this.enemyPerWave = 30; // TODO : 30 is for testing
 		this.enemyKilled = 0;
 		this.playerHealth = 30;
 		this.accumCoin = 0;
@@ -82,9 +96,13 @@ export class GameController {
 		this.moneyDrop_Multiplier = 1;
 
 		this.towerPool_All = [
-			BrowserTower, IdeTower, PlTower, AITower, CliTower, DataBaseTower, MeetingTower, SearchTower
+			// BrowserTower, IdeTower, PlTower, AITower, CliTower, DataBaseTower, MeetingTower, SearchTower
+			CliTower
 		];
 		this.towerPool_Current = this.towerPool_All;
+		this.enemyPool = [
+			CakeEnemy, ChocolateEnemy, CoffeeEnemy, CokeEnemy, CupCakeEnemy, IceCreamEnemy, MacaroonEnemy
+		]
 	}
 
 	public static getInstance(): GameController {
@@ -119,6 +137,51 @@ export class GameController {
 		this.currentScene.time.timeScale = this.timeSpeedBuffer;
 	}
 
+	addFloatText(text: string) {
+		const floatText = this.currentScene.add.text(
+			this.currentScene.cameras.main.centerX,
+			this.currentScene.cameras.main.centerY,
+			text,
+			{
+				fontFamily: 'PressStart2P',
+				fontSize: '72px',
+				color: '#FFDD00',
+			}
+		)
+			.setOrigin(0.5)
+			.setDepth(100)
+			.setAlpha(0)
+
+		const fadeIn = this.currentScene.tweens.add({
+			targets: floatText,
+			alpha: 1,
+			duration: 1000,
+			ease: 'Sine.easeIn',
+		})
+
+		const fadeOut = this.currentScene.tweens.add({
+			targets: floatText,
+			alpha: 0,
+			duration: 1000,
+			ease: 'Sine.easeOut',
+			delay: 5000,
+			onComplete: () => {
+				floatText.destroy()
+			},
+		})
+
+		// Chain tweens: fadeIn -> fadeOut
+		this.currentScene.tweens.chain({
+			tweens: [fadeIn, fadeOut]
+		})
+	}
+
+	addParticle(effect: string, amount: number, x: number, y: number) {
+		const emitter = new ParticleEmitter(this.currentScene, "");
+
+		emitter.explode(amount, x, y);
+	}
+
 	// TODO : Better UI
 	gameOver(key: string) {
 		this.pause();
@@ -141,7 +204,7 @@ export class GameController {
 			`You ${key}!`,
 			{ fontSize: '48px', color: '#ffffff', fontFamily: 'PressStart2P' }
 		).setOrigin(0.5);
-		
+
 		const s1Text = this.currentScene.add.text(
 			this.currentScene.cameras.main.width / 2,
 			this.currentScene.cameras.main.height / 3 + offsetY,

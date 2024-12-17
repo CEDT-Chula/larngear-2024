@@ -1,9 +1,10 @@
 import { BaseTower, LevelData } from "./BaseTower";
-import { TowerSkill } from "./TowerSkill";
+
+// Poison Bullet
 
 export class CliTower extends BaseTower {
     constructor(scene: Phaser.Scene, pos?: Phaser.Math.Vector2) {
-        super(scene, pos, 300, 5, 1.2, 5, 5, "path");
+        super(scene, pos, 300, 5, 1.2, 5, 5, "poison", "poison");
         this.levelData = this.initializeLevelData();
         this.setTexture(this.levelData[0].sprite);
     }

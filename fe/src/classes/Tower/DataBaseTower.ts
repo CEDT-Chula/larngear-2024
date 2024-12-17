@@ -1,5 +1,6 @@
 import { BaseTower, LevelData } from "./BaseTower";
-import { TowerSkill } from "./TowerSkill";
+
+// High damage, low fire-rate
 
 export class DataBaseTower extends BaseTower {
     constructor(scene: Phaser.Scene, pos?: Phaser.Math.Vector2) {

@@ -1,9 +1,10 @@
 import { BaseTower, LevelData } from "./BaseTower";
-import { TowerSkill } from "./TowerSkill";
+
+// Fire bullet
 
 export class MeetingTower extends BaseTower {
     constructor(scene: Phaser.Scene, pos?: Phaser.Math.Vector2) {
-        super(scene, pos, 300, 5, 1.2, 5, 5, "path");
+        super(scene, pos, 300, 5, 1.2, 5, 5, "fire", "burn");
         this.levelData = this.initializeLevelData();
         this.setTexture(this.levelData[0].sprite);
     }

@@ -5,6 +5,7 @@ import { GameUI } from "./GameUI";
 import { MapGenerator } from "./MapGenerator";
 import { BiggerWave } from "./waves/BiggerWave";
 import { DuplicateWave } from "./waves/DuplicateWave";
+import { GambleWave } from "./waves/GambleWave";
 import { SlowWave } from "./waves/SlowWave";
 import { SpeedWave } from "./waves/SpeedWave";
 import { WaveEffect } from "./waves/WaveEffect";
@@ -187,6 +188,7 @@ export class WaveController {
             new SlowWave(),
             new BiggerWave(),
             new DuplicateWave(),
+            new GambleWave(),
         ];
 
         const randomEffects: WaveEffect[] = [];

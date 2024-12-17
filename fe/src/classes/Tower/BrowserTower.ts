@@ -1,5 +1,7 @@
 import { BaseTower, LevelData } from "./BaseTower";
 
+// Fast fire-rate, low damage
+
 export class BrowserTower extends BaseTower {
     constructor(scene: Phaser.Scene, pos?: Phaser.Math.Vector2) {
         super(scene, pos, 300, 5, 0.7, 5, 5, "path");
