@@ -8,6 +8,8 @@ export class RicochetBullet extends BaseProjectTile {
     constructor(scene: Phaser.Scene, speed: number, damage: number, sprite: string, target: BaseEnemy, ricochetCount: number = 3) {
       super(scene, speed, damage, sprite, target)
       this.ricochetCount = ricochetCount
+
+      this.setScale(3);
     }
   
     onHit(target: BaseEnemy) {

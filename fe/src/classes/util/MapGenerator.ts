@@ -178,7 +178,6 @@ export class MapGenerator {
   }
 
   moveEnemy(enemy: BaseEnemy) {
-    const speed = enemy.speed;
     let currentSegment = 0;
     let segmentProgress = 0;
 
@@ -194,7 +193,8 @@ export class MapGenerator {
 
       const segmentDistance = Phaser.Math.Distance.Between(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
 
-      const distanceToMove = (speed * delta * this.scene.time.timeScale) / 1000;
+      // Use the **current speed** dynamically
+      const distanceToMove = (enemy.baseSpeed * delta * this.scene.time.timeScale) / 1000;
 
       segmentProgress += distanceToMove;
 

@@ -14,20 +14,34 @@ export class BurnBullet extends BaseProjectTile {
   
     onHit(target: BaseEnemy) {
       target.emit("takeDamage", this.damage)
-
-      const emitter = new ParticleEmitter(this.scene, "fire")
   
-      // Apply burn damage over time
-      const burnTimer = this.scene.time.addEvent({
-        delay: 1000, // Damage every second
-        repeat: Math.floor(this.burnDuration / 1000) - 1, // Duration in seconds
+      const emitter = new ParticleEmitter(this.scene, "poison")
+  
+      target.setTint(0xfe0000) // Red color tint
+  
+      const poisonEffect = this.scene.time.addEvent({
+        delay: 1000,
+        repeat: Math.floor(this.burnDuration / 1000) - 1,
         callback: () => {
-          target.emit("takeDamage", this.burnDamage)
-          emitter.float(22, target.x, target.y)
+          if (target.isAlive) {
+            target.emit("takeDamage", this.burnDamage)
+            emitter.float(5, target.x, target.y)
+          }
         },
+        callbackScope: this,
       })
   
-      target.once("destroy", () => burnTimer.remove())
+  
+      // Cleanup: stop particle effects and reset tint when the target is destroyed
+      const cleanup = () => {
+        emitter.floatEmitter.stop()
+        target.clearTint()
+        poisonEffect.remove()
+      }
+  
+      target.once("destroy", cleanup)
+      this.scene.time.delayedCall(this.burnDuration, cleanup)
+  
       this.destroy()
     }
   }

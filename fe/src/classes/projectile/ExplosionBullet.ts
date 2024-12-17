@@ -9,6 +9,8 @@ export class ExplosionBullet extends BaseProjectTile {
     constructor(scene: Phaser.Scene, speed: number, damage: number, sprite: string, target: BaseEnemy, explosionRadius: number = 100) {
       super(scene, speed, damage, sprite, target)
       this.explosionRadius = explosionRadius
+
+      this.setScale(2);
     }
   
     onHit(target: BaseEnemy) {

@@ -88,5 +88,6 @@ export class AssetLoader {
     this.scene.load.image("slow", "src/assets/effects/slow.png")
     this.scene.load.image("smoke", "src/assets/effects/smoke.png")
     this.scene.load.image("ricochet", "src/assets/effects/ricochet.png")
+    this.scene.load.image("crit", "src/assets/effects/crit.png")
   }
 }

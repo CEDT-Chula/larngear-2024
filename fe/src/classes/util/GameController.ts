@@ -97,7 +97,7 @@ export class GameController {
 
 		this.towerPool_All = [
 			// BrowserTower, IdeTower, PlTower, AITower, CliTower, DataBaseTower, MeetingTower, SearchTower
-			CliTower
+			SearchTower
 		];
 		this.towerPool_Current = this.towerPool_All;
 		this.enemyPool = [
