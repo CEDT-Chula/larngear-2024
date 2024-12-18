@@ -60,7 +60,7 @@ export class GameController {
 	// Multiplier
 	enemyHealth_Multiplier: number;
 	enemySpeed_Multiplier: number;
-	moneyDrop_Multiplier: number;
+	bossHealth_Multiplier: number;
 
 	// Pool
 	towerPool_All: (new (scene: Phaser.Scene) => BaseTower)[];
@@ -77,7 +77,7 @@ export class GameController {
 		this.playerHealth = 30;
 		this.accumCoin = 0;
 		this.coin = 500;
-		this.coinPerKill = 10;
+		this.coinPerKill = 5;
 
 		this.activeEnemiesList = [];
 		this.towerList = [];
@@ -93,11 +93,10 @@ export class GameController {
 		this.enemiesGroup = null;
 		this.enemyHealth_Multiplier = 1;
 		this.enemySpeed_Multiplier = 1;
-		this.moneyDrop_Multiplier = 1;
+		this.bossHealth_Multiplier = 1;
 
 		this.towerPool_All = [
-			// BrowserTower, IdeTower, PlTower, AITower, CliTower, DataBaseTower, MeetingTower, SearchTower
-			SearchTower
+			BrowserTower, IdeTower, PlTower, AITower, CliTower, DataBaseTower, MeetingTower, SearchTower
 		];
 		this.towerPool_Current = this.towerPool_All;
 		this.enemyPool = [
