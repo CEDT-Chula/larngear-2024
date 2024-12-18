@@ -12,23 +12,23 @@ export class PlTower extends BaseTower {
     initializeLevelData(): LevelData[] {
         return [
             {
-                range: 100, attack: 15, reloadTime: 2, maxTarget: 1, slowAmount: 0.25, slowDuration: 2000,
+                range: 200, attack: 50, reloadTime: 1.75, maxTarget: 1, slowAmount: 0.25, slowDuration: 2000,
                 sprite: "pl_lv1"
             },
             {
-                range: 100, attack: 20, reloadTime: 1.8, maxTarget: 1, slowAmount: 0.25, slowDuration: 4000,
+                range: 210, attack: 60, reloadTime: 1.6, maxTarget: 2, slowAmount: 0.25, slowDuration: 4000,
                 sprite: "pl_lv2"
             },
             {
-                range: 150, attack: 25, reloadTime: 1.6, maxTarget: 1, slowAmount: 0.5, slowDuration: 2000,
+                range: 220, attack: 70, reloadTime: 1.5, maxTarget: 3, slowAmount: 0.5, slowDuration: 2000,
                 sprite: "pl_lv3"
             },
             {
-                range: 175, attack: 30, reloadTime: 1.4, maxTarget: 1, slowAmount: 0.5, slowDuration: 4000,
+                range: 230, attack: 80, reloadTime: 1.25, maxTarget: 5, slowAmount: 0.5, slowDuration: 4000,
                 sprite: "pl_lv4"
             },
             {
-                range: 200, attack: 35, reloadTime: 1.2, maxTarget: 1, slowAmount: 0.8, slowDuration: 2000,
+                range: 300, attack: 90, reloadTime: 1, maxTarget: 10, slowAmount: 0.8, slowDuration: 2000,
                 sprite: "pl_lv5"
             }
         ];

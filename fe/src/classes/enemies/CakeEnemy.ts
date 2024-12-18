@@ -8,8 +8,8 @@ export class CakeEnemy extends BaseEnemy {
         scene: Phaser.Scene,
         Name: string = "Cake",
         Name_Color: string = "#FFB6C1",  
-        maxHealth: number = 20 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier,
-        speed: number = 400,
+        maxHealth: number = 100 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier,
+        speed: number = 250 * GameController.getInstance().enemySpeed_Multiplier,
         attack: number = 1,
         sprite: string = "cake",
         // path: Phaser.Curves.Path
@@ -60,6 +60,8 @@ export class CakeEnemy extends BaseEnemy {
         )
 
         this.scene.physics.world.enable([newCake1, newCake2])
+
+        GameController.getInstance().enemySummon += 2;
         
         newCake1.hasDuplicated = true
         newCake2.hasDuplicated = true

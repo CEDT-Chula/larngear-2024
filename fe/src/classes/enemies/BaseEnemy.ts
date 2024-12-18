@@ -95,9 +95,9 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
         console.log(this.sprite, " reached the end!");
         this.isAlive = false;
         this.removeFromActive();
-        
+
         GameController.getInstance().playerHealth -= this.attack;
-        
+
         if (GameController.getInstance().playerHealth <= 0) {
             GameController.getInstance().gameOver('lose');
         } else {
@@ -110,10 +110,34 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
     onDeath() {
         this.isAlive = false;
         this.removeFromActive();
-        this.emit("destroyed")
+        this.emit("destroyed");
+
+        // Display floating text
+        const message = `+${GameController.getInstance().coinPerKill}`;
+        const floatingText = this.scene.add.text(this.x, this.y, message, {
+            fontSize: '24px',
+            color: '#ffd700',
+            fontFamily: 'PressStart2P',
+        })
+            .setOrigin(0.5)
+            .setStroke('#000000', 12);;
+
+        // Animate the text to float up and fade out
+        this.scene.tweens.add({
+            targets: floatingText,
+            y: this.y - 50, // Float upwards
+            alpha: 0, // Fade out
+            duration: 800,
+            ease: "Power1",
+            onComplete: () => {
+                floatingText.destroy(); // Remove the text after animation
+            },
+        });
+
         GameUI.increaseCoin(GameController.getInstance().coinPerKill);
         this.destroy(true);
     }
+
 
     removeFromActive() {
         const activeEnemies = GameController.getInstance().activeEnemiesList;

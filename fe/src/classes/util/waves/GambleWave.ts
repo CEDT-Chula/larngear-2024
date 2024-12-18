@@ -5,7 +5,7 @@ import { WaveEffect } from "./WaveEffect";
 
 export class GambleWave extends WaveEffect {
     constructor() {
-        super(CokeEnemy, "Everyone's favorite", "Gain 200 coins", "20% to lose all coins")
+        super(CokeEnemy, "Everyone's favorite", "20% to lose all coins", "Gain 200 coins")
     }
 
     effect(): void {

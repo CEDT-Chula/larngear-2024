@@ -5,7 +5,7 @@ import { TowerController } from "./TowerController";
 import { MapGenerator, MapTile } from "./MapGenerator";
 import { PlTower } from "../Tower/PlTower";
 import { GameUI } from "./GameUI";
-import { IdeTower } from "../Tower/IdeTower";
+import { IdeTower } from "../Tower/ideTower";
 import { AITower } from "../Tower/AITower";
 import { CliTower } from "../Tower/CliTower";
 import { DataBaseTower } from "../Tower/DataBaseTower";
@@ -38,6 +38,7 @@ export class GameController {
 	currentWave: number;
 	maxWave: number;
 	enemyPerWave: number;
+	enemySummon: number;
 	enemyKilled: number;
 	playerHealth: number;
 	accumCoin: number;
@@ -73,6 +74,7 @@ export class GameController {
 		this.currentWave = 1;
 		this.maxWave = 30;
 		this.enemyPerWave = 30; // TODO : 30 is for testing
+		this.enemySummon = 0;
 		this.enemyKilled = 0;
 		this.playerHealth = 30;
 		this.accumCoin = 0;
@@ -115,6 +117,9 @@ export class GameController {
 		this.isPoisonImmune = false;
 		this.isBurnImmune = false;
 		this.towerPool_Current = this.towerPool_All;
+
+		this.enemySpeed_Multiplier = 1 + (this.currentWave / this.maxWave)
+		this.enemyHealth_Multiplier = 1 + (this.currentWave % 10)
 	}
 
 	increaseSpeed() {

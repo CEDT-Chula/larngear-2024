@@ -12,23 +12,23 @@ export class MeetingTower extends BaseTower {
     initializeLevelData(): LevelData[] {
         return [
             {
-                range: 200, attack: 15, reloadTime: 2, maxTarget: 1, burnDamage: 5, burnDuration: 3000,
+                range: 200, attack: 30, reloadTime: 2, maxTarget: 1, burnDamage: 20, burnDuration: 3000,
                 sprite: "meet_lv1"
             },
             {
-                range: 200, attack: 20, reloadTime: 1.8, maxTarget: 1, burnDamage: 7, burnDuration: 3000,
+                range: 200, attack: 40, reloadTime: 1.8, maxTarget: 1, burnDamage: 30, burnDuration: 3000,
                 sprite: "meet_lv2"
             },
             {
-                range: 200, attack: 25, reloadTime: 1.6, maxTarget: 1, burnDamage: 12, burnDuration: 4000,
+                range: 200, attack: 50, reloadTime: 1.6, maxTarget: 2, burnDamage: 40, burnDuration: 4000,
                 sprite: "meet_lv3"
             },
             {
-                range: 250, attack: 30, reloadTime: 1.4, maxTarget: 1, burnDamage: 15, burnDuration: 4000,
+                range: 250, attack: 60, reloadTime: 1.4, maxTarget: 2, burnDamage: 80, burnDuration: 4000,
                 sprite: "meet_lv4"
             },
             {
-                range: 300, attack: 35, reloadTime: 1.2, maxTarget: 1, burnDamage: 20, burnDuration: 6000,
+                range: 300, attack: 70, reloadTime: 1.2, maxTarget: 3, burnDamage: 100, burnDuration: 6000,
                 sprite: "meet_lv5"
             }
         ];

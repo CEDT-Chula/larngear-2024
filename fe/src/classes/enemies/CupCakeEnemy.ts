@@ -9,8 +9,8 @@ export class CupCakeEnemy extends BaseEnemy {
         scene: Phaser.Scene,
         Name: string = "CupCake",
         Name_Color: string = "#FDFBD4",
-        maxHealth: number = 40 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier,
-        speed: number = 400,
+        maxHealth: number = 80 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier,
+        speed: number = 250 * GameController.getInstance().enemySpeed_Multiplier,
         attack: number = 1,
         sprite: string = "cupcake",
         // path: Phaser.Curves.Path
@@ -48,10 +48,12 @@ export class CupCakeEnemy extends BaseEnemy {
         const randomEnemyIndex = Math.floor(Math.random() * GameController.getInstance().enemyPool.length);
         const EnemyClass = GameController.getInstance().enemyPool[randomEnemyIndex];
 
-        if (EnemyClass) {
+        if (EnemyClass && GameController.getInstance().activeEnemiesList.length < 50) {
             const summonedEnemy = new EnemyClass(this.scene);
 
             this.scene.physics.world.enable([summonedEnemy])
+
+            GameController.getInstance().enemySummon += 1;
 
             // Add the summoned enemy to the game
             GameController.getInstance().mapGen.createEnemy(summonedEnemy);

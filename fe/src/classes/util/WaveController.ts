@@ -39,6 +39,7 @@ export class WaveController {
         GameUI.getInstance().waveText = this.waveText;
 
         this.popupElements = [];
+        GameController.getInstance().enemySummon += GameController.getInstance().enemyPerWave;
     }
 
     releaseWave(enemyList: BaseEnemy[]) {
@@ -64,7 +65,7 @@ export class WaveController {
 
     checkWaveCleared() {
         GameController.getInstance().enemyKilled++;
-        if (this.activeEnemies.length <= 0) {
+        if (GameController.getInstance().enemyKilled == GameController.getInstance().enemySummon) {
             console.log(`Wave ${this.currentWave} cleared!`);
             this.currentWave++;
 
@@ -81,7 +82,7 @@ export class WaveController {
         this.waveText.text = `${'Wave ' + this.currentWave + '/' + this.maxWave}`;
 
         if (this.currentWave % 5 == 0) {
-            // TODO : Call boss
+            GameController.getInstance().enemySummon += 1;
             let mockBoss: BaseEnemy[] = [
                 new Boss1(this.scene)
             ]
@@ -164,6 +165,8 @@ export class WaveController {
         choice.effect();
 
         const waveEnemies: BaseEnemy[] = [];
+
+        GameController.getInstance().enemySummon += GameController.getInstance().enemyPerWave;
 
         for (let i = 0; i < GameController.getInstance().enemyPerWave; i++) {
             const newEnemy = new choice.enemy(this.scene);
