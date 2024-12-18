@@ -76,6 +76,9 @@ export class AssetLoader {
     this.scene.load.image("cake", "src/assets/enemies/cake.png");
     this.scene.load.image("coffee", "src/assets/enemies/coffee.png");
     this.scene.load.image("coke", "src/assets/enemies/coke.png");
+    this.scene.load.image("cupcake", "src/assets/enemies/cupcake.png");
+    this.scene.load.image("macaroon", "src/assets/enemies/macaron.png");
+    this.scene.load.image("boss", "src/assets/enemies/boss.png");
   }
 
   preloadOthers() {

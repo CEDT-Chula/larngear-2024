@@ -9,13 +9,7 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
     speed: number;
     baseSpeed: number;
     attack: number;
-    isPoisonResist: boolean;
-    isBurnResist: boolean;
-    isSlowResist: boolean;
-    isFreezeResist: boolean;
     sprite: string;
-    // ? What's this for? But if you still decide to use it, think about how to pass argument in child class top
-    // path: Phaser.Curves.Path;
     pathPosition: number;
     currentPoint: Phaser.Math.Vector2;
     healthBar: Phaser.GameObjects.Graphics;
@@ -28,10 +22,6 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
         maxHealth: number,
         speed: number,
         attack: number,
-        isPoisonResist: boolean = true,
-        isBurnResist: boolean = true,
-        isSlowResist: boolean = true,
-        isFreezeResist: boolean = false,
         sprite: string,
         // path: Phaser.Curves.Path
     ) {
@@ -46,10 +36,6 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
         this.baseSpeed = speed;
         this.speed = speed * gameController.enemySpeed_Multiplier;
         this.attack = attack;
-        this.isPoisonResist = isPoisonResist;
-        this.isBurnResist = isBurnResist;
-        this.isSlowResist = isSlowResist;
-        this.isFreezeResist = isFreezeResist;
         this.sprite = sprite;
         // this.path = path;
         this.pathPosition = 0;

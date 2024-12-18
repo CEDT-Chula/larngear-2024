@@ -1,4 +1,6 @@
 import { BaseEnemy } from "../enemies/BaseEnemy";
+import { Boss1 } from "../enemies/bosses/Boss1";
+import { CupCakeEnemy } from "../enemies/CupCakeEnemy";
 import { IceCreamEnemy } from "../enemies/IceCreamEnemy";
 import { GameController } from "./GameController";
 import { GameUI } from "./GameUI";
@@ -6,6 +8,7 @@ import { MapGenerator } from "./MapGenerator";
 import { BiggerWave } from "./waves/BiggerWave";
 import { DuplicateWave } from "./waves/DuplicateWave";
 import { GambleWave } from "./waves/GambleWave";
+import { MixedWave } from "./waves/MixedWave";
 import { SlowWave } from "./waves/SlowWave";
 import { SpeedWave } from "./waves/SpeedWave";
 import { WaveEffect } from "./waves/WaveEffect";
@@ -48,6 +51,8 @@ export class WaveController {
                     this.mapGen.createEnemy(enemy);
                     this.mapGen.moveEnemy(enemy);
                     this.activeEnemies.push(enemy);
+                    if (enemy instanceof CupCakeEnemy)
+                        enemy.startSummoning()
 
                     enemy.on('destroyed', () => this.checkWaveCleared());
                 },
@@ -66,6 +71,7 @@ export class WaveController {
             if (this.currentWave > this.maxWave) {
                 GameController.getInstance().gameOver("win");
             } else {
+                GameController.getInstance().resetNonPerma()
                 this.triggerNextWave();
             }
         }
@@ -77,7 +83,7 @@ export class WaveController {
         if (this.currentWave % 5 == 0) {
             // TODO : Call boss
             let mockBoss: BaseEnemy[] = [
-                new IceCreamEnemy(this.scene),
+                new Boss1(this.scene)
             ]
             console.log("wait_confirm_release_wave fired");
             this.scene.events.emit("wait_confirm_release_wave");
@@ -189,6 +195,7 @@ export class WaveController {
             new BiggerWave(),
             new DuplicateWave(),
             new GambleWave(),
+            new MixedWave(),
         ];
 
         const randomEffects: WaveEffect[] = [];

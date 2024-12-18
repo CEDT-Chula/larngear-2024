@@ -6,13 +6,9 @@ export class MacaroonEnemy extends BaseEnemy {
         scene: Phaser.Scene,
         Name: string = "Macaroon",
         Name_Color: string = "#3944BC",
-        maxHealth: number = 30,
+        maxHealth: number = 30 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier,
         speed: number = 400,
         attack: number = 1,
-        isPoisonResist: boolean = false,
-        isBurnResist: boolean = false,
-        isSlowResist: boolean = false,
-        isFreezeResist: boolean = false,
         sprite: string = "macaroon",
         // path: Phaser.Curves.Path
     ) {
@@ -23,10 +19,6 @@ export class MacaroonEnemy extends BaseEnemy {
             maxHealth,
             speed,
             attack,
-            isPoisonResist,
-            isBurnResist,
-            isSlowResist,
-            isFreezeResist,
             sprite,
             // path
         );

@@ -10,14 +10,12 @@ export class TowerController {
 	lastClickTime: number;
 	clickThreshold: number;
 
-	towerPool: (new (scene: Phaser.Scene) => BaseTower)[];
 	towerList: BaseTower[]; // track towers in the scene
 
 	constructor(scene: Phaser.Scene) {
 		this.scene = scene;
 		this.towerPrices = 100;
 		this.sellingPrices = [80, 160, 240, 320, 400]; // Selling prices for towers Lv1 to Lv5
-		this.towerPool = GameController.getInstance().towerPool_Current;
 
 		this.towerList = GameController.getInstance().towerList;
 
@@ -33,8 +31,8 @@ export class TowerController {
 
 		GameUI.reduceCoin(this.towerPrices);
 
-		let randomTowerIndex = Math.floor(Math.random() * this.towerPool.length);
-		let randomTower = this.towerPool[randomTowerIndex];
+		let randomTowerIndex = Math.floor(Math.random() * GameController.getInstance().towerPool_Current.length);
+		let randomTower = GameController.getInstance().towerPool_Current[randomTowerIndex];
 
 		let newTower: BaseTower = new randomTower(this.scene);
 

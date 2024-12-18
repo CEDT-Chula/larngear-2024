@@ -6,13 +6,9 @@ export class CoffeeEnemy extends BaseEnemy {
         scene: Phaser.Scene,
         Name: string = "Coffee",
         Name_Color: string = "#6F4E37", 
-        maxHealth: number = 40,          
+        maxHealth: number = 40 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier,          
         speed: number = 600,            
         attack: number = 1,           
-        isPoisonResist: boolean = false, 
-        isBurnResist: boolean = false,
-        isSlowResist: boolean = false,
-        isFreezeResist: boolean = false,
         sprite: string = "coffee",
         // path: Phaser.Curves.Path
     ) {
@@ -23,10 +19,6 @@ export class CoffeeEnemy extends BaseEnemy {
             maxHealth,
             speed,
             attack,
-            isPoisonResist,
-            isBurnResist,
-            isSlowResist,
-            isFreezeResist,
             sprite,
             // path
         );

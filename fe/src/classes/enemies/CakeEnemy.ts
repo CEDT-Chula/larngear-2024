@@ -8,13 +8,9 @@ export class CakeEnemy extends BaseEnemy {
         scene: Phaser.Scene,
         Name: string = "Cake",
         Name_Color: string = "#FFB6C1",  
-        maxHealth: number = 20,
+        maxHealth: number = 20 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier,
         speed: number = 400,
         attack: number = 1,
-        isPoisonResist: boolean = false, 
-        isBurnResist: boolean = false,
-        isSlowResist: boolean = false,
-        isFreezeResist: boolean = false,
         sprite: string = "cake",
         // path: Phaser.Curves.Path
     ) {
@@ -25,10 +21,6 @@ export class CakeEnemy extends BaseEnemy {
             maxHealth,
             speed,
             attack,
-            isPoisonResist,
-            isBurnResist,
-            isSlowResist,
-            isFreezeResist,
             sprite,
         );
 
@@ -54,10 +46,6 @@ export class CakeEnemy extends BaseEnemy {
           this.maxHealth / 2,  
           this.baseSpeed,
           this.attack,
-          this.isPoisonResist,
-          this.isBurnResist,
-          this.isSlowResist,
-          this.isFreezeResist,
           this.sprite,
         )
       
@@ -68,10 +56,6 @@ export class CakeEnemy extends BaseEnemy {
           this.maxHealth / 2,
           this.baseSpeed,
           this.attack,
-          this.isPoisonResist,
-          this.isBurnResist,
-          this.isSlowResist,
-          this.isFreezeResist,
           this.sprite,
         )
 

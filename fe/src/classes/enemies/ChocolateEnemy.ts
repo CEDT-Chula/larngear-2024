@@ -6,13 +6,9 @@ export class ChocolateEnemy extends BaseEnemy {
         scene: Phaser.Scene,
         Name: string = "Chocolate",
         Name_Color: string = "#8B4513",
-        maxHealth: number = 30,
+        maxHealth: number = 30 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier,
         speed: number = 400,
         attack: number = 1,
-        isPoisonResist: boolean = true, 
-        isBurnResist: boolean = false,  
-        isSlowResist: boolean = true,    
-        isFreezeResist: boolean = true,
         sprite: string = "choco",
         // path: Phaser.Curves.Path
     ) {
@@ -23,10 +19,6 @@ export class ChocolateEnemy extends BaseEnemy {
             maxHealth,
             speed,
             attack,
-            isPoisonResist,
-            isBurnResist,
-            isSlowResist,
-            isFreezeResist,
             sprite,
             // path
         );
