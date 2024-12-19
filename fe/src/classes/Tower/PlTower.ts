@@ -28,7 +28,7 @@ export class PlTower extends BaseTower {
                 sprite: "pl_lv4"
             },
             {
-                range: 400, attack: 300, reloadTime: 1, maxTarget: 10, slowAmount: 0.8, slowDuration: 2000,
+                range: 400, attack: 300, reloadTime: 1, maxTarget: 10, slowAmount: 0.6, slowDuration: 5000,
                 sprite: "pl_lv5"
             }
         ];

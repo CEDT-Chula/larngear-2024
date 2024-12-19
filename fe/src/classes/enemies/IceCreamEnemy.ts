@@ -6,7 +6,7 @@ export class IceCreamEnemy extends BaseEnemy {
         scene: Phaser.Scene,
         Name: string = "Ice Cream",
         Name_Color: string = "#FF69B4", 
-        maxHealth: number = 60 + (60 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier),
+        maxHealth: number = 5 * (60 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier),
         speed: number = 250 * GameController.getInstance().enemySpeed_Multiplier,
         attack: number = 1,
         sprite: string = "ice_cream",

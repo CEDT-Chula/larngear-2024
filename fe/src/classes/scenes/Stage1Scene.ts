@@ -212,8 +212,7 @@ export class Stage1Scene extends Phaser.Scene {
     }
 
     console.log(this.time.timeScale)
-    GameController.getInstance().gameOver("win")
-
+    
     this.speedButton.setText("Speed x" + this.time.timeScale)
   }
 

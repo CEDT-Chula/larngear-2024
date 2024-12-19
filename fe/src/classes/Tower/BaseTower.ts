@@ -335,45 +335,64 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 			.setInteractive();
 		this.popupElements.push(popupBg);
 
-		const sellButton = this.createButton(
-			"Sell",
-			() => {
-				if (!GameController.getInstance().isDragging)
-					this.confirmAction("sell");
-			},
-			-30
-		);
+		// Create the upgrade button (now at the top)
+		const upgradeAvailable = this.currentLevel < this.maxLevel; // Check if upgrade is available
+		this.findAndHighlightMatchingTower();
+		const upgradeButtonColor = this.selectedTower && upgradeAvailable ? 0x00ff00 : 0xff0000; // Green if available, red if not
 		const upgradeButton = this.createButton(
 			"Upgrade",
 			() => {
-				if (!GameController.getInstance().isDragging) {
-					this.findAndHighlightMatchingTower();
-					if (this.selectedTower) this.confirmAction("upgrade");
+				if (upgradeAvailable && !GameController.getInstance().isDragging) {
+					this.confirmAction("upgrade");
 				}
 			},
-			30
+			-30, // Top button
+			upgradeButtonColor
 		);
 
-		this.popupElements.push(sellButton[0], sellButton[1], upgradeButton[0], upgradeButton[1]);
+		// Create the sell button (now at the bottom)
+		const sellButton = this.createButton(
+			"Sell",
+			() => {
+				if (!GameController.getInstance().isDragging) this.confirmAction("sell");
+			},
+			30, // Bottom button
+			0xffffff // White color for the sell button
+		);
 
-		this.scene.input.once("pointerup", (pointer: any) => {
-			console.log("clear popup")
-			this.clearPopup(); // Hide popup if clicked elsewhere
-			if (!popupBg.getBounds().contains(pointer.worldX, pointer.worldY)) {
+		this.popupElements.push(upgradeButton[0], upgradeButton[1], sellButton[0], sellButton[1]);
+
+		// Hide the popup when clicking outside
+		const pointerDownHandler = (pointer: Phaser.Input.Pointer) => {
+			if (
+				!popupBg.getBounds().contains(pointer.worldX, pointer.worldY) &&
+				!this.popupElements.some((element) =>
+					element.getBounds ? element.getBounds().contains(pointer.worldX, pointer.worldY) : false
+				)
+			) {
+				this.clearPopup(); // Clear popup when clicked outside
+				this.clearHighlight();
+				this.scene.input.off("pointerdown", pointerDownHandler); // Remove this listener
 			}
-		});
+		};
+
+		this.scene.input.on("pointerdown", pointerDownHandler);
 
 		this.startPopupAutoHide();
 	}
 
-	createButton(label: string, callback: () => void, offsetY: number) {
+	// Update the createButton method to accept a color parameter
+	createButton(label: string, callback: () => void, offsetY: number, color: number) {
 		const button = this.scene.add
-			.rectangle(this.x, this.y + offsetY, 180, 50, 0xffffff, 0.5)
+			.rectangle(this.x, this.y + offsetY, 180, 50, color, 0.5) // Use the passed color
 			.setOrigin(0.5, 0.5)
 			.setDepth(10)
 			.setInteractive();
 
-		button.on("pointerup", callback);
+		// Only enable the button if it's not red (indicating an unavailable upgrade)
+		if (color !== 0xff0000) {
+			button.on("pointerdown", callback);
+		}
 
 		const text = this.scene.add
 			.text(this.x, this.y + offsetY, label, {
@@ -402,7 +421,8 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 				}
 				this.clearPopup(); // Clear the popup after action
 			},
-			-30
+			-30,
+			0x282828
 		);
 
 		const backButton = this.createButton(
@@ -410,7 +430,8 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 			() => {
 				this.showPopup(); // Show the original popup again
 			},
-			30
+			30,
+			0x282828
 		);
 
 		this.popupElements.push(

@@ -119,11 +119,7 @@ export class GameController {
 		this.towerPool_Current = this.towerPool_All;
 
 		this.enemySpeed_Multiplier = 1 + (this.currentWave / (this.maxWave * 1.5))
-		this.enemyHealth_Multiplier = 1 + (this.currentWave / 6)
-
-		if (this.currentWave % 5) {
-			this.enemyPerWave += 20
-		}
+		this.enemyHealth_Multiplier = 1 + (this.currentWave / 6) + (this.enemyPerWave / (this.enemyPerWave * 1.5))
 	}
 
 	increaseSpeed() {
@@ -219,7 +215,7 @@ export class GameController {
 		// Game stats
 		this.currentScene.add.text(
 			this.currentScene.cameras.main.width / 2 - offsetX,
-			this.currentScene.cameras.main.height / 2 + offsetY,
+			this.currentScene.cameras.main.height / 3 + offsetY,
 			`You survived: ${this.currentWave} waves`,
 			{ fontSize: '24px', color: '#ffffff', fontFamily: 'PressStart2P' }
 		).setOrigin(0.5).setDepth(10);
@@ -283,8 +279,6 @@ export class GameController {
 			this.currentScene.cameras.main.width - 550,
 			0
 		).createFromHTML(formHTML);
-
-		console.log(window.innerHeight)
 
 		formElement.setOrigin(0).setDepth(10);
 

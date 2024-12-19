@@ -5,7 +5,7 @@ import { WaveEffect } from "./WaveEffect";
 
 export class MixedWave extends WaveEffect {
     constructor() {
-        super(CupCakeEnemy, "That's the whole army!", "Increase Enemy Speed +20% this wave", "Only got AI this turn")
+        super(CupCakeEnemy, "That's the whole army!", "Enemy Speed +20% this wave", "Only got AI this turn")
     }
 
     effect(): void {
