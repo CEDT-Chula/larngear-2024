@@ -1,4 +1,4 @@
-@import 'nes.css/css/nes.min.css';
+@import "nes.css/css/nes.min.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -25,8 +25,8 @@ body {
 }
 
 @font-face {
-  font-family: 'PressStart2P';
-  src: url('src/assets/fonts/PressStart2P-Regular.ttf') format('truetype');
+  font-family: "PressStart2P";
+  src: url("src/assets/fonts/PressStart2P-Regular.ttf") format("truetype");
 }
 
 html,
@@ -40,4 +40,50 @@ body {
   width: 100vw;
   height: 100vh;
   display: block;
+}
+
+@keyframes slide-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes slide-right {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+.animate-slide-left {
+  animation: slide-left 20s linear infinite;
+}
+
+.animate-slide-right {
+  animation: slide-right 20s linear infinite;
+}
+
+.sliding-bar {
+  display: flex;
+  width: calc(200%); /* Enough space for duplicated content */
+  height: 100%;
+}
+
+.sliding-bar img {
+  height: 100%;
+  flex-shrink: 0;
+  width: auto; /* Maintain aspect ratio */
+}
+
+@keyframes roll {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
