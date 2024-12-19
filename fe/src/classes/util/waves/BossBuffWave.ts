@@ -2,13 +2,13 @@ import { MacaroonEnemy } from "../../enemies/MacaroonEnemy";
 import { GameController } from "../GameController";
 import { WaveEffect } from "./WaveEffect";
 
-export class BossBuff extends WaveEffect {
+export class BossBuffWave extends WaveEffect {
     constructor() {
-        super(MacaroonEnemy, "Stronger Boss", "Boss got +50% Health", "+5 coin per kill");
+        super(MacaroonEnemy, "Stronger Boss", "Boss +75% Health", "Enemy -15% Health this wave");
     }
 
     effect(): void {
-        GameController.getInstance().coinPerKill += 5;
-        GameController.getInstance().bossHealth_Multiplier += 0.5;
+        GameController.getInstance().bossHealth_Multiplier += 0.75;
+        GameController.getInstance().enemyHealth_Multiplier -= 0.15;
     }
 }

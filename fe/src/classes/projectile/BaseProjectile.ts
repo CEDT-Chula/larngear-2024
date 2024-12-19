@@ -10,6 +10,7 @@ export class BaseProjectTile extends Phaser.GameObjects.Sprite {
 
     constructor(scene: Phaser.Scene, speed: number, damage: number, sprite: string, target: BaseEnemy) {
         super(scene, 0, 0, "");
+        this.scene = scene;
         this.speed = speed;
         this.damage = damage;
         this.sprite = sprite;

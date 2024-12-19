@@ -5,7 +5,7 @@ import { TowerController } from "./TowerController";
 import { MapGenerator, MapTile } from "./MapGenerator";
 import { PlTower } from "../Tower/PlTower";
 import { GameUI } from "./GameUI";
-import { IdeTower } from "../Tower/IdeTower";
+import { IdeTower } from "../Tower/ideTower";
 import { AITower } from "../Tower/AITower";
 import { CliTower } from "../Tower/CliTower";
 import { DataBaseTower } from "../Tower/DataBaseTower";
@@ -38,6 +38,7 @@ export class GameController {
 	currentWave: number;
 	maxWave: number;
 	enemyPerWave: number;
+	enemySummon: number;
 	enemyKilled: number;
 	playerHealth: number;
 	accumCoin: number;
@@ -72,7 +73,8 @@ export class GameController {
 		this.timeSpeedBuffer = 1;
 		this.currentWave = 1;
 		this.maxWave = 30;
-		this.enemyPerWave = 30; // TODO : 30 is for testing
+		this.enemyPerWave = 20;
+		this.enemySummon = 0;
 		this.enemyKilled = 0;
 		this.playerHealth = 30;
 		this.accumCoin = 0;
@@ -115,6 +117,9 @@ export class GameController {
 		this.isPoisonImmune = false;
 		this.isBurnImmune = false;
 		this.towerPool_Current = this.towerPool_All;
+
+		this.enemySpeed_Multiplier = 1 + (this.currentWave / (this.maxWave * 1.5))
+		this.enemyHealth_Multiplier = 1 + (this.currentWave / 6) + (this.enemyPerWave / (this.enemyPerWave * 1.5))
 	}
 
 	increaseSpeed() {
@@ -181,7 +186,6 @@ export class GameController {
 		emitter.explode(amount, x, y);
 	}
 
-	// TODO : Better UI
 	gameOver(key: string) {
 		this.pause();
 
@@ -191,55 +195,161 @@ export class GameController {
 			this.currentScene.cameras.main.width,
 			this.currentScene.cameras.main.height,
 			0x000000,
-			0.5
-		);
-		overlay.setOrigin(0.5, 0.5);
+			0.8
+		)
+			.setDepth(9)
+			.setOrigin(0.5, 0.5)
+			.setInteractive(); // Block interactions below the overlay
 
+		const offsetX = 300;
 		const offsetY = 80;
 
-		const middleText = this.currentScene.add.text(
-			this.currentScene.cameras.main.width / 2,
+		// Game over message
+		this.currentScene.add.text(
+			this.currentScene.cameras.main.width / 2 - offsetX,
 			this.currentScene.cameras.main.height / 3,
 			`You ${key}!`,
 			{ fontSize: '48px', color: '#ffffff', fontFamily: 'PressStart2P' }
-		).setOrigin(0.5);
+		).setOrigin(0.5).setDepth(10);
 
-		const s1Text = this.currentScene.add.text(
-			this.currentScene.cameras.main.width / 2,
+		// Game stats
+		this.currentScene.add.text(
+			this.currentScene.cameras.main.width / 2 - offsetX,
 			this.currentScene.cameras.main.height / 3 + offsetY,
 			`You survived: ${this.currentWave} waves`,
 			{ fontSize: '24px', color: '#ffffff', fontFamily: 'PressStart2P' }
-		).setOrigin(0.5);
+		).setOrigin(0.5).setDepth(10);
 
-		const s2Text = this.currentScene.add.text(
-			this.currentScene.cameras.main.width / 2,
+		this.currentScene.add.text(
+			this.currentScene.cameras.main.width / 2 - offsetX,
 			this.currentScene.cameras.main.height / 3 + offsetY * 2,
 			`You earned: ${this.accumCoin} coin`,
 			{ fontSize: '24px', color: '#ffffff', fontFamily: 'PressStart2P' }
-		).setOrigin(0.5);
+		).setOrigin(0.5).setDepth(10);
 
-		const s3Text = this.currentScene.add.text(
-			this.currentScene.cameras.main.width / 2,
+		this.currentScene.add.text(
+			this.currentScene.cameras.main.width / 2 - offsetX,
 			this.currentScene.cameras.main.height / 3 + offsetY * 3,
 			`You killed: ${this.enemyKilled} enemies`,
 			{ fontSize: '24px', color: '#ffffff', fontFamily: 'PressStart2P' }
-		).setOrigin(0.5);
+		).setOrigin(0.5).setDepth(10);
 
-		const button = this.currentScene.add.text(
-			this.currentScene.cameras.main.width / 2,
-			this.currentScene.cameras.main.height / 1.5,
-			'Leaderboard',
-			{
-				fontSize: '24px',
-				color: '#FFFFFF',
-				backgroundColor: '#000000',
-				fontFamily: 'PressStart2P',
-				padding: { left: 10, right: 10, top: 10, bottom: 10 },
+		this.currentScene.add.text(
+			this.currentScene.cameras.main.width / 2 - offsetX,
+			this.currentScene.cameras.main.height / 3 + offsetY * 4,
+			`Health left: ${this.playerHealth}`,
+			{ fontSize: '24px', color: '#ffffff', fontFamily: 'PressStart2P' }
+		).setOrigin(0.5).setDepth(10);
+
+		// Final score
+		const finalScore = this.accumCoin + this.enemyKilled * 10 + this.playerHealth * 5;
+		this.currentScene.add.text(
+			this.currentScene.cameras.main.width / 2 - offsetX,
+			this.currentScene.cameras.main.height / 3 + offsetY * 5,
+			`Final Score: ${finalScore}`,
+			{ fontSize: '28px', color: '#FFD700', fontFamily: 'PressStart2P' }
+		).setOrigin(0.5).setDepth(10);
+
+		// Embed a form using DOMElement
+		const formHTML = `
+			<div style="margin-top: 60%; display: flex; flex-direction: column; align-items: center; gap: 10px; font-family: PressStart2P; color: #FFD700;">
+				<label for="playerName">Name:</label>
+				<input id="playerName" type="text" placeholder="Enter Name" style="width: 400px; height: 80px; font-size: 24px; text-align: center; border: 2px solid #FFD700; border-radius: 8px; background-color: #333333; color: #FFD700;">
+
+				<label for="playerHouse">House:</label>
+				<select id="playerHouse" style="width: 400px; height: 80px; font-family: 2ndPixelus; font-size: 24px; text-align: center; border: 8px solid #FFD700; border-radius: 8px; background-color: #333333; color: #FFD700;">
+					<option value="" disabled selected>Select House</option>
+					<option value="ติดตลก">ติดตลก</option>
+					<option value="ติดเตียง">ติดเตียง</option>
+					<option value="ติดบั๊ก">ติดบั๊ก</option>
+					<option value="ติดลิฟต์">ติดลิฟต์</option>
+					<option value="ติดจุฬา">ติดจุฬา</option>
+					<option value="ติดแกลม">ติดแกลม</option>
+					<option value="ติดใจ">ติดใจ</option>
+					<option value="ติดฝน">ติดฝน</option>
+				</select>
+
+				<button id="submitScoreButton" style="width: 400px; height: 80px; font-size: 24px; border: 8px solid #FFD700; border-radius: 8px; background-color: #000000; color: #FFD700;">Submit Score</button>
+				<button id="replayButton" style="width: 400px; height: 80px; font-size: 24px; border: 8px solid #FFD700; border-radius: 8px; background-color: #555555; color: #999999; opacity: 0.5; cursor: not-allowed;" disabled>Replay</button>
+				<button id="leaderboardButton" style="width: 400px; height: 80px; font-size: 24px; border: 8px solid #FFD700; border-radius: 8px; background-color: #555555; color: #999999; opacity: 0.5; cursor: not-allowed;" disabled>Leaderboard</button>
+			</div>
+		`;
+
+		const formElement = this.currentScene.add.dom(
+			this.currentScene.cameras.main.width - 550,
+			0
+		).createFromHTML(formHTML);
+
+		formElement.setOrigin(0).setDepth(10);
+
+		// Event listener for Submit Score button
+		formElement.getChildByID('submitScoreButton')?.addEventListener('click', async () => {
+			const playerName = (document.getElementById('playerName') as HTMLInputElement).value;
+			const playerHouse = (document.getElementById('playerHouse') as HTMLSelectElement).value;
+
+			if (!playerName || !playerHouse) {
+				alert('Please enter your name and select your house!');
+				return;
 			}
-		).setOrigin(0.5).setInteractive();
 
-		button.on('pointerdown', () => {
-			window.location.href = '/LeaderBoard';
+			// Enable Replay and Leaderboard buttons
+			const replayButton = formElement.getChildByID('replayButton') as HTMLButtonElement;
+			const leaderboardButton = formElement.getChildByID('leaderboardButton') as HTMLButtonElement;
+
+			const finalScore = this.accumCoin + this.enemyKilled * 10 + this.playerHealth * 5;
+
+			// Prepare the data to send
+			const postData = {
+				name: playerName,
+				team: playerHouse,
+				score: finalScore,
+			};
+
+			try {
+				// Send the POST request
+				const response = await fetch('http://localhost:5000/api/scores', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(postData),
+				});
+
+				if (!response.ok) {
+					throw new Error(`Error: ${response.statusText}`);
+				}
+
+				alert('Score submitted successfully!');
+				replayButton.disabled = false;
+				leaderboardButton.disabled = false;
+
+				// Update styles for enabled state
+				replayButton.style.backgroundColor = '#000000';
+				replayButton.style.color = '#FFD700';
+				replayButton.style.opacity = '1';
+				replayButton.style.cursor = 'pointer';
+
+				leaderboardButton.style.backgroundColor = '#000000';
+				leaderboardButton.style.color = '#FFD700';
+				leaderboardButton.style.opacity = '1';
+				leaderboardButton.style.cursor = 'pointer';
+			} catch (error) {
+				console.error('Failed to submit score:', error);
+				alert('Failed to submit score. Please try again later.');
+			}
+		});
+
+
+		formElement.getChildByID('leaderboardButton')?.addEventListener('click', () => {
+			window.location.href = `/LeaderBoard`;
+		});
+
+
+		// Event listener for Replay button
+		formElement.getChildByID('replayButton')?.addEventListener('click', () => {
+			// Logic for replay will go here
+			console.log('Replay the game');
 		});
 	}
+
 }

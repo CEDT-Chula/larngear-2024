@@ -6,6 +6,7 @@ import { GameController } from "./GameController";
 import { GameUI } from "./GameUI";
 import { MapGenerator } from "./MapGenerator";
 import { BiggerWave } from "./waves/BiggerWave";
+import { BossBuffWave } from "./waves/BossBuffWave";
 import { DuplicateWave } from "./waves/DuplicateWave";
 import { GambleWave } from "./waves/GambleWave";
 import { MixedWave } from "./waves/MixedWave";
@@ -15,7 +16,6 @@ import { WaveEffect } from "./waves/WaveEffect";
 
 export class WaveController {
     scene: Phaser.Scene;
-    currentWave: number;
     maxWave: number;
     mapGen: MapGenerator;
     activeEnemies: BaseEnemy[];
@@ -25,20 +25,19 @@ export class WaveController {
 
     constructor(scene: Phaser.Scene, maxWave: number, mapGen: MapGenerator) {
         this.scene = scene;
-        this.currentWave = GameController.getInstance().currentWave;
         this.maxWave = maxWave;
         this.mapGen = mapGen;
         this.activeEnemies = GameController.getInstance().activeEnemiesList;
         this.waveText = this.scene.add
-            .text(1000, 20, `${'Wave ' + this.currentWave + '/' + this.maxWave}`, {
+            .text(1000, 20, `${'Wave ' + GameController.getInstance().currentWave + '/' + this.maxWave}`, {
                 fontFamily: 'PressStart2P',
                 fontSize: '30px',
-            })
-            .setDepth(1);
+            }).setDepth(8)
 
         GameUI.getInstance().waveText = this.waveText;
 
         this.popupElements = [];
+        GameController.getInstance().enemySummon += GameController.getInstance().enemyPerWave;
     }
 
     releaseWave(enemyList: BaseEnemy[]) {
@@ -64,11 +63,11 @@ export class WaveController {
 
     checkWaveCleared() {
         GameController.getInstance().enemyKilled++;
-        if (this.activeEnemies.length <= 0) {
-            console.log(`Wave ${this.currentWave} cleared!`);
-            this.currentWave++;
+        if (GameController.getInstance().enemyKilled == GameController.getInstance().enemySummon) {
+            console.log(`Wave ${GameController.getInstance().currentWave} cleared!`);
+            GameController.getInstance().currentWave++;
 
-            if (this.currentWave > this.maxWave) {
+            if (GameController.getInstance().currentWave > this.maxWave) {
                 GameController.getInstance().gameOver("win");
             } else {
                 GameController.getInstance().resetNonPerma()
@@ -78,10 +77,11 @@ export class WaveController {
     }
 
     triggerNextWave() {
-        this.waveText.text = `${'Wave ' + this.currentWave + '/' + this.maxWave}`;
+        this.waveText.text = `${'Wave ' + GameController.getInstance().currentWave + '/' + this.maxWave}`;
+        GameController.getInstance().addFloatText("Wave Cleared!")
 
-        if (this.currentWave % 5 == 0) {
-            // TODO : Call boss
+        if (GameController.getInstance().currentWave % 5 == 0) {
+            GameController.getInstance().enemySummon += 1;
             let mockBoss: BaseEnemy[] = [
                 new Boss1(this.scene)
             ]
@@ -89,7 +89,9 @@ export class WaveController {
             this.scene.events.emit("wait_confirm_release_wave");
             this.confirmReleaseWave(mockBoss);
         } else {
-            this.showEnemySelectionPopup();
+            setTimeout(() => {
+                this.showEnemySelectionPopup();
+            }, 3000);
         }
     }
 
@@ -165,6 +167,8 @@ export class WaveController {
 
         const waveEnemies: BaseEnemy[] = [];
 
+        GameController.getInstance().enemySummon += GameController.getInstance().enemyPerWave;
+
         for (let i = 0; i < GameController.getInstance().enemyPerWave; i++) {
             const newEnemy = new choice.enemy(this.scene);
             waveEnemies.push(newEnemy);
@@ -196,6 +200,7 @@ export class WaveController {
             new DuplicateWave(),
             new GambleWave(),
             new MixedWave(),
+            new BossBuffWave(),
         ];
 
         const randomEffects: WaveEffect[] = [];

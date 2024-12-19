@@ -5,11 +5,11 @@ import { WaveEffect } from "./WaveEffect";
 
 export class DuplicateWave extends WaveEffect {
     constructor() {
-        super(CakeEnemy, "Unstoppable Force", "Immune to Poison this turn", "Gain 100 coins");
+        super(CakeEnemy, "Unstoppable Force", "Immune to Poison this turn", "Gain 400 coins");
     }
 
     effect(): void {
-        GameUI.increaseCoin(100)
+        GameUI.increaseCoin(400)
         GameController.getInstance().isPoisonImmune = true;
     }
 }

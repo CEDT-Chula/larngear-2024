@@ -5,12 +5,12 @@ import { WaveEffect } from "./WaveEffect";
 
 export class GambleWave extends WaveEffect {
     constructor() {
-        super(CokeEnemy, "Everyone's favorite", "Gain 200 coins", "20% to lose all coins")
+        super(CokeEnemy, "Everyone's favorite", "20% to lose all coins", "Gain 1000 coins")
     }
 
     effect(): void {
         const randomValue = Math.random();
-        GameUI.increaseCoin(200);
+        GameUI.increaseCoin(1000);
     
         if (randomValue < 0.2) {
             // 20% chance: Lose all coins

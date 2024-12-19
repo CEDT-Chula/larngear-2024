@@ -30,10 +30,10 @@ export class Stage1Scene extends Phaser.Scene {
     assetLoader.preloadTowers();
 
     const stage1Tiles = [
-      { key: "tile", path: "src/assets/tiles/grass.png" },
-      { key: "path", path: "src/assets/tiles/dirt.png" },
-      { key: "enemy_base", path: "src/assets/base/enemy_base.png" },
-      { key: "player_base", path: "src/assets/base/player_base_0.png" },
+      { key: "tile", path: "assets/tiles/grass.png" },
+      { key: "path", path: "assets/tiles/dirt.png" },
+      { key: "enemy_base", path: "assets/base/enemy_base.png" },
+      { key: "player_base", path: "assets/base/player_base_0.png" },
     ];
     assetLoader.preloadTiles(stage1Tiles);
     assetLoader.preloadEnemies();
@@ -45,11 +45,12 @@ export class Stage1Scene extends Phaser.Scene {
   loadFont() {
     WebFont.load({
       custom: {
-        families: ["PressStart2P"],
-        urls: ["src/index.css"],
+        families: ["PressStart2P", "2ndPixelus"],
+        urls: ["font.css"],
       },
       active: () => {
         this.fontLoaded = true;
+        console.log("Font loaded successfully");
       },
       inactive: () => {
         console.error("Font failed to load");
@@ -83,8 +84,8 @@ export class Stage1Scene extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, worldWidth, worldHeight);
     this.cameras.main.setViewport(0, 0, screenWidth, screenHeight);
 
-    console.log("Camera Size:", screenWidth, screenHeight);
-    console.log("World Size:", worldWidth, worldHeight);
+    // console.log("Camera Size:", screenWidth, screenHeight);
+    // console.log("World Size:", worldWidth, worldHeight);
 
     // *** Zoom ***
     const minZoom = Math.max(screenWidth / worldWidth, screenHeight / worldHeight);
@@ -158,16 +159,14 @@ export class Stage1Scene extends Phaser.Scene {
 
     this.coinIcon = this.add
       .image(32, 32, "coin")
-      .setScale(3)
-      .setDepth(1);
+      .setScale(3);
 
     this.coinText = this.add
       .text(68, 20, `${GameController.getInstance().coin}`, {
         fontFamily: "PressStart2P",
         fontSize: "30px",
         color: "#ffd700", // Gold color
-      })
-      .setDepth(1);
+      });
 
     this.speedButton = this.add
       .text(
@@ -185,7 +184,6 @@ export class Stage1Scene extends Phaser.Scene {
       .setOrigin(0.5)
       .setInteractive()
       .on("pointerdown", this.handleSpeedToggle.bind(this));
-
 
     this.heartImage = this.add.image(200, 32, "heart").setScale(3)
 
@@ -235,7 +233,7 @@ export class Stage1Scene extends Phaser.Scene {
     }
 
     console.log(this.time.timeScale)
-
+    
     this.speedButton.setText("Speed x" + this.time.timeScale)
   }
 

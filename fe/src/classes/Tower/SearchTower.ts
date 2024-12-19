@@ -12,23 +12,23 @@ export class SearchTower extends BaseTower {
     initializeLevelData(): LevelData[] {
         return [
             {
-                range: 200, attack: 15, reloadTime: 2, maxTarget: 1, critChance: 0.2, critMultiplier: 2,
+                range: 300, attack: 100, reloadTime: 1.5, maxTarget: 1, critChance: 0.2, critMultiplier: 2,
                 sprite: "se_lv1"
             },
             {
-                range: 200, attack: 20, reloadTime: 1.8, maxTarget: 1, critChance: 0.35, critMultiplier: 2,
+                range: 325, attack: 200, reloadTime: 1.4, maxTarget: 2, critChance: 0.35, critMultiplier: 4,
                 sprite: "se_lv2"
             },
             {
-                range: 200, attack: 25, reloadTime: 1.6, maxTarget: 1, critChance: 0.5, critMultiplier: 2,
+                range: 350, attack: 300, reloadTime: 1.3, maxTarget: 3, critChance: 0.5, critMultiplier: 6,
                 sprite: "se_lv3"
             },
             {
-                range: 250, attack: 30, reloadTime: 1.4, maxTarget: 1, critChance: 0.5, critMultiplier: 2.5,
+                range: 375, attack: 400, reloadTime: 1.2, maxTarget: 5, critChance: 0.5, critMultiplier: 8,
                 sprite: "se_lv4"
             },
             {
-                range: 300, attack: 35, reloadTime: 1.2, maxTarget: 1, critChance: 0.7, critMultiplier: 3,
+                range: 400, attack: 500, reloadTime: 1.1, maxTarget: 7, critChance: 0.7, critMultiplier: 10,
                 sprite: "se_lv5"
             }
         ];

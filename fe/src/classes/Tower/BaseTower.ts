@@ -7,7 +7,7 @@ import { BurnBullet } from "../projectile/BurnBullet";
 import { NormalBullet } from "../projectile/NormalBullet";
 import { PoisonBullet } from "../projectile/PoisonBullet";
 import { SlowBullet } from "../projectile/SlowBullet";
-import { CriticalBullet } from "../projectile/CritialBullet";
+import { CriticalBullet } from "../projectile/CriticalBullet";
 
 type BulletType = "normal" | "ricochet" | "explosion" | "burn" | "poison" | "slow" | "crit"
 
@@ -64,6 +64,9 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 
 	bulletType: BulletType
 
+	selectedTower: BaseTower | null = null; // The selected tower for upgrading
+	highlight: Phaser.GameObjects.Rectangle | null = null;
+
 	constructor(
 		scene: Phaser.Scene,
 		pos: Phaser.Math.Vector2 | undefined,
@@ -72,6 +75,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		bulletType: BulletType = "normal"
 	) {
 		super(scene, 0, 0, "");
+		this.scene = scene;
 		this.pos = pos ?? new Phaser.Math.Vector2(0, 0);
 		this.currentLevel = 1;
 		this.maxLevel = maxLvl;
@@ -118,12 +122,14 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 
 
 	checkForEnemiesInRange = () => {
+		// Ensure the tower is still active in the scene
+		if (!this.scene || !this.active) return;
+
 		if (!this.readyToFire) return;
 
 		const activeEnemies = GameController.getInstance().activeEnemiesList;
 		if (!activeEnemies || activeEnemies.length === 0) return;
 
-		// Collect targets within range up to the maxTarget limit
 		const targets: BaseEnemy[] = activeEnemies.filter(
 			(enemy) =>
 				enemy instanceof BaseEnemy &&
@@ -131,11 +137,11 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 				enemy.isAlive
 		).slice(0, this.maxTarget); // Limit to maxTarget enemies
 
-		// Fire at collected targets
 		if (targets.length > 0) {
 			this.fire(targets);
 		}
 	};
+
 
 
 	hideRangeCircle() {
@@ -241,14 +247,38 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		}
 	}
 
-	upgradeTower(anotherTower: BaseTower) {
-		if (anotherTower instanceof BaseTower && this.currentLevel < this.maxLevel) {
-			this.levelup();
-			console.log(`Your tower is successfully upgraded to level ${this.getCurrentLvl}`);
-		} else {
-			console.log("Cannot upgrade. You reached the max level");
+	upgradeTower() {
+		if (!this.selectedTower) return
+
+		// Remove the selected tower
+		const towerIndex = GameController.getInstance().towerList.findIndex(
+			(tower) => tower === this.selectedTower
+		)
+
+		if (towerIndex !== -1) {
+			this.selectedTower.safeDestroy()
+			GameController.getInstance().towerList.splice(towerIndex, 1)
+			GameController.getInstance().gridMap[this.selectedTower.pos.y][this.selectedTower.pos.x].occupied = false
 		}
+
+		this.levelup() // Upgrade this tower
+		this.selectedTower = null // Clear the reference
+		this.clearHighlight() // Remove highlight if present
+
+		console.log(`Tower upgraded to level ${this.currentLevel}`)
 	}
+
+
+
+	clearHighlight() {
+		if (this.highlight) {
+			console.log("Clearing highlight.");
+			this.highlight.destroy();
+			this.highlight = null;
+		}
+		this.selectedTower = null;
+	}
+
 
 	sellTower() {
 		GameController.getInstance().towerController.sellTower(this)
@@ -273,6 +303,28 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		return this.maxLevel;
 	}
 
+	findAndHighlightMatchingTower() {
+		const matchingTower = GameController.getInstance().towerList.find(
+			(tower) =>
+				tower !== this && // Exclude this tower
+				tower instanceof this.constructor && // Match the same class
+				tower.currentLevel === this.currentLevel // Match the same level
+		)
+
+		if (matchingTower) {
+			this.selectedTower = matchingTower
+
+			// Highlight the matching tower
+			this.highlight = this.scene.add
+				.rectangle(matchingTower.x, matchingTower.y, 50, 50, 0xffff00, 0.5) // Yellow highlight
+				.setOrigin(0.5)
+		} else {
+			console.log("No matching tower found for upgrade.")
+			this.selectedTower = null
+		}
+	}
+
+
 	showPopup() {
 		this.clearPopup(); // Clear any existing popups
 
@@ -283,36 +335,64 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 			.setInteractive();
 		this.popupElements.push(popupBg);
 
-		const sellButton = this.createButton(
-			"Sell",
-			() => {
-				if (!GameController.getInstance().isDragging)
-					this.confirmAction("sell");
-			},
-			-30
-		);
+		// Create the upgrade button (now at the top)
+		const upgradeAvailable = this.currentLevel < this.maxLevel; // Check if upgrade is available
+		this.findAndHighlightMatchingTower();
+		const upgradeButtonColor = this.selectedTower && upgradeAvailable ? 0x00ff00 : 0xff0000; // Green if available, red if not
 		const upgradeButton = this.createButton(
 			"Upgrade",
 			() => {
-				if (!GameController.getInstance().isDragging)
+				if (upgradeAvailable && !GameController.getInstance().isDragging) {
 					this.confirmAction("upgrade");
+				}
 			},
-			30
+			-30, // Top button
+			upgradeButtonColor
 		);
 
-		this.popupElements.push(sellButton[0], sellButton[1], upgradeButton[0], upgradeButton[1]);
+		// Create the sell button (now at the bottom)
+		const sellButton = this.createButton(
+			"Sell",
+			() => {
+				if (!GameController.getInstance().isDragging) this.confirmAction("sell");
+			},
+			30, // Bottom button
+			0xffffff // White color for the sell button
+		);
+
+		this.popupElements.push(upgradeButton[0], upgradeButton[1], sellButton[0], sellButton[1]);
+
+		// Hide the popup when clicking outside
+		const pointerDownHandler = (pointer: Phaser.Input.Pointer) => {
+			if (
+				!popupBg.getBounds().contains(pointer.worldX, pointer.worldY) &&
+				!this.popupElements.some((element) =>
+					element.getBounds ? element.getBounds().contains(pointer.worldX, pointer.worldY) : false
+				)
+			) {
+				this.clearPopup(); // Clear popup when clicked outside
+				this.clearHighlight();
+				this.scene.input.off("pointerdown", pointerDownHandler); // Remove this listener
+			}
+		};
+
+		this.scene.input.on("pointerdown", pointerDownHandler);
 
 		this.startPopupAutoHide();
 	}
 
-	createButton(label: string, callback: () => void, offsetY: number) {
+	// Update the createButton method to accept a color parameter
+	createButton(label: string, callback: () => void, offsetY: number, color: number) {
 		const button = this.scene.add
-			.rectangle(this.x, this.y + offsetY, 180, 50, 0xffffff, 0.5)
+			.rectangle(this.x, this.y + offsetY, 180, 50, color, 0.5) // Use the passed color
 			.setOrigin(0.5, 0.5)
 			.setDepth(10)
 			.setInteractive();
 
-		button.on("pointerup", callback);
+		// Only enable the button if it's not red (indicating an unavailable upgrade)
+		if (color !== 0xff0000) {
+			button.on("pointerdown", callback);
+		}
 
 		const text = this.scene.add
 			.text(this.x, this.y + offsetY, label, {
@@ -336,11 +416,13 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 				if (action === "sell") {
 					this.sellTower();
 				} else if (action === "upgrade") {
-					this.levelup();
+					this.upgradeTower()
+					// this.levelup()
 				}
 				this.clearPopup(); // Clear the popup after action
 			},
-			-30
+			-30,
+			0x282828
 		);
 
 		const backButton = this.createButton(
@@ -348,7 +430,8 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 			() => {
 				this.showPopup(); // Show the original popup again
 			},
-			30
+			30,
+			0x282828
 		);
 
 		this.popupElements.push(
@@ -384,10 +467,23 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		}
 		this.popupTimeout = setTimeout(() => {
 			this.clearPopup(); // Hide popup after 1 second
+			this.clearHighlight()
 		}, 2000);
 	}
 
 	startPopupAutoHide() {
 		this.schedulePopupHide(); // Start the auto-hide timer
+	}
+
+	safeDestroy() {
+		if (this.rangeCheckEvent) {
+			this.rangeCheckEvent.remove();
+			this.rangeCheckEvent = undefined;
+		}
+		if (this.rangeCircle) {
+			this.rangeCircle.destroy();
+			this.rangeCircle = undefined;
+		}
+		this.destroy(); // Finally destroy the tower
 	}
 }

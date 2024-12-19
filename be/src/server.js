@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const scoreRouter = require('./routes/score');
 // const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
@@ -6,9 +7,8 @@ require('dotenv').config({ path: './src/config/config.env' });
 
 
 
-console.log('MONGO_URI:', process.env.MONGO_URI); 
 
-connectDB();
+
 
 // FOR LIMIT USER
 // const limiter = rateLimit({
@@ -17,6 +17,14 @@ connectDB();
 // });
 
 const app = express();
+
+app.use(cors());
+
+console.log('MONGO_URI:', process.env.MONGO_URI); 
+
+connectDB();
+
+
 app.use(express.json());
 // FOR LIMIT USER
 // app.use(limiter);
