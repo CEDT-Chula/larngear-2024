@@ -25,7 +25,7 @@ export class ExplosionBullet extends BaseProjectTile {
 
       const emitter = new ParticleEmitter(this.scene, "smoke")
 
-      emitter.explode(30, target.x, target.y, true)
+      emitter.explode(10, target.x, target.y, true)
   
       this.destroy()
     }

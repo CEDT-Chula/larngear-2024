@@ -7,7 +7,7 @@ export class ParticleEmitter {
   critEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
   totalEmittedParticles: number = 0; // Track total particles emitted
-  maxAllowedParticles: number = 500; // Limit for all particles
+  maxAllowedParticles: number = 300; // Limit for all particles
 
   constructor(scene: Phaser.Scene, particleImage: string) {
 
