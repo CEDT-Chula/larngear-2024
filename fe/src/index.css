@@ -87,3 +87,15 @@ body {
     transform: rotate(360deg);
   }
 }
+
+img {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges; /* Backup for older browsers */
+  -ms-interpolation-mode: nearest-neighbor; /* For IE */
+}
+
+.bg-scroll {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor;
+}
