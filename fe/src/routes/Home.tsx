@@ -43,22 +43,22 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="flex flex-col h-full justify-center gap-12">
-        <h1 className="nes-text is-warning text-center my-5 text-xl">
+      <div className="flex flex-col h-full justify-center gap-4">
+        <h1 className="nes-text is-warning text-center my-5 text-4xl">
           Croissant Tower Defense
         </h1>
 
-        <div className="flex flex-col items-center gap-5">
+        <div className="flex flex-col items-center gap-2">
           <button
             type="button"
-            className="px-10 py-2 nes-btn is-warning"
+            className="px-4 py-1 nes-btn is-warning text-2xl"
             onClick={handleStartClick}
           >
             Start
           </button>
           <button
             type="button"
-            className="px-10 py-2 nes-btn is-warning"
+            className="px-4 py-1 nes-btn is-warning text-2xl"
             onClick={handleLeaderboardClick}
           >
             LeaderBoard

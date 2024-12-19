@@ -4,11 +4,11 @@ import { WaveEffect } from "./WaveEffect";
 
 export class SlowWave extends WaveEffect {
     constructor() {
-        super(IceCreamEnemy, "Icy Threat", "Enemy Health +50%", "Decrease Enemy Speed -15%");
+        super(IceCreamEnemy, "Icy Threat", "Enemy Health +25% this wave", "Decrease Enemy Speed -25% this wave");
     }
 
     effect(): void {
-        GameController.getInstance().enemyHealth_Multiplier += 0.50 * GameController.getInstance().enemyHealth_Multiplier;
-        GameController.getInstance().enemySpeed_Multiplier -= 0.15 * GameController.getInstance().enemySpeed_Multiplier;
+        GameController.getInstance().enemyHealth_Multiplier += 0.25 * GameController.getInstance().enemyHealth_Multiplier;
+        GameController.getInstance().enemySpeed_Multiplier -= 0.25 * GameController.getInstance().enemySpeed_Multiplier;
     }
 }

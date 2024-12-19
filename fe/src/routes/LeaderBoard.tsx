@@ -83,7 +83,7 @@ const LeaderBoard = () => {
         <motion.div
           initial={{ height: 0 }}
           animate={{
-            height: isUnfolded ? "400px" : 0, // Set a fixed height for the scroll container
+            height: isUnfolded ? "400px" : 0,
           }}
           transition={{ duration: 1, ease: "easeInOut" }}
           className="overflow-y-auto bg-scroll"
@@ -93,8 +93,8 @@ const LeaderBoard = () => {
             backgroundRepeat: "repeat-y",
             backgroundSize: "100% auto",
             width: "432px",
-            maxHeight: "300px", // Limit the height to enable scrolling
-            borderTop: "2px solid transparent", // Prevent abrupt edge visuals
+            maxHeight: "300px",
+            borderTop: "2px solid transparent",
             borderBottom: "2px solid transparent",
           }}
         >

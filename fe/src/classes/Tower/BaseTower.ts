@@ -356,9 +356,10 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 
 		this.popupElements.push(sellButton[0], sellButton[1], upgradeButton[0], upgradeButton[1]);
 
-		this.scene.input.once("pointerdown", (pointer: any) => {
+		this.scene.input.once("pointerup", (pointer: any) => {
+			console.log("clear popup")
+			this.clearPopup(); // Hide popup if clicked elsewhere
 			if (!popupBg.getBounds().contains(pointer.worldX, pointer.worldY)) {
-				this.clearPopup(); // Hide popup if clicked elsewhere
 			}
 		});
 

@@ -6,6 +6,7 @@ import { GameController } from "./GameController";
 import { GameUI } from "./GameUI";
 import { MapGenerator } from "./MapGenerator";
 import { BiggerWave } from "./waves/BiggerWave";
+import { BossBuffWave } from "./waves/BossBuffWave";
 import { DuplicateWave } from "./waves/DuplicateWave";
 import { GambleWave } from "./waves/GambleWave";
 import { MixedWave } from "./waves/MixedWave";
@@ -31,7 +32,7 @@ export class WaveController {
             .text(1000, 20, `${'Wave ' + GameController.getInstance().currentWave + '/' + this.maxWave}`, {
                 fontFamily: 'PressStart2P',
                 fontSize: '30px',
-            })
+            }).setDepth(8)
 
         GameUI.getInstance().waveText = this.waveText;
 
@@ -77,6 +78,7 @@ export class WaveController {
 
     triggerNextWave() {
         this.waveText.text = `${'Wave ' + GameController.getInstance().currentWave + '/' + this.maxWave}`;
+        GameController.getInstance().addFloatText("Wave Cleared!")
 
         if (GameController.getInstance().currentWave % 5 == 0) {
             GameController.getInstance().enemySummon += 1;
@@ -87,7 +89,9 @@ export class WaveController {
             this.scene.events.emit("wait_confirm_release_wave");
             this.confirmReleaseWave(mockBoss);
         } else {
-            this.showEnemySelectionPopup();
+            setTimeout(() => {
+                this.showEnemySelectionPopup();
+            }, 3000);
         }
     }
 
@@ -196,6 +200,7 @@ export class WaveController {
             new DuplicateWave(),
             new GambleWave(),
             new MixedWave(),
+            new BossBuffWave(),
         ];
 
         const randomEffects: WaveEffect[] = [];

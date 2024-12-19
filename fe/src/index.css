@@ -29,18 +29,25 @@ body {
   src: url("src/assets/fonts/PressStart2P-Regular.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "2ndPixelus";
+  src: url("src/assets/fonts/ZF_2ndPixelus.ttf") format("truetype");
+}
+
 html,
 body {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  font-family: "2ndPixelus";
+  font-size: 24px;
 }
 
-#stage-1 {
+/* #stage-1 {
   width: 100vw;
   height: 100vh;
   display: block;
-}
+} */
 
 @keyframes slide-left {
   0% {

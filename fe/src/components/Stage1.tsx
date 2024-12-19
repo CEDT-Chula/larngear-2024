@@ -22,6 +22,7 @@ const Stage1: React.FC = () => {
         },
       },
       scene: [Stage1Scene],
+      dom: { createContainer: true },
     };
 
     const game = new Phaser.Game(config);
@@ -29,6 +30,18 @@ const Stage1: React.FC = () => {
     return () => {
       game.destroy(true);
     };
+  }, []);
+
+  useEffect(() => {
+    const container = document.getElementById("stage-1");
+    if (container) {
+      container.style.position = "absolute";
+      container.style.top = "0";
+      container.style.left = "0";
+      container.style.width = "100%";
+      container.style.height = "100%";
+      container.style.overflow = "hidden";
+    }
   }, []);
 
   return <div id="stage-1" />;

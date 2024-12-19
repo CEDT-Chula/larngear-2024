@@ -43,7 +43,7 @@ export class Stage1Scene extends Phaser.Scene {
   loadFont() {
     WebFont.load({
       custom: {
-        families: ["PressStart2P"],
+        families: ["PressStart2P", "2ndPixelus"],
         urls: ["src/index.css"],
       },
       active: () => {
@@ -81,8 +81,8 @@ export class Stage1Scene extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, worldWidth, worldHeight);
     this.cameras.main.setViewport(0, 0, screenWidth, screenHeight);
 
-    console.log("Camera Size:", screenWidth, screenHeight);
-    console.log("World Size:", worldWidth, worldHeight);
+    // console.log("Camera Size:", screenWidth, screenHeight);
+    // console.log("World Size:", worldWidth, worldHeight);
 
     // *** Zoom ***
     const minZoom = Math.max(screenWidth / worldWidth, screenHeight / worldHeight);
@@ -160,7 +160,7 @@ export class Stage1Scene extends Phaser.Scene {
 
     this.coinText = this.add
       .text(68, 20, `${GameController.getInstance().coin}`, {
-        fontFamily: "PressStart2P",
+        fontFamily: "2ndPixelus",
         fontSize: "30px",
         color: "#ffd700", // Gold color
       });
@@ -182,7 +182,6 @@ export class Stage1Scene extends Phaser.Scene {
       .setInteractive()
       .on("pointerdown", this.handleSpeedToggle.bind(this));
 
-
     this.heartImage = this.add.image(200, 32, "heart").setScale(3)
 
     this.healthText = this.add.text(240, 20, GameController.getInstance().playerHealth.toString(),
@@ -201,8 +200,6 @@ export class Stage1Scene extends Phaser.Scene {
 
     this.input.on("pointerdown", (pointer: any) => {
       emitter.explode(12, pointer.worldX, pointer.worldY);
-
-      console.log("pointer at", pointer.worldX, pointer.worldY)
     });
   }
 
@@ -214,6 +211,7 @@ export class Stage1Scene extends Phaser.Scene {
     }
 
     console.log(this.time.timeScale)
+    GameController.getInstance().gameOver("win")
 
     this.speedButton.setText("Speed x" + this.time.timeScale)
   }
