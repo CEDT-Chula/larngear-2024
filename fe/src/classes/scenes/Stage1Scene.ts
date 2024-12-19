@@ -28,10 +28,10 @@ export class Stage1Scene extends Phaser.Scene {
     assetLoader.preloadTowers();
 
     const stage1Tiles = [
-      { key: "tile", path: "src/assets/tiles/grass.png" },
-      { key: "path", path: "src/assets/tiles/dirt.png" },
-      { key: "enemy_base", path: "src/assets/base/enemy_base.png" },
-      { key: "player_base", path: "src/assets/base/player_base_0.png" },
+      { key: "tile", path: "assets/tiles/grass.png" },
+      { key: "path", path: "assets/tiles/dirt.png" },
+      { key: "enemy_base", path: "assets/base/enemy_base.png" },
+      { key: "player_base", path: "assets/base/player_base_0.png" },
     ];
     assetLoader.preloadTiles(stage1Tiles);
     assetLoader.preloadEnemies();
@@ -44,10 +44,11 @@ export class Stage1Scene extends Phaser.Scene {
     WebFont.load({
       custom: {
         families: ["PressStart2P", "2ndPixelus"],
-        urls: ["src/index.css"],
+        urls: ["font.css"],
       },
       active: () => {
         this.fontLoaded = true;
+        console.log("Font loaded successfully");
       },
       inactive: () => {
         console.error("Font failed to load");
@@ -160,7 +161,7 @@ export class Stage1Scene extends Phaser.Scene {
 
     this.coinText = this.add
       .text(68, 20, `${GameController.getInstance().coin}`, {
-        fontFamily: "2ndPixelus",
+        fontFamily: "PressStart2P",
         fontSize: "30px",
         color: "#ffd700", // Gold color
       });

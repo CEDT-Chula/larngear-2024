@@ -26,12 +26,12 @@ body {
 
 @font-face {
   font-family: "PressStart2P";
-  src: url("src/assets/fonts/PressStart2P-Regular.ttf") format("truetype");
+  src: url("assets/fonts/PressStart2P-Regular.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "2ndPixelus";
-  src: url("src/assets/fonts/ZF_2ndPixelus.ttf") format("truetype");
+  src: url("assets/fonts/ZF_2ndPixelus.ttf") format("truetype");
 }
 
 html,

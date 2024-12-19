@@ -64,7 +64,7 @@ const Home = () => {
             LeaderBoard
           </button>
           <img
-            src="src/assets/subaru-duck-pixel.gif"
+            src="assets/subaru-duck-pixel.gif"
             alt="subaru duck dancing"
           />
         </div>
