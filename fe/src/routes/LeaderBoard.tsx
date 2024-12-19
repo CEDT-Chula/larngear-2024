@@ -3,8 +3,8 @@ import { motion } from 'framer-motion';
 
 const LeaderBoard = () => {
   const [scores, setScores] = useState([]);
-  const [isUnfolded, setIsUnfolded] = useState(false);
-  const [viewOption, setViewOption] = useState('All');
+  const [isUnfolded, setIsUnfolded] = useState(false); //เลื่อนสาร์น
+  const [viewOption, setViewOption] = useState('All'); //set All ตอนเริ่ม
 
   useEffect(() => {
     const fetchScores = async () => {
