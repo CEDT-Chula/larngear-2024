@@ -11,11 +11,13 @@ import { GameUI } from "../util/GameUI";
 
 export class Stage1Scene extends Phaser.Scene {
   fontLoaded: boolean = false;
+  firstClicked: boolean = false;
   speedButton!: Phaser.GameObjects.Text;
   heartImage!: Phaser.GameObjects.Image;
   healthText!: Phaser.GameObjects.Text;
   coinIcon!: Phaser.GameObjects.Image;
   coinText!: Phaser.GameObjects.Text;
+  tutorialText!: Phaser.GameObjects.Text;
   popupElements!: Phaser.GameObjects.GameObject[];
 
   constructor() {
@@ -195,6 +197,17 @@ export class Stage1Scene extends Phaser.Scene {
       }
     );
 
+    this.tutorialText = this.add.text(50, worldHeight - 240,
+      "Click on a square to create tower\ncost 100 coins\nTower can be upgraded using \nanother duplicate tower\nTower sold at xx% lower price",
+      {
+        fontSize: "30px",
+        fontFamily: "PressStart2P",
+        color: "#ffffff",
+        lineSpacing: 15
+      }
+    )
+    this.tutorialText.alpha = 0.7;
+
     gameUi.coinIcon = this.coinIcon;
     gameUi.coinText = this.coinText;
     gameUi.heartIcon = this.heartImage;
@@ -203,6 +216,12 @@ export class Stage1Scene extends Phaser.Scene {
 
     this.input.on("pointerdown", (pointer: any) => {
       emitter.explode(12, pointer.worldX, pointer.worldY);
+
+      if(!this.firstClicked) {
+        this.tutorialText.setVisible(false)
+        this.tutorialText.setActive(false)
+        this.firstClicked = true
+      }
 
       console.log("pointer at", pointer.worldX, pointer.worldY)
     });
