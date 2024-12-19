@@ -6,7 +6,7 @@ export class ChocolateEnemy extends BaseEnemy {
         scene: Phaser.Scene,
         Name: string = "Chocolate",
         Name_Color: string = "#8B4513",
-        maxHealth: number = 120 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier,
+        maxHealth: number = 80 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier,
         speed: number = 250 * GameController.getInstance().enemySpeed_Multiplier,
         attack: number = 1,
         sprite: string = "choco",

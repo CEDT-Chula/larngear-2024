@@ -12,23 +12,23 @@ export class BrowserTower extends BaseTower {
     initializeLevelData(): LevelData[] {
         return [
             {
-                range: 200, attack: 15, reloadTime: 0.1, maxTarget: 1,
+                range: 200, attack: 60, reloadTime: 0.1, maxTarget: 1,
                 sprite: "browser_lv1"
             },
             {
-                range: 220, attack: 20, reloadTime: 0.1, maxTarget: 1,
+                range: 220, attack: 70, reloadTime: 0.1, maxTarget: 1,
                 sprite: "browser_lv2"
             },
             {
-                range: 230, attack: 25, reloadTime: 0.05, maxTarget: 1,
+                range: 230, attack: 80, reloadTime: 0.05, maxTarget: 1,
                 sprite: "browser_lv3"
             },
             {
-                range: 240, attack: 25, reloadTime: 0.01, maxTarget: 1,
+                range: 240, attack: 90, reloadTime: 0.01, maxTarget: 1,
                 sprite: "browser_lv4"
             },
             {
-                range: 250, attack: 30, reloadTime: 0.001, maxTarget: 1,
+                range: 250, attack: 100, reloadTime: 0.001, maxTarget: 1,
                 sprite: "browser_lv5"
             }
         ];

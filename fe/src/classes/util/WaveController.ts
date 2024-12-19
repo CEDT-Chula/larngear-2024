@@ -15,7 +15,6 @@ import { WaveEffect } from "./waves/WaveEffect";
 
 export class WaveController {
     scene: Phaser.Scene;
-    currentWave: number;
     maxWave: number;
     mapGen: MapGenerator;
     activeEnemies: BaseEnemy[];
@@ -25,16 +24,14 @@ export class WaveController {
 
     constructor(scene: Phaser.Scene, maxWave: number, mapGen: MapGenerator) {
         this.scene = scene;
-        this.currentWave = GameController.getInstance().currentWave;
         this.maxWave = maxWave;
         this.mapGen = mapGen;
         this.activeEnemies = GameController.getInstance().activeEnemiesList;
         this.waveText = this.scene.add
-            .text(1000, 20, `${'Wave ' + this.currentWave + '/' + this.maxWave}`, {
+            .text(1000, 20, `${'Wave ' + GameController.getInstance().currentWave + '/' + this.maxWave}`, {
                 fontFamily: 'PressStart2P',
                 fontSize: '30px',
             })
-            .setDepth(1);
 
         GameUI.getInstance().waveText = this.waveText;
 
@@ -66,10 +63,10 @@ export class WaveController {
     checkWaveCleared() {
         GameController.getInstance().enemyKilled++;
         if (GameController.getInstance().enemyKilled == GameController.getInstance().enemySummon) {
-            console.log(`Wave ${this.currentWave} cleared!`);
-            this.currentWave++;
+            console.log(`Wave ${GameController.getInstance().currentWave} cleared!`);
+            GameController.getInstance().currentWave++;
 
-            if (this.currentWave > this.maxWave) {
+            if (GameController.getInstance().currentWave > this.maxWave) {
                 GameController.getInstance().gameOver("win");
             } else {
                 GameController.getInstance().resetNonPerma()
@@ -79,9 +76,9 @@ export class WaveController {
     }
 
     triggerNextWave() {
-        this.waveText.text = `${'Wave ' + this.currentWave + '/' + this.maxWave}`;
+        this.waveText.text = `${'Wave ' + GameController.getInstance().currentWave + '/' + this.maxWave}`;
 
-        if (this.currentWave % 5 == 0) {
+        if (GameController.getInstance().currentWave % 5 == 0) {
             GameController.getInstance().enemySummon += 1;
             let mockBoss: BaseEnemy[] = [
                 new Boss1(this.scene)

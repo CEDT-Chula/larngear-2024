@@ -73,7 +73,7 @@ export class GameController {
 		this.timeSpeedBuffer = 1;
 		this.currentWave = 1;
 		this.maxWave = 30;
-		this.enemyPerWave = 30; // TODO : 30 is for testing
+		this.enemyPerWave = 20;
 		this.enemySummon = 0;
 		this.enemyKilled = 0;
 		this.playerHealth = 30;
@@ -119,7 +119,11 @@ export class GameController {
 		this.towerPool_Current = this.towerPool_All;
 
 		this.enemySpeed_Multiplier = 1 + (this.currentWave / this.maxWave)
-		this.enemyHealth_Multiplier = 1 + (this.currentWave % 10)
+		this.enemyHealth_Multiplier = 1 + (this.currentWave % 5)
+		
+		if (this.currentWave % 5) {
+			this.enemyPerWave += 20
+		}
 	}
 
 	increaseSpeed() {
@@ -186,9 +190,8 @@ export class GameController {
 		emitter.explode(amount, x, y);
 	}
 
-	// TODO : Better UI
 	gameOver(key: string) {
-		this.pause();
+		this.pause()
 
 		const overlay = this.currentScene.add.rectangle(
 			this.currentScene.cameras.main.width / 2,
@@ -196,43 +199,96 @@ export class GameController {
 			this.currentScene.cameras.main.width,
 			this.currentScene.cameras.main.height,
 			0x000000,
-			0.5
-		);
-		overlay.setOrigin(0.5, 0.5);
+			0.8
+		)
+		overlay.setOrigin(0.5, 0.5)
+		overlay.setInteractive() // Block interactions with elements below the overlay
 
-		const offsetY = 80;
+		const offsetY = 80
 
 		const middleText = this.currentScene.add.text(
 			this.currentScene.cameras.main.width / 2,
 			this.currentScene.cameras.main.height / 3,
 			`You ${key}!`,
 			{ fontSize: '48px', color: '#ffffff', fontFamily: 'PressStart2P' }
-		).setOrigin(0.5);
+		).setOrigin(0.5)
 
 		const s1Text = this.currentScene.add.text(
 			this.currentScene.cameras.main.width / 2,
 			this.currentScene.cameras.main.height / 3 + offsetY,
 			`You survived: ${this.currentWave} waves`,
 			{ fontSize: '24px', color: '#ffffff', fontFamily: 'PressStart2P' }
-		).setOrigin(0.5);
+		).setOrigin(0.5)
 
 		const s2Text = this.currentScene.add.text(
 			this.currentScene.cameras.main.width / 2,
 			this.currentScene.cameras.main.height / 3 + offsetY * 2,
 			`You earned: ${this.accumCoin} coin`,
 			{ fontSize: '24px', color: '#ffffff', fontFamily: 'PressStart2P' }
-		).setOrigin(0.5);
+		).setOrigin(0.5)
 
 		const s3Text = this.currentScene.add.text(
 			this.currentScene.cameras.main.width / 2,
 			this.currentScene.cameras.main.height / 3 + offsetY * 3,
 			`You killed: ${this.enemyKilled} enemies`,
 			{ fontSize: '24px', color: '#ffffff', fontFamily: 'PressStart2P' }
-		).setOrigin(0.5);
+		).setOrigin(0.5)
 
-		const button = this.currentScene.add.text(
+		const s4Text = this.currentScene.add.text(
 			this.currentScene.cameras.main.width / 2,
-			this.currentScene.cameras.main.height / 1.5,
+			this.currentScene.cameras.main.height / 3 + offsetY * 4,
+			`Health left: ${this.playerHealth}`,
+			{ fontSize: '24px', color: '#ffffff', fontFamily: 'PressStart2P' }
+		).setOrigin(0.5)
+
+		// Displaying final score
+		const finalScore = this.accumCoin + this.enemyKilled * 10 + this.playerHealth * 5
+		const scoreText = this.currentScene.add.text(
+			this.currentScene.cameras.main.width / 2,
+			this.currentScene.cameras.main.height / 3 + offsetY * 5,
+			`Final Score: ${finalScore}`,
+			{ fontSize: '28px', color: '#FFD700', fontFamily: 'PressStart2P' }
+		).setOrigin(0.5)
+
+		// Input fields for name and house selection
+		const nameInput = this.currentScene.add.dom(
+			this.currentScene.cameras.main.width / 2,
+			this.currentScene.cameras.main.height / 1.8,
+			'input',
+			'width: 200px; height: 30px; font-size: 18px; text-align: center; border: 2px solid #FFFFFF; background-color: #000000; color: #FFFFFF;',
+			'Enter Name'
+		)
+
+		const houseSelect = this.currentScene.add.dom(
+			this.currentScene.cameras.main.width / 2,
+			this.currentScene.cameras.main.height / 1.6,
+			'select',
+			'width: 200px; height: 30px; font-size: 18px; text-align: center; border: 2px solid #FFFFFF; background-color: #000000; color: #FFFFFF;',
+			`<option value="" disabled selected>Select House</option>
+		  <option value="House1">House 1</option>
+		  <option value="House2">House 2</option>
+		  <option value="House3">House 3</option>
+		  <option value="House4">House 4</option>`
+		)
+
+		// Replay button
+		const replayButton = this.currentScene.add.text(
+			this.currentScene.cameras.main.width / 2 - 300,
+			this.currentScene.cameras.main.height / 1.3,
+			'Replay',
+			{
+				fontSize: '24px',
+				color: '#FFFFFF',
+				backgroundColor: '#000000',
+				fontFamily: 'PressStart2P',
+				padding: { left: 10, right: 10, top: 10, bottom: 10 },
+			}
+		).setOrigin(0.5).setInteractive()
+
+		// Leaderboard button
+		const leaderboardButton = this.currentScene.add.text(
+			this.currentScene.cameras.main.width / 2 + 300,
+			this.currentScene.cameras.main.height / 1.3,
 			'Leaderboard',
 			{
 				fontSize: '24px',
@@ -241,10 +297,20 @@ export class GameController {
 				fontFamily: 'PressStart2P',
 				padding: { left: 10, right: 10, top: 10, bottom: 10 },
 			}
-		).setOrigin(0.5).setInteractive();
+		).setOrigin(0.5).setInteractive()
 
-		button.on('pointerdown', () => {
-			window.location.href = '/LeaderBoard';
-		});
+		leaderboardButton.on('pointerdown', () => {
+			const playerName = (nameInput.node as HTMLInputElement).value
+			const playerHouse = (houseSelect.node as HTMLSelectElement).value
+
+			if (!playerName || !playerHouse) {
+				alert('Please enter your name and select your house!')
+				return
+			}
+
+			// Navigate to leaderboard with player details
+			window.location.href = `/LeaderBoard?name=${encodeURIComponent(playerName)}&house=${encodeURIComponent(playerHouse)}&score=${finalScore}`
+		})
 	}
+
 }

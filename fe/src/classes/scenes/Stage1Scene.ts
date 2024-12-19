@@ -156,16 +156,14 @@ export class Stage1Scene extends Phaser.Scene {
 
     this.coinIcon = this.add
       .image(32, 32, "coin")
-      .setScale(3)
-      .setDepth(1);
+      .setScale(3);
 
     this.coinText = this.add
       .text(68, 20, `${GameController.getInstance().coin}`, {
         fontFamily: "PressStart2P",
         fontSize: "30px",
         color: "#ffd700", // Gold color
-      })
-      .setDepth(1);
+      });
 
     this.speedButton = this.add
       .text(
