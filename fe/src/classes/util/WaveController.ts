@@ -148,6 +148,7 @@ export class WaveController {
             button.on('pointerup', () => {
                 if (!GameController.getInstance().isDragging) {
                     this.onEnemyTypeSelected(choice);
+                    this.scene.sound.play(choice.sfx_key);
                     console.log("wait_confirm_release_wave fired");
                     this.scene.events.emit("wait_confirm_release_wave");
                 }

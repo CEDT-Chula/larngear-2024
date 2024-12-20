@@ -5,7 +5,7 @@ import { WaveEffect } from "./WaveEffect";
 
 export class DuplicateWave extends WaveEffect {
     constructor() {
-        super(CakeEnemy, "Unstoppable Force", "Immune to Poison this turn", "Gain 400 coins");
+        super(CakeEnemy, "Unstoppable Force", "Immune to Poison this turn", "Gain 400 coins", "w_3");
     }
 
     effect(): void {

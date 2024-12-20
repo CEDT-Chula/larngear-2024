@@ -240,6 +240,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		if (this.currentLevel < this.maxLevel) {
 			this.currentLevel++;
 			this.applyLevelData();
+			this.scene.sound.play("upgrade", { volume: 0.3 })
 			this.setTexture(this.levelData[this.currentLevel - 1].sprite);
 			console.log(`Tower upgraded to level ${this.currentLevel}.`);
 		} else {

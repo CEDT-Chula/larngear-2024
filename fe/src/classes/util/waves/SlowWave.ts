@@ -4,7 +4,7 @@ import { WaveEffect } from "./WaveEffect";
 
 export class SlowWave extends WaveEffect {
     constructor() {
-        super(IceCreamEnemy, "Icy Threat", "Enemy Health +25% this wave", "Enemy Speed -25% this wave");
+        super(IceCreamEnemy, "Icy Threat", "Enemy Health +25% this wave", "Enemy Speed -25% this wave", "w_2");
     }
 
     effect(): void {

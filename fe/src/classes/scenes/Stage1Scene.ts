@@ -37,6 +37,7 @@ export class Stage1Scene extends Phaser.Scene {
     ];
     assetLoader.preloadTiles(stage1Tiles);
     assetLoader.preloadEnemies();
+    assetLoader.preloadSounds();
     assetLoader.preloadOthers();
 
     this.loadFont();
@@ -86,6 +87,10 @@ export class Stage1Scene extends Phaser.Scene {
 
     // console.log("Camera Size:", screenWidth, screenHeight);
     // console.log("World Size:", worldWidth, worldHeight);
+
+    var music = this.sound.add('bgm');
+    music.setLoop(true)
+    music.play()
 
     // *** Zoom ***
     const minZoom = Math.max(screenWidth / worldWidth, screenHeight / worldHeight);
@@ -215,7 +220,7 @@ export class Stage1Scene extends Phaser.Scene {
     this.input.on("pointerdown", (pointer: any) => {
       emitter.explode(12, pointer.worldX, pointer.worldY);
 
-      if(!this.firstClicked) {
+      if (!this.firstClicked) {
         this.tutorialText.setVisible(false)
         this.tutorialText.setActive(false)
         this.firstClicked = true
@@ -233,7 +238,7 @@ export class Stage1Scene extends Phaser.Scene {
     }
 
     console.log(this.time.timeScale)
-    
+
     this.speedButton.setText("Speed x" + this.time.timeScale)
   }
 

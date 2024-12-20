@@ -14,6 +14,7 @@ export class ExplosionBullet extends BaseProjectTile {
     }
   
     onHit(target: BaseEnemy) {
+      this.scene.sound.play("explosion_1", { volume: 0.3 })
       target.emit("takeDamage", this.damage)
   
       // Damage all enemies within explosion radius

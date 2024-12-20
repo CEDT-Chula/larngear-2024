@@ -94,7 +94,7 @@ const LeaderBoard = () => {
           transition={{ duration: 1, ease: "easeInOut" }}
           className="overflow-y-auto bg-scroll invisible-scrollbar mx-auto bg-cover w-[432px] max-h-[80vh] border-t-2 border-b-2 border-transparent"
           style={{
-            backgroundImage: "url('/img/paper.png')",
+            backgroundImage: "url('/img/body.png')",
           }}
         >
           {filteredScores.map((score) => {

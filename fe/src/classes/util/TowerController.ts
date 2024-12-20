@@ -27,6 +27,9 @@ export class TowerController {
 			return;
 		}
 
+		const randInt = Math.floor(Math.random() * 2) + 1;
+		this.scene.sound.play("place_" + randInt, { volume: 0.2 });
+
 		GameUI.reduceCoin(this.towerPrices);
 
 		let randomTowerIndex = Math.floor(Math.random() * GameController.getInstance().towerPool_Current.length);

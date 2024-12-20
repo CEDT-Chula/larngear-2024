@@ -22,6 +22,7 @@ export class SlowBullet extends BaseProjectTile {
   }
 
   onHit(target: BaseEnemy) {
+    this.scene.sound.play("hit_1", { volume: 0.3 })
     target.emit("takeDamage", this.damage)
 
     target.speed *= 1 - this.slowAmount

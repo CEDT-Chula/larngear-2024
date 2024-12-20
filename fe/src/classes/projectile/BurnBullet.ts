@@ -14,6 +14,7 @@ export class BurnBullet extends BaseProjectTile {
   }
 
   onHit(target: BaseEnemy) {
+    this.scene.sound.add("hit_1", { volume: 0.3 })
     target.emit("takeDamage", this.damage)
 
     if (!GameController.getInstance().isBurnImmune) {

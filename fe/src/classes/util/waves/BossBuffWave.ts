@@ -4,7 +4,7 @@ import { WaveEffect } from "./WaveEffect";
 
 export class BossBuffWave extends WaveEffect {
     constructor() {
-        super(MacaroonEnemy, "Stronger Boss", "Boss +75% Health", "Enemy -15% Health this wave");
+        super(MacaroonEnemy, "Stronger Boss", "Boss +75% Health", "Enemy -15% Health this wave", "w_2");
     }
 
     effect(): void {

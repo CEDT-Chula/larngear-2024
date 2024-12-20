@@ -21,6 +21,7 @@ export class CriticalBullet extends BaseProjectTile {
     }
 
     onHit(target: BaseEnemy) {
+        this.scene.sound.play("hit_2", { volume: 0.3 })
         const isCritical = Math.random() < this.critChance
         const finalDamage = isCritical ? this.damage * this.critMultiplier : this.damage
 

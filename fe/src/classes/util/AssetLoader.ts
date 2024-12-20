@@ -81,6 +81,35 @@ export class AssetLoader {
     this.scene.load.image("boss", "assets/enemies/boss.png");
   }
 
+  preloadSounds() {
+    this.scene.load.audio("bgm", "assets/sfx/Funny_Bits.mp3")
+    
+    this.scene.load.audio("select", "assets/sfx/select.wav")
+    this.scene.load.audio("error", "assets/sfx/error.wav")
+    this.scene.load.audio("cancel", "assets/sfx/cancel.wav")
+    
+    this.scene.load.audio("explosion_1", "assets/sfx/explosions/explosion_1.wav")
+    this.scene.load.audio("explosion_2", "assets/sfx/explosions/explosion_2.wav")
+    this.scene.load.audio("explosion_3", "assets/sfx/explosions/explosion_3.wav")
+
+    this.scene.load.audio("hit_1", "assets/sfx/hits/hit_1.wav")
+    this.scene.load.audio("hit_2", "assets/sfx/hits/hit_2.wav")
+    this.scene.load.audio("hit_3", "assets/sfx/hits/hit_3.wav")
+    
+    this.scene.load.audio("w_1", "assets/sfx/wave_select/w_1.wav")
+    this.scene.load.audio("w_2", "assets/sfx/wave_select/w_2.wav")
+    this.scene.load.audio("w_3", "assets/sfx/wave_select/w_3.wav")
+    this.scene.load.audio("w_4", "assets/sfx/wave_select/w_4.wav")
+    this.scene.load.audio("w_5", "assets/sfx/wave_select/w_5.wav")
+    
+    this.scene.load.audio("place_1", "assets/sfx/place_tower/place_1.wav")
+    this.scene.load.audio("place_2", "assets/sfx/place_tower/place_2.wav")
+    this.scene.load.audio("place_3", "assets/sfx/place_tower/place_3.wav")
+    
+    this.scene.load.audio("upgrade", "assets/sfx/upgrade.wav")
+    this.scene.load.audio("start_wave", "assets/sfx/start_wave.wav")
+  }
+
   preloadOthers() {
     this.scene.load.image("coin", "assets/coin.png");
     this.scene.load.image("heart", "assets/heart.png");

@@ -5,12 +5,14 @@ export class WaveEffect {
     title: string;
     debuff: string;
     buff: string;
+    sfx_key: string;
 
-    constructor(enemy: new (scene: Phaser.Scene) => BaseEnemy, title: string, debuff:string, buff: string) {
+    constructor(enemy: new (scene: Phaser.Scene) => BaseEnemy, title: string, debuff: string, buff: string, sfx_key: string) {
         this.enemy = enemy;
         this.title = title;
         this.debuff = debuff;
         this.buff = buff;
+        this.sfx_key = sfx_key;
     }
 
     effect() {

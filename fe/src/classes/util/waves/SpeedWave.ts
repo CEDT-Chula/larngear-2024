@@ -6,7 +6,7 @@ import { WaveEffect } from "./WaveEffect";
 
 export class SpeedWave extends WaveEffect {
     constructor() {
-        super(CoffeeEnemy, "Need for Speed", "Immune to burn this wave", "Only got Search Tower this turn.");
+        super(CoffeeEnemy, "Need for Speed", "Immune to burn this wave", "Only got Search Tower this turn.", "w_4");
     }
 
     effect(): void {

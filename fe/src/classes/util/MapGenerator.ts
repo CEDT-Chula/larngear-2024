@@ -134,6 +134,7 @@ export class MapGenerator {
     });
 
     this.waveConfirmButton.on('pointerdown', () => {
+      this.scene.sound.play("start_wave")
       this.scene.events.emit('confirm_release_wave');
       this.hideWaveConfirmButton();
     });
