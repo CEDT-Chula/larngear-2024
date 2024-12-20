@@ -4,7 +4,7 @@ import { GameController } from "../../util/GameController";
 
 export class Boss1 extends BaseEnemy {
     constructor(scene: Phaser.Scene) {
-        super(scene, "Boss", "", 5000 * GameController.getInstance().currentWave * 1.5 * GameController.getInstance().bossHealth_Multiplier, 200, 10, "boss")
+        super(scene, "Boss", "", 4000 * GameController.getInstance().currentWave * GameController.getInstance().bossHealth_Multiplier, 200, 10, "boss")
     }
 
     onDeath(): void {

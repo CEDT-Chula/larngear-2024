@@ -349,6 +349,7 @@ export class GameController {
 		formElement.getChildByID('replayButton')?.addEventListener('click', () => {
 			// Logic for replay will go here
 			console.log('Replay the game');
+			window.location.reload
 		});
 	}
 

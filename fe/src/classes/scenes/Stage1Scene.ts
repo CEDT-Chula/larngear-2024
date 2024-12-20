@@ -88,7 +88,7 @@ export class Stage1Scene extends Phaser.Scene {
     // console.log("Camera Size:", screenWidth, screenHeight);
     // console.log("World Size:", worldWidth, worldHeight);
 
-    var music = this.sound.add('bgm');
+    var music = this.sound.add('bgm', { volume: 0.8 });
     music.setLoop(true)
     music.play()
 

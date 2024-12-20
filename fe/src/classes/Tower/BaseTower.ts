@@ -98,11 +98,11 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 			this.schedulePopupHide();
 		});
 
-		this.on("destroy", () => {
-			this.clearPopup();
-			this.rangeCircle?.destroy();
-			this.rangeCheckEvent?.destroy();
-		});
+		// this.on("destroy", () => {
+		// 	this.clearPopup();
+		// 	this.rangeCircle?.destroy();
+		// 	this.rangeCheckEvent?.destroy();
+		// });
 	}
 
 	placeRangeCircle() {

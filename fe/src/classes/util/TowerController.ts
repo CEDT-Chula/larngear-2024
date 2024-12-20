@@ -52,6 +52,7 @@ export class TowerController {
 	}
 
 	sellTower(sell: BaseTower) {
+		this.scene.sound.play("sell")
 		const towerIndex = GameController.getInstance().towerList.findIndex(x => x == sell);
 
 		if (towerIndex < 0) {
