@@ -14,6 +14,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.invisible-scrollbar {
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For IE and Edge */
+}
+
+.invisible-scrollbar::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
+}
+
 * {
   box-sizing: border-box;
   margin: 0;

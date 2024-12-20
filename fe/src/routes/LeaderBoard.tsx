@@ -5,6 +5,7 @@ interface Score {
   name: string;
   team: string;
   score: number;
+  rank?: number; // Add rank property
 }
 
 const LeaderBoard = () => {
@@ -17,7 +18,11 @@ const LeaderBoard = () => {
     const fetchScores = async () => {
       const response = await fetch("http://localhost:5000/api/scores");
       const data = await response.json();
-      setScores(data.data);
+      const rankedScores = data.data.map((score: Score, index: number) => ({
+        ...score,
+        rank: index + 1, // Assign rank based on the original order
+      }));
+      setScores(rankedScores);
     };
     fetchScores();
   }, []);
@@ -105,7 +110,7 @@ const LeaderBoard = () => {
             height: isUnfolded ? "70vh" : 0,
           }}
           transition={{ duration: 1, ease: "easeInOut" }}
-          className="overflow-y-hidden bg-scroll"
+          className="overflow-y-auto bg-scroll invisible-scrollbar"
           style={{
             alignSelf: "center",
             backgroundImage: "url('/img/paper.png')",
@@ -117,16 +122,16 @@ const LeaderBoard = () => {
             borderBottom: "2px solid transparent",
           }}
         >
-          {filteredScores.map((score: any, index) => {
+          {filteredScores.map((score) => {
             let color = "#000000"; // Default color for other places
             let fontSize = "24px"; // Default font size
-            if (index === 0) {
-              color = "#000000";
+            if (score.rank === 1) {
+              color = "#FFD700"; // Gold
               fontSize = "32px";
-            } else if (index === 1) {
-              color = "#000000";
-            } else if (index === 2) {
-              color = "#000000";
+            } else if (score.rank === 2) {
+              color = "#C0C0C0"; // Silver
+            } else if (score.rank === 3) {
+              color = "#CD7F32"; // Bronze
             }
 
             return (
@@ -136,7 +141,7 @@ const LeaderBoard = () => {
                 style={{ color, fontSize }}
               >
                 <span className="font-bold max-w-[300px]">
-                  {index + 1}. {score.name} - {score.team}
+                  {score.rank}. {score.name} - {score.team}
                 </span>
                 <span className="float-right">{score.score}</span>
               </div>
