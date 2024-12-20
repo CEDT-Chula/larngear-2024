@@ -254,7 +254,7 @@ export class GameController {
 		const formHTML = `
 			<div style="margin-top: 60%; display: flex; flex-direction: column; align-items: center; gap: 10px; font-family: PressStart2P; color: #FFD700;">
 				<label for="playerName">Name:</label>
-				<input id="playerName" type="text" placeholder="Enter Name" style="width: 400px; height: 80px; font-size: 24px; text-align: center; border: 2px solid #FFD700; border-radius: 8px; background-color: #333333; color: #FFD700;">
+				<input id="playerName" type="text" placeholder="Enter Name" maxlength="15" style="width: 400px; height: 80px; font-size: 24px; text-align: center; border: 2px solid #FFD700; border-radius: 8px; background-color: #333333; color: #FFD700;">
 
 				<label for="playerHouse">House:</label>
 				<select id="playerHouse" style="width: 400px; height: 80px; font-family: 2ndPixelus; font-size: 24px; text-align: center; border: 8px solid #FFD700; border-radius: 8px; background-color: #333333; color: #FFD700;">
