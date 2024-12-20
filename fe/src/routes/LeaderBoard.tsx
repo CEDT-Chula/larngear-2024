@@ -5,7 +5,7 @@ interface Score {
   name: string;
   team: string;
   score: number;
-  rank?: number; // Add rank property
+  rank?: number;
 }
 
 const LeaderBoard = () => {
@@ -51,33 +51,21 @@ const LeaderBoard = () => {
     <div className="flex flex-col items-center justify-center h-screen">
       {/* Filter Options */}
       <div className="absolute top-8 right-8 flex gap-4">
-        <div
-          style={{
-            backgroundColor: "#212529",
-            padding: "0.5rem",
-            borderRadius: "0.25rem",
-          }}
-        >
-          <div className="nes-select is-dark">
-            <select
-              required
-              id="dark_select"
-              value={viewOption}
-              onChange={(e) => setViewOption(e.target.value)}
-              style={{
-                fontSize: "0.8rem",
-                padding: "0.2rem",
-                minWidth: "80px",
-              }}
-            >
-              <option value="All">All</option>
-              {sortedTeams.map((team) => (
-                <option key={team} value={team}>
-                  {team}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="nes-select is-dark min-w-[100px] text-sm">
+          <select
+            required
+            id="dark_select"
+            value={viewOption}
+            onChange={(e) => setViewOption(e.target.value)}
+            className="p-1 bg-transparent text-yellow-500"
+          >
+            <option value="All">All</option>
+            {sortedTeams.map((team) => (
+              <option key={team} value={team}>
+                {team}
+              </option>
+            ))}
+          </select>
         </div>
         {/* Search Bar */}
         <input
@@ -85,13 +73,7 @@ const LeaderBoard = () => {
           placeholder="Search by Name"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          style={{
-            padding: "0.5rem",
-            borderRadius: "0.25rem",
-            color: "#FFD700",
-            fontSize: "0.8rem",
-          }}
-          className="nes-field"
+          className="nes-input is-dark text-sm max-w-[200px] text-white"
         />
       </div>
 
@@ -110,16 +92,9 @@ const LeaderBoard = () => {
             height: isUnfolded ? "70vh" : 0,
           }}
           transition={{ duration: 1, ease: "easeInOut" }}
-          className="overflow-y-auto bg-scroll invisible-scrollbar"
+          className="overflow-y-auto bg-scroll invisible-scrollbar mx-auto bg-cover w-[432px] max-h-[80vh] border-t-2 border-b-2 border-transparent"
           style={{
-            alignSelf: "center",
             backgroundImage: "url('/img/paper.png')",
-            backgroundRepeat: "repeat-y",
-            backgroundSize: "100% auto",
-            width: "432px",
-            maxHeight: "80vh",
-            borderTop: "2px solid transparent",
-            borderBottom: "2px solid transparent",
           }}
         >
           {filteredScores.map((score) => {
