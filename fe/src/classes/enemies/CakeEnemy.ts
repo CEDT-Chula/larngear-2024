@@ -7,9 +7,9 @@ export class CakeEnemy extends BaseEnemy {
     constructor(
         scene: Phaser.Scene,
         Name: string = "Cake",
-        Name_Color: string = "#FFB6C1",  
-        maxHealth: number = 5 * (35 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier),
-        speed: number = 250 * GameController.getInstance().enemySpeed_Multiplier,
+        Name_Color: string = "#FFB6C1",
+        maxHealth: number = (5 + (GameController.getInstance().currentWave / 2)) * (35 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier),
+        baseSpeed: number = 250,
         attack: number = 1,
         sprite: string = "cake",
         // path: Phaser.Curves.Path
@@ -19,7 +19,7 @@ export class CakeEnemy extends BaseEnemy {
             Name,
             Name_Color,
             maxHealth,
-            speed,
+            baseSpeed,
             attack,
             sprite,
         );
@@ -31,47 +31,47 @@ export class CakeEnemy extends BaseEnemy {
     onDeath() {
         if (!this.hasDuplicated) {
             this.duplicate();
-            this.hasDuplicated = true; 
+            this.hasDuplicated = true;
         }
         super.onDeath();
     }
 
     duplicate() {
         console.log(this.Name, " is duplicating!")
-      
+
         const newCake1 = new CakeEnemy(
-          this.scene,
-          this.Name,
-          this.Name_Color,
-          this.maxHealth / 2,  
-          this.baseSpeed,
-          this.attack,
-          this.sprite,
+            this.scene,
+            this.Name,
+            this.Name_Color,
+            this.maxHealth / 2,
+            this.baseSpeed,
+            this.attack,
+            this.sprite,
         )
-      
+
         const newCake2 = new CakeEnemy(
-          this.scene,
-          this.Name,
-          this.Name_Color,
-          this.maxHealth / 2,
-          this.baseSpeed,
-          this.attack,
-          this.sprite,
+            this.scene,
+            this.Name,
+            this.Name_Color,
+            this.maxHealth / 2,
+            this.baseSpeed,
+            this.attack,
+            this.sprite,
         )
 
         this.scene.physics.world.enable([newCake1, newCake2])
 
         GameController.getInstance().enemySummon += 2;
-        
+
         newCake1.hasDuplicated = true
         newCake2.hasDuplicated = true
-      
+
         GameController.getInstance().mapGen.createEnemy(newCake1)
         GameController.getInstance().mapGen.moveEnemy(newCake1)
         GameController.getInstance().waveController.activeEnemies.push(newCake1)
         newCake1.on('destroyed', () => GameController.getInstance().waveController.checkWaveCleared());
         newCake1.setFlipX(true)
-        
+
         GameController.getInstance().mapGen.createEnemy(newCake2)
         GameController.getInstance().mapGen.moveEnemy(newCake2)
         GameController.getInstance().waveController.activeEnemies.push(newCake2)
@@ -79,6 +79,6 @@ export class CakeEnemy extends BaseEnemy {
         newCake2.setFlipX(true)
 
         GameController.getInstance().addParticle("", 12, 150, 230)
-      }
-      
+    }
+
 }

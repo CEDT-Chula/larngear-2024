@@ -20,7 +20,7 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
         Name: string,
         Name_Color: string,
         maxHealth: number,
-        speed: number,
+        baseSpeed: number,
         attack: number,
         sprite: string,
         // path: Phaser.Curves.Path
@@ -33,8 +33,8 @@ export class BaseEnemy extends Phaser.GameObjects.Sprite {
         this.Name_Color = Name_Color;
         this.maxHealth = maxHealth * gameController.enemyHealth_Multiplier;
         this.currentHealth = this.maxHealth;
-        this.baseSpeed = speed;
-        this.speed = speed * gameController.enemySpeed_Multiplier;
+        this.baseSpeed = baseSpeed;
+        this.speed = baseSpeed * gameController.enemySpeed_Multiplier;
         this.attack = attack;
         this.sprite = sprite;
         // this.path = path;

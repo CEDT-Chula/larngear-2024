@@ -1,4 +1,5 @@
 import { BaseEnemy } from "../enemies/BaseEnemy"
+import { GameController } from "../util/GameController"
 import { ParticleEmitter } from "../util/ParticleEmitter"
 import { BaseProjectTile } from "./BaseProjectile"
 
@@ -23,14 +24,12 @@ export class SlowBullet extends BaseProjectTile {
   onHit(target: BaseEnemy) {
     target.emit("takeDamage", this.damage)
 
-    const originalSpeed = target.baseSpeed
-
-    target.baseSpeed *= 1 - this.slowAmount
+    target.speed *= 1 - this.slowAmount
     target.setTint(0x87ceeb) // Light blue color for slow effect
 
     // Cleanup: Restore original speed and tint after slowDuration ends
     const cleanup = () => {
-      target.baseSpeed = originalSpeed
+      target.speed = target.baseSpeed * GameController.getInstance().enemySpeed_Multiplier
       target.clearTint()
     }
 

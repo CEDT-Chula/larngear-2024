@@ -6,8 +6,8 @@ export class CokeEnemy extends BaseEnemy {
         scene: Phaser.Scene,
         Name: string = "Coke",
         Name_Color: string = "#8B4513",
-        maxHealth: number = 5 * (30 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier),
-        speed: number = 275 * GameController.getInstance().enemySpeed_Multiplier,
+        maxHealth: number = (5 + (GameController.getInstance().currentWave / 2)) * (30 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier),
+        baseSpeed: number = 275,
         attack: number = 1,
         sprite: string = "coke",
         // path: Phaser.Curves.Path
@@ -17,7 +17,7 @@ export class CokeEnemy extends BaseEnemy {
             Name,
             Name_Color,
             maxHealth,
-            speed,
+            baseSpeed,
             attack,
             sprite,
             // path

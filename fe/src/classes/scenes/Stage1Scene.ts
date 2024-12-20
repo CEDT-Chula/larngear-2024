@@ -196,7 +196,7 @@ export class Stage1Scene extends Phaser.Scene {
     );
 
     this.tutorialText = this.add.text(50, worldHeight - 240,
-      "Click on a square to create tower\ncost 100 coins\nTower can be upgraded using \nanother duplicate tower\nTower sold at xx% lower price",
+      "Click on a square to create tower\ncost 100 coins\nTower can be upgraded using \nanother duplicate tower\nTower sold at 80 coins",
       {
         fontSize: "30px",
         fontFamily: "PressStart2P",

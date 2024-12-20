@@ -16,19 +16,19 @@ export class IdeTower extends BaseTower {
                 sprite: "ide_lv1"
             },
             {
-                range: 300, attack: 300, reloadTime: 1.1, maxTarget: 1, ricochetCount: 6,
+                range: 300, attack: 300, reloadTime: 1.1, maxTarget: 1, ricochetCount: 5,
                 sprite: "ide_lv2"
             },
             {
-                range: 325, attack: 350, reloadTime: 1, maxTarget: 2, ricochetCount: 9,
+                range: 325, attack: 350, reloadTime: 1, maxTarget: 2, ricochetCount: 7,
                 sprite: "ide_lv3"
             },
             {
-                range: 350, attack: 400, reloadTime: 0.9, maxTarget: 3, ricochetCount: 18,
+                range: 350, attack: 400, reloadTime: 0.9, maxTarget: 3, ricochetCount: 10,
                 sprite: "ide_lv4"
             },
             {
-                range: 375, attack: 450, reloadTime: 0.8, maxTarget: 4, ricochetCount: 21,
+                range: 375, attack: 450, reloadTime: 0.8, maxTarget: 4, ricochetCount: 15,
                 sprite: "ide_lv5"
             }
         ];

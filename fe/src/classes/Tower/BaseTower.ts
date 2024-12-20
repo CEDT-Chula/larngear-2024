@@ -331,7 +331,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		const popupBg = this.scene.add
 			.rectangle(this.x, this.y, 200, 128, 0x000000, 0.8)
 			.setOrigin(0.5)
-			.setDepth(9)
+			.setDepth(5)
 			.setInteractive();
 		this.popupElements.push(popupBg);
 
@@ -386,7 +386,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		const button = this.scene.add
 			.rectangle(this.x, this.y + offsetY, 180, 50, color, 0.5) // Use the passed color
 			.setOrigin(0.5, 0.5)
-			.setDepth(10)
+			.setDepth(6)
 			.setInteractive();
 
 		// Only enable the button if it's not red (indicating an unavailable upgrade)
@@ -401,7 +401,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 				color: "#FFFFFF",
 			})
 			.setOrigin(0.5, 0.5)
-			.setDepth(11);
+			.setDepth(7);
 
 		return [button, text];
 	}
@@ -484,6 +484,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 			this.rangeCircle.destroy();
 			this.rangeCircle = undefined;
 		}
+		this.clearPopup()
 		this.destroy(); // Finally destroy the tower
 	}
 }
