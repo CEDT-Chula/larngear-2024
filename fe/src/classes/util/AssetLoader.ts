@@ -104,10 +104,10 @@ export class AssetLoader {
     
     this.scene.load.audio("place_1", "assets/sfx/place_tower/place_1.wav")
     this.scene.load.audio("place_2", "assets/sfx/place_tower/place_2.wav")
-    this.scene.load.audio("place_3", "assets/sfx/place_tower/place_3.wav")
     
     this.scene.load.audio("upgrade", "assets/sfx/upgrade.wav")
     this.scene.load.audio("start_wave", "assets/sfx/start_wave.wav")
+    this.scene.load.audio("sell", "assets/sfx/sell.wav")
   }
 
   preloadOthers() {
