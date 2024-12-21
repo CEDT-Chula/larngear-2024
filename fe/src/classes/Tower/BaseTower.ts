@@ -86,7 +86,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		this.bulletType = bulletType
 		this.setInteractive();
 
-		this.on("pointerup", () => {
+		this.on("pointerdown", () => {
 			if (!GameController.getInstance().isDragging)
 				this.showPopup();
 		});
@@ -266,6 +266,8 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		this.selectedTower = null // Clear the reference
 		this.clearHighlight() // Remove highlight if present
 
+		this.clearPopup()
+
 		console.log(`Tower upgraded to level ${this.currentLevel}`)
 	}
 
@@ -344,7 +346,8 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 			"Upgrade",
 			() => {
 				if (upgradeAvailable && !GameController.getInstance().isDragging) {
-					this.confirmAction("upgrade");
+					// this.confirmAction("upgrade");
+					this.upgradeTower()
 				}
 			},
 			-30, // Top button
@@ -355,6 +358,7 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 		const sellButton = this.createButton(
 			"Sell",
 			() => {
+				console.log("sell")
 				if (!GameController.getInstance().isDragging) this.confirmAction("sell");
 			},
 			30, // Bottom button
@@ -373,7 +377,6 @@ export class BaseTower extends Phaser.GameObjects.Sprite {
 			) {
 				this.clearPopup(); // Clear popup when clicked outside
 				this.clearHighlight();
-				this.scene.input.off("pointerdown", pointerDownHandler); // Remove this listener
 			}
 		};
 

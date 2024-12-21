@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 interface Score {
+  id: string;
   name: string;
   team: string;
   score: number;
@@ -9,10 +11,16 @@ interface Score {
 }
 
 const LeaderBoard = () => {
+  const navigate = useNavigate();
+
   const [scores, setScores] = useState<Score[]>([]);
   const [isUnfolded, setIsUnfolded] = useState(false);
   const [viewOption, setViewOption] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+
+  const handleMainmenuClick = () => {
+    navigate("/");
+  };
 
   useEffect(() => {
     const fetchScores = async () => {
@@ -49,9 +57,9 @@ const LeaderBoard = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      {/* Filter Options */}
-      <div className="absolute top-8 right-8 flex gap-4">
-        <div className="nes-select is-dark min-w-[100px] text-sm">
+      <div className="absolute top-8 right-8 flex flex-col gap-4 max-w-[80vw] flex-wrap">
+        {/* Filter Options */}
+        <div className="nes-select is-dark w-[200px] text-sm">
           <select
             required
             id="dark_select"
@@ -73,8 +81,15 @@ const LeaderBoard = () => {
           placeholder="Search by Name"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="nes-input is-dark text-sm max-w-[200px] text-white"
+          className="nes-input is-dark text-sm w-full max-w-[200px] text-white break-words"
         />
+        {/* Back to Main Menu */}
+        <button
+          className="nes-btn is-warning w-full max-w-[200px] break-words"
+          onClick={handleMainmenuClick}
+        >
+          Main Menu
+        </button>
       </div>
 
       <div className="flex flex-col w-[500px]">
@@ -111,7 +126,7 @@ const LeaderBoard = () => {
 
             return (
               <div
-                key={score.name}
+                key={score.id} // Use id as the unique key
                 className="py-2 px-6 text-brown flex flex-row justify-between"
                 style={{ color, fontSize }}
               >

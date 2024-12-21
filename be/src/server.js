@@ -3,7 +3,7 @@ const cors = require('cors');
 const scoreRouter = require('./routes/score');
 // const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
-require('dotenv').config({ path: './src/config/config.env' });
+require('dotenv').config({ path: './src/config/.env' });
 
 
 
