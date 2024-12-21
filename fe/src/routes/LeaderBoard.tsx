@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"; 
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
@@ -26,11 +26,7 @@ const LeaderBoard = () => {
     const fetchScores = async () => {
       const response = await fetch("http://localhost:5000/api/scores");
       const data = await response.json();
-      const rankedScores = data.data.map((score: Score, index: number) => ({
-        ...score,
-        rank: index + 1, // Assign rank based on the original order
-      }));
-      setScores(rankedScores);
+      setScores(data.data);
     };
     fetchScores();
   }, []);
@@ -43,48 +39,54 @@ const LeaderBoard = () => {
     return () => clearTimeout(unfoldTimer);
   }, []);
 
+  const categories = [
+    "All",
+    "ติดตลก",
+    "ติดเตียง",
+    "ติดบั๊ก",
+    "ติดลิฟต์",
+    "ติดจุฬา",
+    "ติดแกลม",
+    "ติดใจ",
+    "ติดฝน",
+  ];
+
   const filteredScores = scores
     .filter((score) =>
       viewOption === "All" ? true : score.team === viewOption
     )
     .filter((score) =>
       score.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-  const sortedTeams = Array.from(
-    new Set(scores.map((score) => score.team))
-  ).sort();
+    )
+    .sort((a, b) => b.score - a.score) 
+    .map((score, index) => ({ ...score, rank: index + 1 })); 
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <div className="absolute top-8 right-8 flex flex-col gap-4 max-w-[80vw] flex-wrap">
-        {/* Filter Options */}
         <div className="nes-select is-dark w-[200px] text-sm">
-          <select
+          <select //Filter Options
             required
             id="dark_select"
             value={viewOption}
             onChange={(e) => setViewOption(e.target.value)}
             className="p-1 bg-transparent text-yellow-500"
           >
-            <option value="All">All</option>
-            {sortedTeams.map((team) => (
-              <option key={team} value={team}>
-                {team}
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
               </option>
             ))}
           </select>
         </div>
-        {/* Search Bar */}
-        <input
+        <input //Search Bar
           type="text"
           placeholder="Search by Name"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="nes-input is-dark text-sm w-full max-w-[200px] text-white break-words"
         />
-        {/* Back to Main Menu */}
-        <button
+        <button //Main Menu
           className="nes-btn is-warning w-full max-w-[200px] break-words"
           onClick={handleMainmenuClick}
         >
@@ -93,14 +95,12 @@ const LeaderBoard = () => {
       </div>
 
       <div className="flex flex-col w-[500px]">
-        {/* Top Scroll */}
         <img
           src="/img/scroll.png"
           alt="Top of Royal Letter"
           className="w-full"
         />
 
-        {/* Paper Content */}
         <motion.div
           initial={{ height: 0 }}
           animate={{
@@ -113,8 +113,8 @@ const LeaderBoard = () => {
           }}
         >
           {filteredScores.map((score) => {
-            let color = "#000000"; // Default color for other places
-            let fontSize = "24px"; // Default font size
+            let color = "#000000"; 
+            let fontSize = "24px";
             if (score.rank === 1) {
               color = "#FFD700"; // Gold
               fontSize = "32px";
@@ -126,7 +126,7 @@ const LeaderBoard = () => {
 
             return (
               <div
-                key={score.id} // Use id as the unique key
+                key={score.id}
                 className="py-2 px-6 text-brown flex flex-row justify-between"
                 style={{ color, fontSize }}
               >
@@ -139,7 +139,6 @@ const LeaderBoard = () => {
           })}
         </motion.div>
 
-        {/* Bottom Scroll */}
         <motion.img
           src="/img/scroll.png"
           alt="Bottom of Royal Letter"
