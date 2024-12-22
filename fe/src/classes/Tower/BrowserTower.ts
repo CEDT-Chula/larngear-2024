@@ -16,19 +16,19 @@ export class BrowserTower extends BaseTower {
                 sprite: "browser_lv1"
             },
             {
-                range: 275, attack: 150, reloadTime: 0.1, maxTarget: 2,
+                range: 275, attack: 200, reloadTime: 0.1, maxTarget: 2,
                 sprite: "browser_lv2"
             },
             {
-                range: 300, attack: 200, reloadTime: 0.1, maxTarget: 3,
+                range: 300, attack: 300, reloadTime: 0.1, maxTarget: 3,
                 sprite: "browser_lv3"
             },
             {
-                range: 325, attack: 200, reloadTime: 0.05, maxTarget: 3,
+                range: 325, attack: 400, reloadTime: 0.05, maxTarget: 3,
                 sprite: "browser_lv4"
             },
             {
-                range: 350, attack: 200, reloadTime: 0.01, maxTarget: 3,
+                range: 350, attack: 500, reloadTime: 0.01, maxTarget: 4,
                 sprite: "browser_lv5"
             }
         ];

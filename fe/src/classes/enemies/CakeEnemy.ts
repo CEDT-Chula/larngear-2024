@@ -8,7 +8,7 @@ export class CakeEnemy extends BaseEnemy {
         scene: Phaser.Scene,
         Name: string = "Cake",
         Name_Color: string = "#FFB6C1",
-        maxHealth: number = (5 + (GameController.getInstance().currentWave / 2)) * (35 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier),
+        maxHealth: number = (5 + (GameController.getInstance().currentWave / 3)) + (35 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier),
         baseSpeed: number = 250,
         attack: number = 1,
         sprite: string = "cake",

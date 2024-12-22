@@ -6,7 +6,7 @@ export class CoffeeEnemy extends BaseEnemy {
         scene: Phaser.Scene,
         Name: string = "Coffee",
         Name_Color: string = "#6F4E37", 
-        maxHealth: number = (5 + (GameController.getInstance().currentWave / 2)) * (30 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier),          
+        maxHealth: number = (5 + (GameController.getInstance().currentWave / 3)) + (30 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier),          
         baseSpeed: number = 325,            
         attack: number = 1,           
         sprite: string = "coffee",

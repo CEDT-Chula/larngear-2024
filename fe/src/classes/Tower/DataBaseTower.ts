@@ -12,23 +12,23 @@ export class DataBaseTower extends BaseTower {
     initializeLevelData(): LevelData[] {
         return [
             {
-                range: 300, attack: 300, reloadTime: 1.5, maxTarget: 2,
+                range: 300, attack: 300, reloadTime: 1, maxTarget: 2,
                 sprite: "db_lv1"
             },
             {
-                range: 325, attack: 400, reloadTime: 1.5, maxTarget: 4,
+                range: 325, attack: 500, reloadTime: 1.2, maxTarget: 4,
                 sprite: "db_lv2"
             },
             {
-                range: 350, attack: 500, reloadTime: 1.5, maxTarget: 6,
+                range: 350, attack: 700, reloadTime: 1.2, maxTarget: 6,
                 sprite: "db_lv3"
             },
             {
-                range: 375, attack: 600, reloadTime: 1.5, maxTarget: 8,
+                range: 375, attack: 1000, reloadTime: 1.5, maxTarget: 8,
                 sprite: "db_lv4"
             },
             {
-                range: 400, attack: 700, reloadTime: 1.5, maxTarget: 10,
+                range: 400, attack: 1500, reloadTime: 1.5, maxTarget: 10,
                 sprite: "db_lv5"
             }
         ];

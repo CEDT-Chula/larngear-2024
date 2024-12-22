@@ -118,8 +118,10 @@ export class GameController {
 		this.isBurnImmune = false;
 		this.towerPool_Current = this.towerPool_All;
 
+		if (this.currentWave % 5 == 0) this.bossHealth_Multiplier = 1
+
 		this.enemySpeed_Multiplier = 1 + (this.currentWave / (this.maxWave * 1.5))
-		this.enemyHealth_Multiplier = 1 + (this.currentWave / 6) + (this.enemyPerWave / (this.enemyPerWave * 1.5))
+		this.enemyHealth_Multiplier = 1 + (this.currentWave / 10) + (this.enemyPerWave / (this.enemyPerWave * 2))
 	}
 
 	increaseSpeed() {
@@ -242,7 +244,7 @@ export class GameController {
 		).setOrigin(0.5).setDepth(10);
 
 		// Final score
-		const finalScore = this.accumCoin + this.enemyKilled * 10 + this.playerHealth * 5;
+		const finalScore = this.accumCoin * 2 + this.enemyKilled * 10 + this.playerHealth * 5;
 		this.currentScene.add.text(
 			this.currentScene.cameras.main.width / 2 - offsetX,
 			this.currentScene.cameras.main.height / 3 + offsetY * 5,
@@ -349,7 +351,7 @@ export class GameController {
 		formElement.getChildByID('replayButton')?.addEventListener('click', () => {
 			// Logic for replay will go here
 			console.log('Replay the game');
-			window.location.reload
+			window.location.reload()
 		});
 	}
 

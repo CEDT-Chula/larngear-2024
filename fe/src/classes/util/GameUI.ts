@@ -11,6 +11,7 @@ export class GameUI {
 	healthText!: Phaser.GameObjects.Text;
 	waveText!: Phaser.GameObjects.Text;
 	speedButton!: Phaser.GameObjects.Text;
+	selfDestructButton!: Phaser.GameObjects.Text;
 
 	private constructor() {
 
@@ -51,6 +52,8 @@ export class GameUI {
 
 		// Bottom-right corner: Speed Button
 		this.speedButton.setPosition(screenWidth * 0.85, screenHeight * 0.95);
+
+		this.selfDestructButton.setPosition(screenWidth / 2, screenHeight * 0.05)
 	}
 
 	private static updateCoinText() {

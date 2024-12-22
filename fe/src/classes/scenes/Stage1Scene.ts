@@ -190,6 +190,24 @@ export class Stage1Scene extends Phaser.Scene {
       .setInteractive()
       .on("pointerdown", this.handleSpeedToggle.bind(this));
 
+    GameUI.getInstance().selfDestructButton = this.add.text(
+      worldWidth - 150,
+      worldHeight - 50,
+      "Give up",
+      {
+        fontSize: "24px",
+        fontFamily: "PressStart2P",
+        backgroundColor: "#000",
+        color: "#fff",
+        padding: { left: 20, right: 20, top: 10, bottom: 10 },
+      }
+    )
+      .setOrigin(0.5)
+      .setInteractive()
+      .on("pointerdown", () => {
+        gameController.gameOver("lose")
+      })
+
     this.heartImage = this.add.image(200, 32, "heart").setScale(3)
 
     this.healthText = this.add.text(240, 20, GameController.getInstance().playerHealth.toString(),

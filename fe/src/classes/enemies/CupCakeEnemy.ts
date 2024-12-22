@@ -9,7 +9,7 @@ export class CupCakeEnemy extends BaseEnemy {
         scene: Phaser.Scene,
         Name: string = "CupCake",
         Name_Color: string = "#FDFBD4",
-        maxHealth: number = (5 + (GameController.getInstance().currentWave / 2)) * (55 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier),
+        maxHealth: number = (5 + (GameController.getInstance().currentWave / 3)) + (50 * GameController.getInstance().currentWave * GameController.getInstance().enemyHealth_Multiplier),
         baseSpeed: number = 250,
         attack: number = 1,
         sprite: string = "cupcake",
