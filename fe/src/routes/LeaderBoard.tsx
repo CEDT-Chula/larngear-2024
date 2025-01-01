@@ -55,11 +55,11 @@ const LeaderBoard = () => {
     .filter((score) =>
       viewOption === "All" ? true : score.team === viewOption
     )
+    .sort((a, b) => b.score - a.score) 
+    .map((score, index) => ({ ...score, rank: index + 1 }))
     .filter((score) =>
       score.name.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .sort((a, b) => b.score - a.score) 
-    .map((score, index) => ({ ...score, rank: index + 1 })); 
+    ) 
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
@@ -94,7 +94,7 @@ const LeaderBoard = () => {
         </button>
       </div>
 
-      <div className="flex flex-col w-[500px]">
+      <div className="flex flex-col w-[500px] h-[80vh]">
         <img
           src="/img/scroll.png"
           alt="Top of Royal Letter"
@@ -104,14 +104,15 @@ const LeaderBoard = () => {
         <motion.div
           initial={{ height: 0 }}
           animate={{
-            height: isUnfolded ? "70vh" : 0,
+            height: isUnfolded ? "100%" : 0,
           }}
           transition={{ duration: 1, ease: "easeInOut" }}
-          className="overflow-y-auto bg-scroll invisible-scrollbar mx-auto bg-cover w-[432px] max-h-[80vh] border-t-2 border-b-2 border-transparent"
+          className="overflow-y-auto bg-scroll invisible-scrollbar mx-auto w-[432px] max-h-100 border-0"
           style={{
             backgroundImage: "url('/img/body.png')",
-          }}
-        >
+            backgroundSize: "100%",
+            backgroundRepeat: "repeat-y",
+          }}>
           {filteredScores.map((score) => {
             let color = "#000000"; 
             let fontSize = "24px";
@@ -143,7 +144,6 @@ const LeaderBoard = () => {
           src="/img/scroll.png"
           alt="Bottom of Royal Letter"
           className="w-full"
-          animate={{ y: isUnfolded ? filteredScores.length : 0 }}
           transition={{ duration: 1, ease: "easeInOut" }}
         />
       </div>
