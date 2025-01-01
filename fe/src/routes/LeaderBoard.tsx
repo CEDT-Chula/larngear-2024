@@ -63,8 +63,8 @@ const LeaderBoard = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <div className="absolute top-8 right-8 flex flex-col gap-4 max-w-[80vw] flex-wrap">
-        <div className="nes-select is-dark w-[200px] text-sm">
+      <div className="pt-3 px-2 sm:p-0 sm:absolute sm:top-8 sm:right-8 flex sm:flex-col gap-1 sm:gap-4 max-w-full sm:max-w-[80vw] flex-wrap">
+        <div className="nes-select is-dark max-w-[120px] sm:max-w-[200px] text-sm">
           <select //Filter Options
             required
             id="dark_select"
@@ -84,17 +84,17 @@ const LeaderBoard = () => {
           placeholder="Search by Name"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="nes-input is-dark text-sm w-full max-w-[200px] text-white break-words"
+          className="nes-input is-dark text-sm w-full max-w-[100%] sm:max-w-[200px] text-white break-words order-3"
         />
         <button //Main Menu
-          className="nes-btn is-warning w-full max-w-[200px] break-words"
+          className="nes-btn is-warning w-full max-w-[120px] sm:max-w-[200px] break-words"
           onClick={handleMainmenuClick}
         >
           Main Menu
         </button>
       </div>
 
-      <div className="flex flex-col w-[500px] h-[80vh]">
+      <div className="p-2 sm:p-0 flex flex-col w-full sm:w-[500px] min-h-0 max-h-[90vh]">
         <img
           src="/img/scroll.png"
           alt="Top of Royal Letter"
@@ -104,10 +104,10 @@ const LeaderBoard = () => {
         <motion.div
           initial={{ height: 0 }}
           animate={{
-            height: isUnfolded ? "100%" : 0,
+            height: isUnfolded ? "100vh" : 0,
           }}
           transition={{ duration: 1, ease: "easeInOut" }}
-          className="overflow-y-auto bg-scroll invisible-scrollbar mx-auto w-[432px] max-h-100 border-0"
+          className="overflow-y-auto bg-scroll invisible-scrollbar mx-auto w-[87%] sm:w-[432px] max-h-full border-0"
           style={{
             backgroundImage: "url('/img/body.png')",
             backgroundSize: "100%",
